@@ -74,10 +74,18 @@ def optional(*thing):
 
 def csl(*thing):
     """Generate a grammar for a simple comma separated list."""
+    # reduce unnecessary recursions
     if len(thing) == 1:
-        return thing, optional(",", blank, thing[0])
+        L = [thing[0]]
+        L.extend(maybe_some(",", blank, thing[0]))
+        return tuple(L)
     else:
-        return thing, optional(tuple(",", blank, *thing))
+        L = list(thing)
+        L.append(-1)
+        L2 = [",", blank]
+        L2.extend(tuple(thing))
+        L.append(tuple(L2))
+        return tuple(L)
 
 
 def attr(name, thing=word, subtype=None):
@@ -93,10 +101,7 @@ attr.Class = collections.namedtuple("Attribute", ("name", "thing", "subtype"))
 
 def flag(name, thing):
     """Generate an Attribute with that name which is valued True or False."""
-    if type(thing) == str or isinstance(thing, Keyword):
-        return attr(name, thing, "Flag")
-    else:
-        raise TypeError("flag supports str or Keyword as thing only")
+    return attr(name, thing, "Flag")
 
 
 def attributes(grammar):
@@ -240,6 +245,7 @@ class Keyword(Symbol):
 K = Keyword
 """Shortcut for Keyword."""
 
+
 def name():
     """Generate a grammar for a symbol with name."""
     return attr("name", Symbol)
@@ -328,7 +334,10 @@ def how_many(grammar):
         try:
             grammar.grammar
         except AttributeError:
-            return 1
+            if subclass(grammar, List) or subclass(grammar, Namespace):
+                return 2
+            else:
+                return 1
         else:
             return how_many(grammar.grammar)
 

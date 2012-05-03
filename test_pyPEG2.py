@@ -2,6 +2,22 @@ import unittest
 import pyPEG2
 import re
 
+class GrammarTestCase1(unittest.TestCase):
+    def runTest(self):
+        x = pyPEG2.some("thing")
+        y = pyPEG2.maybe_some("thing")
+        z = pyPEG2.optional("hello", "world")
+        self.assertEqual(x, (-2, "thing"))
+        self.assertEqual(y, (-1, "thing"))
+        self.assertEqual(z, (0, ("hello", "world")))
+
+class GrammarTestCase2(unittest.TestCase):
+    def runTest(self):
+        L1 = pyPEG2.csl("thing")
+        L2 = pyPEG2.csl("hello", "world")
+        self.assertEqual(L1, ("thing", -1, (",", pyPEG2.blank, "thing")))
+        self.assertEqual(L2, ("hello", "world", -1, (",", pyPEG2.blank, "hello", "world")))
+
 class ParserTestCase(unittest.TestCase): pass
 
 class TypeErrorTestCase(ParserTestCase):
