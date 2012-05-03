@@ -131,7 +131,7 @@ class List(list):
 
 
 class Namespace(collections.UserDict):
-    """A dictionary of grammars, indexed by their name."""
+    """A dictionary of things, indexed by their name."""
 
     def __init__(self, *args, **kwargs):
         """Initialize an OrderedDict containing the data of the Namespace.
