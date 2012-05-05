@@ -32,7 +32,24 @@ that=new one
 once=anything
 twice=goes
 [Number 3]
-<BLANKLINE>
+...
+
+pyPEG contains an XML backend, too:
+
+>>> from xmlast2 import thing2xml
+>>> print(thing2xml(ini_file, pretty=True).decode())
+<IniFile>
+  <Section name="Number 1">
+    <Key name="this">something</Key>
+    <Key name="that">new one</Key>
+  </Section>
+  <Section name="Number 2">
+    <Key name="once">anything</Key>
+    <Key name="twice">goes</Key>
+  </Section>
+  <Section name="Number 3".../>
+</IniFile>
+...
 """
 
 from pyPEG2 import *
@@ -63,4 +80,4 @@ once=anything
 twice=goes
 """
     import doctest
-    doctest.testmod(optionflags=doctest.REPORT_ONLY_FIRST_FAILURE)
+    doctest.testmod(optionflags=(doctest.ELLIPSIS | doctest.REPORT_ONLY_FIRST_FAILURE))
