@@ -1,7 +1,6 @@
 import unittest
 import re, sys
 import pyPEG2, xmlast2
-import lxml
 
 class Text(str): pass
 
@@ -30,8 +29,13 @@ class Thing2etreeTestCase1(unittest.TestCase):
 
         self.assertEqual(root.tag, "Something")
         self.assertEqual(root.attrib["name"], "hello")
-        
-        self.assertEqual(xmlast2.etree.tostring(root), b'<Something name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/>hello, world</Something>')
+ 
+        try:
+            import lxml
+        except ImportError:
+            self.assertEqual(xmlast2.etree.tostring(root), b'<Something name="hello"><Another name="bla" value="blub" /><Another name="foo" value="bar" />hello, world</Something>')
+        else:
+            self.assertEqual(xmlast2.etree.tostring(root), b'<Something name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/>hello, world</Something>')
 
 class SomethingElse(pyPEG2.Namespace):
     grammar = pyPEG2.name(), pyPEG2.some(Another)
@@ -53,10 +57,13 @@ class Thing2etreeTestCase2(unittest.TestCase):
 
         self.assertEqual(root.tag, "SomethingElse")
         self.assertEqual(root.attrib["name"], "hello")
-        
-        self.assertTrue(
-            xmlast2.etree.tostring(root) == b'<SomethingElse name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/></SomethingElse>' or xmlast2.etree.tostring(root) == b'<SomethingElse name="hello"><Another name="bla" value="blub" /><Another name="foo" value="bar" /></SomethingElse>'
-        )
+ 
+        try:
+            import lxml
+        except ImportError:
+            self.assertEqual(xmlast2.etree.tostring(root), b'<SomethingElse name="hello"><Another name="bla" value="blub" /><Another name="foo" value="bar" /></SomethingElse>')
+        else:
+            self.assertEqual(xmlast2.etree.tostring(root), b'<SomethingElse name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/></SomethingElse>')
 
 class XML2ThingTestCase(unittest.TestCase): pass
 
