@@ -1,5 +1,5 @@
 ^ws$
-^__pychache__$
+^__pycache__$
 \.swp$
 \.pyc$
 \.pyo$
