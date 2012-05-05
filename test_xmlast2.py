@@ -2,13 +2,11 @@ import unittest
 import re, sys
 import pyPEG2, xmlast2
 
-class Text(str): pass
-
 class Another:
     grammar = pyPEG2.name(), "=", pyPEG2.attr("value")
 
 class Something(pyPEG2.List):
-    grammar = pyPEG2.name(), pyPEG2.some(Another), Text
+    grammar = pyPEG2.name(), pyPEG2.some(Another), str
 
 class Thing2etreeTestCase1(unittest.TestCase):
     def runTest(self):
@@ -22,8 +20,7 @@ class Thing2etreeTestCase1(unittest.TestCase):
         a2.value = "bar"
         s.append(a1)
         s.append(a2)
-        t = Text("hello, world")
-        s.append(t)
+        s.append("hello, world")
 
         root = xmlast2.create_tree(s)
 

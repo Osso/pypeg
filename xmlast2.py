@@ -51,13 +51,16 @@ def create_tree(thing, parent=None):
 
     last = None
     for t in things:
-        if isinstance(t, str):
+        if type(t) == str:
             if last is not None:
                 last.tail = str(t)
             else:
                 me.text = str(t)
         else:
             last = create_tree(t, me)
+
+    if isinstance(thing, str):
+        me.text = str(thing)
 
     return me
 

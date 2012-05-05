@@ -9,7 +9,7 @@ starting with a semicolon ";".
 Because IniFile and Section are Namespaces, we can access their content by
 name.
 
->>> ini_file["Number 1"]["that"].value
+>>> ini_file["Number 1"]["that"]
 'something else'
 
 pyPEG is measuring the position of each object in the input text with a
@@ -22,7 +22,7 @@ tuple (line_number, offset).
 
 pyPEG can also do the reverse job, composing a text of an object tree.
 
->>> ini_file["Number 1"]["that"].value = "new one"
+>>> ini_file["Number 1"]["that"] = Key("new one")
 >>> ini_file["Number 3"] = Section()
 >>> print(compose(ini_file))
 [Number 1]
@@ -43,8 +43,8 @@ import re
 # symbols in ini files can include spaces
 Symbol.regex = re.compile(r"[\w\s]+")
 
-class Key:
-    grammar = name(), "=", attr("value", restline), endl
+class Key(str):
+    grammar = name(), "=", restline, endl
 
 class Section(Namespace):
     grammar = "[", name(), "]", endl, maybe_some(Key)
