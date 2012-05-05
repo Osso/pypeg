@@ -1,0 +1,5 @@
+^ws$
+^__pychache__$
+\.swp$
+\.pyc$
+\.pyo$
