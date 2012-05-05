@@ -14,28 +14,51 @@ try:
 except ImportError:
     import xml.etree.ElementTree as etree
 
-from pyPEG2 import List, Namespace, attributes
+import pyPEG2
 
 
-def thing2xml(thing, parent=None):
+def create_tree(thing, parent=None):
     """Create an XML etree from a thing."""
 
-    if not grammar:
-        try:
-            grammar = type(thing).grammar
-        except AttributeError:
-            if isinstance(thing, List):
-                grammar = csl(name())
-            else:
-                grammar = word
+    try:
+        grammar = type(thing).grammar
+    except AttributeError:
+        if isinstance(thing, pyPEG2.List):
+            grammar = pyPEG2.csl(name())
+        else:
+            grammar = pyPEG2.word
 
-    attrib = { e.name: e.thing for e in attributes(grammar) }
-
-    if not parent:
-        tree = etree.ElementTree(Element(type(thing).__name__, attrib))
+    if parent is None:
+        me = etree.Element(type(thing).__name__)
     else:
-        tree.SubElement(parent, type(thing).__name__, attrib)
+        me = etree.SubElement(parent, type(thing).__name__)
+
+    for e in pyPEG2.attributes(grammar):
+        me.set(e.name, str(getattr(thing, e.name)))
+
+    if isinstance(thing, pyPEG2.List):
+        things = thing
+    elif isinstance(thing, pyPEG2.Namespace):
+        things = thing.values()
+    else:
+        things = []
+
+    last = None
+    for t in things:
+        if isinstance(t, str):
+            if last is not None:
+                last.tail = str(t)
+            else:
+                me.text = str(t)
+        else:
+            last = create_tree(t, me)
+
+    return me
 
 
-def xml2thing(xml):
-    """Create things from an XML etree."""
+def thing2xml(thing):
+    """Create XML text from a thing."""
+
+    tree = create_tree(thing)
+    return etree.tostring(tree)
+
