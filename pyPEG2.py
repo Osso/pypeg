@@ -346,8 +346,7 @@ def how_many(grammar):
                 + type(grammar).__name__)
 
 
-def parse(text, thing, filename=None, whitespace=whitespace,
-        comment=None):
+def parse(text, thing, filename=None, whitespace=whitespace, comment=None):
     """Parse text following thing.grammar and return the resulting things or
     raise an error.
 
