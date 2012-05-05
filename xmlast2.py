@@ -18,7 +18,13 @@ import pyPEG2
 
 
 def create_tree(thing, parent=None):
-    """Create an XML etree from a thing."""
+    """Create an XML etree from a thing.
+
+    Arguments:
+        thing       thing to interpret
+        parent      etree.Element to put subtree into
+                    default: create a new Element tree
+    """
 
     try:
         grammar = type(thing).grammar
@@ -56,9 +62,15 @@ def create_tree(thing, parent=None):
     return me
 
 
-def thing2xml(thing):
-    """Create XML text from a thing."""
+def thing2xml(thing, pretty=False):
+    """Create XML text from a thing.
+
+    Arguments:
+        thing       thing to interpret
+        pretty      True if xml should be indented
+                    False if xml should be plain
+    """
 
     tree = create_tree(thing)
-    return etree.tostring(tree)
+    return etree.tostring(tree, pretty_print=pretty)
 
