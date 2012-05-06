@@ -48,7 +48,21 @@ int f(int a, long b)
     /* on level 1 */
     do_that;
 }
-<BLANKLINE>
+...
+
+pyPEG contains an XML backend, too:
+
+>>> from xmlast2 import thing2xml
+>>> print(thing2xml(f, pretty=True).decode())
+<Function typing="int" name="f">
+  <Parameters>
+    <Parameter typing="int" name="a"/>
+    <Parameter typing="long" name="b"/>
+  </Parameters>
+  <Instruction>do_this</Instruction>
+  <Instruction>do_that</Instruction>
+</Function>
+...
 """
 
 from pyPEG2 import *

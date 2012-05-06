@@ -40,7 +40,15 @@ def create_tree(thing, parent=None):
         me = etree.SubElement(parent, type(thing).__name__)
 
     for e in pyPEG2.attributes(grammar):
-        me.set(e.name, str(getattr(thing, e.name)))
+        key, value = e.name, getattr(thing, e.name)
+        found = False
+        for tp in (str, int, float, complex, bool, bytes):
+            if isinstance(value, tp):
+                me.set(key, str(value))
+                found = True
+                break
+        if not found:
+            create_tree(value, me)
 
     if isinstance(thing, pyPEG2.List):
         things = thing

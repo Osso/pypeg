@@ -824,7 +824,7 @@ class Parser:
                     result = ""
             else:
                 if type(grammar.thing) in (str, int, float, complex, bool, bytes):
-                    result = getattr(thing, grammar.name)
+                    result = str(getattr(thing, grammar.name))
                 else:
                     result = self.compose(getattr(thing, grammar.name))
 
