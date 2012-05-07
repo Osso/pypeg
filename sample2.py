@@ -37,17 +37,17 @@ twice=goes
 pyPEG contains an XML backend, too:
 
 >>> from xmlast2 import thing2xml
->>> print(thing2xml(ini_file, pretty=True).decode())
+>>> print(thing2xml(ini_file, pretty=True, object_tree=True).decode())
 <IniFile>
-  <Section name="Number 1">
-    <Key name="this">something</Key>
-    <Key name="that">new one</Key>
-  </Section>
-  <Section name="Number 2">
-    <Key name="once">anything</Key>
-    <Key name="twice">goes</Key>
-  </Section>
-  <Section name="Number 3".../>
+  <Number_1>
+    <this>something</this>
+    <that>new one</that>
+  </Number_1>
+  <Number_2>
+    <once>anything</once>
+    <twice>goes</twice>
+  </Number_2>
+  <Number_3/>
 </IniFile>
 ...
 """

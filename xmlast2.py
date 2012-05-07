@@ -17,7 +17,7 @@ except ImportError:
 import pyPEG2
 
 
-def create_tree(thing, parent=None):
+def create_tree(thing, object_tree=False, parent=None):
     """Create an XML etree from a thing.
 
     Arguments:
@@ -34,12 +34,24 @@ def create_tree(thing, parent=None):
         else:
             grammar = pyPEG2.word
 
+    name = type(thing).__name__
+
+    if object_tree:
+        try:
+            name = str(thing.name)
+            name = name.replace(" ", "_")
+        except AttributeError:
+            pass
+
     if parent is None:
-        me = etree.Element(type(thing).__name__)
+        me = etree.Element(name)
     else:
-        me = etree.SubElement(parent, type(thing).__name__)
+        me = etree.SubElement(parent, name)
 
     for e in pyPEG2.attributes(grammar):
+        if object_tree and e.name == "name":
+            if name != type(thing).__name__:
+                continue
         key, value = e.name, getattr(thing, e.name)
         found = False
         for tp in (str, int, float, complex, bool, bytes):
@@ -48,9 +60,9 @@ def create_tree(thing, parent=None):
                 found = True
                 break
         if not found:
-            create_tree(value, me)
+            create_tree(value, object_tree, me)
 
-    if isinstance(thing, pyPEG2.List):
+    if isinstance(thing, list):
         things = thing
     elif isinstance(thing, pyPEG2.Namespace):
         things = thing.values()
@@ -65,7 +77,7 @@ def create_tree(thing, parent=None):
             else:
                 me.text = str(t)
         else:
-            last = create_tree(t, me)
+            last = create_tree(t, object_tree, me)
 
     if isinstance(thing, str):
         me.text = str(thing)
@@ -73,7 +85,7 @@ def create_tree(thing, parent=None):
     return me
 
 
-def thing2xml(thing, pretty=False):
+def thing2xml(thing, pretty=False, object_tree=False):
     """Create XML text from a thing.
 
     Arguments:
@@ -82,6 +94,6 @@ def thing2xml(thing, pretty=False):
                     False if xml should be plain
     """
 
-    tree = create_tree(thing)
+    tree = create_tree(thing, object_tree)
     return etree.tostring(tree, pretty_print=pretty)
 
