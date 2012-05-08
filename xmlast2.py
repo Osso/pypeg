@@ -17,7 +17,7 @@ except ImportError:
 import pyPEG2
 
 
-def create_tree(thing, object_tree=False, parent=None):
+def create_tree(thing, object_names=False, parent=None):
     """Create an XML etree from a thing.
 
     Arguments:
@@ -36,7 +36,7 @@ def create_tree(thing, object_tree=False, parent=None):
 
     name = type(thing).__name__
 
-    if object_tree:
+    if object_names:
         try:
             name = str(thing.name)
             name = name.replace(" ", "_")
@@ -49,7 +49,7 @@ def create_tree(thing, object_tree=False, parent=None):
         me = etree.SubElement(parent, name)
 
     for e in pyPEG2.attributes(grammar):
-        if object_tree and e.name == "name":
+        if object_names and e.name == "name":
             if name != type(thing).__name__:
                 continue
         key, value = e.name, getattr(thing, e.name)
@@ -60,7 +60,7 @@ def create_tree(thing, object_tree=False, parent=None):
                 found = True
                 break
         if not found:
-            create_tree(value, object_tree, me)
+            create_tree(value, object_names, me)
 
     if isinstance(thing, list):
         things = thing
@@ -77,7 +77,7 @@ def create_tree(thing, object_tree=False, parent=None):
             else:
                 me.text = str(t)
         else:
-            last = create_tree(t, object_tree, me)
+            last = create_tree(t, object_names, me)
 
     if isinstance(thing, str):
         me.text = str(thing)
@@ -85,7 +85,7 @@ def create_tree(thing, object_tree=False, parent=None):
     return me
 
 
-def thing2xml(thing, pretty=False, object_tree=False):
+def thing2xml(thing, pretty=False, object_names=False):
     """Create XML text from a thing.
 
     Arguments:
@@ -94,6 +94,6 @@ def thing2xml(thing, pretty=False, object_tree=False):
                     False if xml should be plain
     """
 
-    tree = create_tree(thing, object_tree)
+    tree = create_tree(thing, object_names)
     return etree.tostring(tree, pretty_print=pretty)
 

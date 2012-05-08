@@ -37,7 +37,7 @@ twice=goes
 pyPEG contains an XML backend, too:
 
 >>> from xmlast2 import thing2xml
->>> print(thing2xml(ini_file, pretty=True, object_tree=True).decode())
+>>> print(thing2xml(ini_file, pretty=True, object_names=True).decode())
 <IniFile>
   <Number_1>
     <this>something</this>
