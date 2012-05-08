@@ -37,6 +37,23 @@ twice=goes
 pyPEG contains an XML backend, too:
 
 >>> from xmlast2 import thing2xml
+>>> print(thing2xml(ini_file, pretty=True).decode())
+<IniFile>
+  <Section name="Number 1">
+    <Key name="this">something</Key>
+    <Key name="that">new one</Key>
+  </Section>
+  <Section name="Number 2">
+    <Key name="once">anything</Key>
+    <Key name="twice">goes</Key>
+  </Section>
+  <Section name="Number 3"/>
+</IniFile>
+...
+
+In this sample the tree contains named objects only. Then we can output object
+names as tag names. Spaces in names will be translated into underscores.
+
 >>> print(thing2xml(ini_file, pretty=True, object_names=True).decode())
 <IniFile>
   <Number_1>
