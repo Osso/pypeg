@@ -1,0 +1,104 @@
+html {
+    background-color: lightgrey;
+}
+
+.mark {
+        background:#ffff80;
+}
+
+.red {
+        background:#ffc0c0;
+}
+
+.green {
+        background:#c0ffc0;
+}
+
+.blue {
+        background:#c0c0ff;
+}
+
+.orange {
+        background:#ffe0c0;
+}
+
+body {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    width: 900px;
+    min-height: 768px;
+    background-color: white;
+    font-family: Arial,Helvetica,FreeSans
+}
+
+em {
+    color: darkblue;
+    font-weight: bold;
+    font-style: normal;
+}
+
+#headline {
+    color: black;
+    font-size: x-large;
+    font-weight: normal;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding: 10px;
+}
+
+td {
+    vertical-align: top;
+}
+
+#navigation {
+    position: relative;
+    float: right;
+    width: 200px;
+    border-left-width: 1px;
+    border-left-style: dotted;
+    padding: 10px;
+    font-size: small;
+}
+
+#entries {
+    width: 569px;
+    padding: 10px;
+}
+
+.statusline {
+    width: 569px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: small;
+}
+
+#bottom {
+    clear: both;
+    color: grey;
+    padding: 10px;
+}
+
+h1, h2 {
+    font-size: medium;
+    color: darkblue;
+}
+
+h3 {
+    font-size: medium;
+    color: black;
+}
+
+.subscript {
+    font-size: small;
+    border-bottom-width: 1px;
+    border-bottom-style: dotted;
+    margin-bottom: 1em;
+    padding-bottom: 1em;
+}
+
+.small {
+    font-size: small;
+    margin-bottom: 1em;
+    padding-bottom: 1em;
+}
