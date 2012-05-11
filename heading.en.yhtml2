@@ -1,0 +1,55 @@
+decl a(href);
+
+decl Code alias pre {
+    code
+        content;
+};
+
+decl red(class="red") alias span;
+decl blue(class="blue") alias span;
+decl green(class="green") alias span;
+decl orange(class="orange") alias span;
+decl Red(class="red") alias div;
+decl Green(class="green") alias div;
+decl Blue(class="blue") alias div;
+decl Orange(class="orange") alias div;
+decl mark(class="mark") alias span;
+decl Mark(class="mark") alias div;
+
+decl ne is a {
+    content;
+    br;
+};
+
+div id="headline" {
+    p > pyPEG – a PEG Parser-Interpreter in Python
+    div class="small" {
+        "pyPEG 2.0 of So May 06 2012 – Copyleft 2009-2012, "
+        a "http://fdik.org", "Volker Birk";
+    }
+}
+
+div id="navigation" {
+    h1 a "#top", "Introduction";
+    ne "#example", "What is pyPEG?";
+    ne "#pi", "What is a Parser-Interpreter?";
+
+    h1 a "#using", "Using pyPEG";
+    ne "#sample", "A small sample";
+    ne "#syntax", "pyPEG Expression Syntax";
+    ne "#calling", "Using pyPEG in your program";
+    ne "#trace", "Tracing the work of pyPEG";
+    ne "#pyAST", "pyAST output";
+    ne "#xml", "XML output";
+
+    h1 "I want this!";
+    ne "pyPEG2.py", "Download pyPEG2.py";
+    ne "sample1.py", "Download sample1.py";
+    ne "sample2.py", "Download sample2.py";
+    ne "xmlast2.py", "Download XML backend";
+    br;
+    ne "gpl-2.0.txt", "License";
+    ne "http://www.pibit.ch", "Commercial support for pyPEG";
+    br;
+    ne "http://fdik.org/yml", "YML is using pyPEG";
+}

@@ -70,7 +70,7 @@ from pyPEG2 import *
 # A Symbol can be an arbitrary word or one word of an Enum.
 # In this easy example there is an Enum.
 
-class Type(Symbol):
+class Type(Keyword):
     grammar = Enum( K("int"), K("long") )
 
 # Parsing attributes adds them to the resulting thing.

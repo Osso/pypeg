@@ -1,0 +1,490 @@
+include ./homepage.en.yhtml2
+
+page "pyPEG – a PEG Parser-Interpreter in Python" {
+    h1 > Introduction
+
+    p   >>
+        ∑Python is a nice ∫scripting language∫. It even gives you access to its
+        own ∑parser and ∑compiler. It also gives you access to different other
+        parsers for special purposes like ∑XML and string templates.
+        >>
+
+    p   >>
+        But sometimes you may want to have your own parser. This is what's
+        ƒpyPEG for. And ƒpyPEG supports ∑Unicode.
+        >>
+
+    h1 id="whatis" > What is pyPEG?
+
+    p   >>
+        ƒpyPEG is a plain and simple parser interpreter framework for Python.
+        It's based on ∫Parsing Expression Grammar∫, PEG. With ƒpyPEG you can
+        parse many formal languages in a very easy way.  How does that work?
+        >>
+
+    h2 id="parsing" > Parsing text with pyPEG
+
+    p   >>
+        PEG is something like ∫Regular Expressions∫ which recursion. The
+        grammars are like templates.  Let's make an example.  Let's say, you
+        want to parse a function declaration in a C like language.  Such a
+        function declaration consists of:
+        >>
+
+    table border=0 style="margin-bottom:3ex;" {
+        tr {
+            td red >     
+            td style="padding-left:.5em;" > type declaration
+        }
+        tr {
+            td orange >     
+            td style="padding-left:.5em;" > name
+        }
+        tr {
+            td green >     
+            td style="padding-left:.5em;" > parameters
+        }
+        tr {
+            td blue >     
+            td style="padding-left:.5em;" > block with instructions
+        }
+    }
+
+    Code {
+            | `red > int` `orange > f`(`green > int a, long b`)
+            Blue    ||
+                    {
+                        do_this;
+                        do_that;
+                    }
+                    ||
+    }
+
+    p   >>
+        With ƒpyPEG you're declaring a Python class for each object type you want
+        to parse. This class is then instanciated for each parsed object. This class 
+        gets an attribute «grammar» with a description what should be parsed in
+        what way. In our simple example, we are supporting two different things
+        declared as keywords in our language: «int» and «long». So we're
+        writing a class declaration for the typing, which supports an «Enum» of
+        the two possible keywords as its «grammar»:
+        >>
+
+    Code Red||
+            class Type(Keyword):
+                grammar = Enum( K("int"), K("long") )
+            ||
+
+    p   >>
+        Common parsing tasks are included in the ƒpyPEG framework. In this
+        example, we're using the «Keyword» class because the result will be a
+        keyword, and we're using «Keyword» objects (with the abbreviation «K»),
+        because what we parse will be one of the enlisted keywords.
+        >>
+
+    p   >>
+        The total result will be a «Function». So we're declaring a «Function»
+        class:
+        >>
+
+    Code    ||
+            class Function:
+                grammar = `red > Type`, …
+            ||
+
+    p   >>
+        The next thing will be the name of the «Function» to parse. Names are
+        somewhat special in ƒpyPEG. But they're easy to handle: to parse a
+        name, there is a ready made «name()» function you can call in your grammar to
+        generate a «.name» «Attribute»:
+        >>
+
+    Code    ||
+            class Function:
+                grammar = `red > Type`, `orange > name()`, …
+            ||
+
+    p   >>
+        Now for the «Parameters» part. First let's declare a class for the parameters.
+        «Parameters» has to be a collection, because there may be many of
+        them. ƒpyPEG has some ready made collections. For the case of the «Parameters»,
+        the «Namespace» collection will fit. It provides indexed access by name, and
+        «Parameters» have names (in our example: «a» and «b»). We write it like this:
+        >>
+
+    Code Green
+        ||
+        class Parameters(Namespace):
+            grammar = …
+        ||
+
+    p   >>
+        A single «Parameter» has a structure itself. It has a «Type» and a «name()».
+        So let's define:
+        >>
+
+    Code Green
+        ||
+        class Parameter:
+            grammar = Type, name()
+
+        class Parameters(Namespace):
+            grammar = …
+        ||
+
+    p   >>
+        ƒpyPEG will instantiate the «Parameter» class for each parsed parameter.
+        Where will the «Type» go to? The «name()» function will generate a
+        «.name» «Attribute», but the «Type» object? Well, let's move it to an
+        «Attribute», too, named «.typing». To generate an «Attribute», ƒpyPEG
+        offers the «attr()» function:
+        >>
+
+    Code Green
+        ||
+        class Parameter:
+            grammar = attr("typing", Type), name()
+
+        class Parameters(Namespace):
+            grammar = …
+        ||
+
+    p   >>
+        By the way: «name()» is just a shortcut for «attr("name", Symbol)». It generates
+        a «Symbol».
+        >>
+
+    p   >>
+        How can we fill our «Namespace» collection named «Parameters»? Well, we have
+        to declare, how a list of «Parameter» objects will look like in our source text.
+        An easy way is offered by ƒpyPEG with the cardinality functions. In this case
+        we can use «maybe_some()». This function represents the asterisk cardinality, *
+        >>
+
+    Code Green
+        ||
+        class Parameter:
+            grammar = attr("typing", Type), name()
+
+        class Parameters(Namespace):
+            grammar = Parameter, maybe_some(",", Parameter)
+        ||
+
+    p   >>
+        This is how we express a comma separated list. Because this task is so common,
+        there is a shortcut generator function again, «csl()». The code below will do 
+        the same as the code above:
+        >>
+
+    Code Green
+        ||
+        class Parameter:
+            grammar = attr("typing", Type), name()
+
+        class Parameters(Namespace):
+            grammar = csl(Parameter)
+        ||
+
+    p   >>
+        Maybe a function has no parameters. This is a case we have to consider.
+        What should happen then? In our example, then the «Parameters» «Namespace» should
+        be empty. We're using another cardinality function for that case, «optional()». It
+        represents the question mark cardinality, ?
+        >>
+
+    Code Green
+        ||
+        class Parameter:
+            grammar = attr("typing", Type), name()
+
+        class Parameters(Namespace):
+            grammar = optional(csl(Parameter))
+        ||
+ 
+    p   >>
+        We can continue with our «Function» class. The «Parameters» will be
+        in parantheses, we just put that into the «grammar»:
+        >>
+
+    Code    ||
+            class Function:
+                grammar = `red > Type`, `orange > name()`, "(", `green > Parameters`, ")", …
+            ||
+
+    p   >>
+        Now for the block of instructions. We could declare another collection for the
+        Instructions. But the function itself can be seen as a list of instructions. So
+        let us declare it this way. First we make the «Function» class itself a «List»:
+        >>
+
+    Code    ||
+            class Function(`blue > List`):
+                grammar = `red > Type`, `orange > name()`, "(", `green > Parameters`, ")", …
+            ||
+
+    p   >>
+        If a class is a «List», ƒpyPEG will put everything inside this list,
+        which will be parsed and does not generate an «Attribute». So with that
+        modification, our «Parameters» now will be put into that List, too. And
+        so will be the «Type». This is an option, but in our example, it is not
+        what we want. So let's move them to an «Attribute» «.typing» and an
+        «Attribute» «.parms» respectively:
+        >>
+
+    Code    ||
+            class Function(`blue > List`):
+                grammar = `red > attr("typing", Type)`, `orange > name()`, \\
+                        "(", `green > attr("parms", Parameters)`, ")", …
+            ||
+
+    p   >>
+        Now we can define what a «block» will look like, and put it just behind into
+        the «grammar» of a «Function». The «Instruction» class we have plain and simple.
+        Of course, in a real world example, it can be pretty complex ;-) Here we just
+        have it as a «word». A «word» is a predefined «RegEx»; it is «re.compile(r"\w+")».
+        >>
+
+    Code Blue
+        ||
+        class Instruction(str):
+            grammar = word, ";"
+
+        block = "{", maybe_some(Instruction), "}"
+        ||
+
+    p   >>
+        Now let's put that to the tail of our «Function.grammar»:
+        >>
+
+    Code    ||
+            class Function(`blue > List`):
+                grammar = `red > attr("typing", Type)`, `orange > name()`, \\
+                        "(", `green > attr("parms", Parameters)`, ")", `blue > block`
+            ||
+
+    p   >>
+        Well, that looks pretty good now. Let's try it out using the «parse()» function:
+        >>
+
+    Code
+||
+>>> from pyPEG2 import *
+>>> class Type(Keyword):
+...     grammar = Enum( K("int"), K("long") )
+... 
+>>> class Parameter:
+...     grammar = attr("typing", Type), name()
+... 
+>>> class Parameters(Namespace):
+...     grammar = optional(csl(Parameter))
+... 
+>>> class Instruction(str):
+...     grammar = word, ";"
+... 
+>>> block = "{", maybe_some(Instruction), "}"
+>>> class Function(List):
+...     grammar = attr("typing", Type), name(), \\
+...             "(", attr("parms", Parameters), ")", block
+... 
+>>> f = parse("int f(int a, long b) { do_this; do_that; }",
+...         Function)
+>>> f.name
+Symbol('f')
+>>> f.typing
+Symbol('int')
+>>> f.parms["b"].typing
+Symbol('long')
+>>> f[0]
+'do_this'
+>>> f[1]
+'do_that'
+||
+
+    h2 id="composing" > Composing text – the other way around
+
+    p   >>
+        ƒpyPEG can do more. It is not only a framework for parsing text, it can
+        compose source code, too. A ƒpyPEG «grammar» is not only “just like” a
+        template, it can actually be used as a template for composing text.
+        Just call the «compose()» function:
+        >>
+
+    Code
+        ||
+        >>> compose(f)
+        'intf(inta, longb){do_this;do_that;}'
+        ||
+
+    p   >>
+        As you can see, for composing first there is a lack of whitespace. This
+        is because we used the automated whitespace removing functionality of ƒpyPEG,
+        which is enabled by default. To improve on that we have to extend our
+        «grammar» templates a little bit. For that case, there are callback
+        function objects in ƒpyPEG. They're only executed by «compose()» and ignored
+        by «parse()». And as usual, there are predefined ones for the common
+        cases. Let's try that out. First let's add «blank» between things which
+        should be separated:
+        >>
+
+    Code
+        ||
+        class Parameter:
+            grammar = attr("typing", Type), ◊blank◊, name()
+
+        class Function(List):
+            grammar = attr("typing", Type), ◊blank◊, name(), \\
+                    "(", attr("parms", Parameters), ")", block
+        ||
+
+    p   >>
+        After resetting everything, this will lead to the output:
+        >>
+
+    Code    ||
+            >>> compose(f)
+            'int◊ ◊f(int◊ ◊a, long◊ ◊b){do_this;do_that;}'
+            ||
+
+    p   >>
+        The «blank» after the comma `code { "int a," mark " "; "long b"}` was
+        generated by the «csl()» function; «csl(Parameter)» generates:
+        >>
+
+    Code | Parameter, maybe_some(",", blank, Parameter)
+
+    h2 id="indenting" > Indenting text
+
+    p   >>
+        In C like languages (like our example) we like to indent blocks.
+        Indention is something, which is relative to a current position. If
+        something is inside a block already, and should be indented, it has to
+        be indented two times (and so on). For that case ƒpyPEG has an indention
+        system.
+        >>
+
+    p   >>
+        The indention system basically is using the generating function «indent()»
+        and the callback function object «endl». With indent we can mark what should
+        be indented, sending «endl» means here should start the next line of the
+        source code being output. We can use this for our «block»:
+        >>
+
+    Code
+||
+class Instruction(str):
+    grammar = word, ";", ◊endl◊
+
+block = "{", ◊endl◊, maybe_some(◊indent(◊Instruction◊)◊), "}", ◊endl◊
+
+class Function(List):
+    grammar = attr("typing", Type), blank, name(), \\
+            "(", attr("parms", Parameters), ")", ◊endl◊, block
+||
+
+    p   >>
+        This changes the output to:
+        >>
+
+    Code    ||
+            >>> print(compose(f))
+            int f(int a, long b)
+            {
+                do_this;
+                do_that;
+            }
+            ||
+
+    h2 id="usercallbacks" > User defined Callback Functions
+
+    p   >>
+        With User defined Callback Functions ƒpyPEG offers the needed flexibility
+        to be useful as a general purpose template system for code generation. In
+        our simple example let's say we want to have processing information in 
+        comments in the «Function» declaration, i.e. the indention level in a comment
+        bevor each «Instruction». For that we can define our own Callback Function:
+        >>
+
+    Code {
+        | class Instruction(str):
+        Mark
+        ||
+            def heading(self, parser):
+                return "/* on level " + str(parser.indention_level) \\
+                        + " */", endl
+        ||
+    }
+
+    p   >>
+        Such a Callback Function is being called with two arguments. The first 
+        argument is the object to output. The second argument is the parser object
+        to get state information of the composing process. Because this fits
+        the convention for Python methods, you can write it as a method of the
+        class where it belongs to.
+        >>
+
+    p   >>
+        The return value of such a Callback Function must be the resulting text.
+        In our example, a C comment shell be generated with notes. We can put
+        this now into the «grammar».
+        >>
+
+    Code
+        ||
+        class Instruction(str):
+            def heading(self, parser):
+                return "/* on level " + str(parser.indention_level) \\
+                        + " */", endl
+
+            grammar = ◊heading◊, word, ";", endl
+        ||
+
+    p   >>
+        The result is corresponding:
+        >>
+
+    Code
+        ||
+        >>> print(compose(f))
+        int f(int a, long b)
+        {
+            /* on level 1 */
+            do_this;
+            /* on level 1 */
+            do_that;
+        }
+        ||
+
+    h1 id="xml" > XML output
+
+    p   >>
+        Sometimes you want to process what you parsed with
+        ¬http://www.w3.org/TR/xml/ the XML toolchain¬, or with
+        ¬http://fdik.org/yml the YML toolchain¬. Because of that, ƒpyPEG has an
+        XML backend. Just call the «thing2xml()» function to get «bytes» with
+        encoded XML:
+        >>
+
+    Code
+        ||
+        >>> from xmlast2 import thing2xml
+        >>> print(thing2xml(f, pretty=True).decode())
+        <Function typing="int" name="f">
+          <Parameters>
+            <Parameter typing="int" name="a"/>
+            <Parameter typing="long" name="b"/>
+          </Parameters>
+          <Instruction>do_this</Instruction>
+          <Instruction>do_that</Instruction>
+        </Function>
+        ||
+
+    p   >>
+        The complete sample code
+        ¬sample1.py you can download here¬.
+        >>
+
+    div id="bottom" {
+        "Want to download? Go to the "
+        a "#top", "^Top^"; " and look to the right ;-)"
+    }
+}
