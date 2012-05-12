@@ -36,7 +36,7 @@ twice=goes
 
 pyPEG contains an XML backend, too:
 
->>> from xmlast2 import thing2xml
+>>> from pypeg2.xmlast2 import thing2xml
 >>> print(thing2xml(ini_file, pretty=True).decode())
 <IniFile>
   <Section name="Number 1">
@@ -69,7 +69,7 @@ names as tag names. Spaces in names will be translated into underscores.
 ...
 """
 
-from pyPEG2 import *
+from pypeg2 import *
 import re
 
 # ini file parser

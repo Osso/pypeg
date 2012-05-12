@@ -52,7 +52,7 @@ int f(int a, long b)
 
 pyPEG contains an XML backend, too:
 
->>> from xmlast2 import thing2xml
+>>> from pypeg2.xmlast2 import thing2xml
 >>> print(thing2xml(f, pretty=True).decode())
 <Function typing="int" name="f">
   <Parameters>
@@ -65,7 +65,7 @@ pyPEG contains an XML backend, too:
 ...
 """
 
-from pyPEG2 import *
+from pypeg2 import *
 
 # A Symbol can be an arbitrary word or one word of an Enum.
 # In this easy example there is an Enum.
