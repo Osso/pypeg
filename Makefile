@@ -1,6 +1,6 @@
 PYTHON=python3.2
 
-.PHONY: docs clean push
+.PHONY: docs clean push dist test
 
 docs:
 	$(MAKE) -C docs
@@ -14,3 +14,9 @@ push:
 
 dist: docs
 	$(PYTHON) setup.py sdist
+
+test:
+	PYTHONPATH=`pwd` $(PYTHON) pypeg2/test/test_pypeg2.py
+	PYTHONPATH=`pwd` $(PYTHON) pypeg2/test/test_xmlast2.py
+	PYTHONPATH=`pwd` $(PYTHON) samples/sample1.py
+	PYTHONPATH=`pwd` $(PYTHON) samples/sample2.py
