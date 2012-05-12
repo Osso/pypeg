@@ -14,7 +14,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as etree
 
-import pyPEG2
+import pypeg2
 
 
 def create_tree(thing, object_names=False, parent=None):
@@ -29,10 +29,10 @@ def create_tree(thing, object_names=False, parent=None):
     try:
         grammar = type(thing).grammar
     except AttributeError:
-        if isinstance(thing, pyPEG2.List):
-            grammar = pyPEG2.csl(name())
+        if isinstance(thing, pypeg2.List):
+            grammar = pypeg2.csl(name())
         else:
-            grammar = pyPEG2.word
+            grammar = word
 
     name = type(thing).__name__
 
@@ -48,7 +48,7 @@ def create_tree(thing, object_names=False, parent=None):
     else:
         me = etree.SubElement(parent, name)
 
-    for e in pyPEG2.attributes(grammar):
+    for e in pypeg2.attributes(grammar):
         if object_names and e.name == "name":
             if name != type(thing).__name__:
                 continue
@@ -64,7 +64,7 @@ def create_tree(thing, object_names=False, parent=None):
 
     if isinstance(thing, list):
         things = thing
-    elif isinstance(thing, pyPEG2.Namespace):
+    elif isinstance(thing, pypeg2.Namespace):
         things = thing.values()
     else:
         things = []
