@@ -30,17 +30,8 @@ div id="headline" {
 }
 
 div id="navigation" {
-    h1 a "#top", "Introduction";
-    ne "#example", "What is pyPEG?";
-    ne "#pi", "What is a Parser-Interpreter?";
-
-    h1 a "#using", "Using pyPEG";
-    ne "#sample", "A small sample";
-    ne "#syntax", "pyPEG Expression Syntax";
-    ne "#calling", "Using pyPEG in your program";
-    ne "#trace", "Tracing the work of pyPEG";
-    ne "#pyAST", "pyAST output";
-    ne "#xml", "XML output";
+    h1 "How to use pyPEG";
+    include xml contents.xml
 
     h1 "I want this!";
     ne "pyPEG2.py", "Download pyPEG2.py";

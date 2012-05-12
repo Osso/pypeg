@@ -1,7 +1,5 @@
-include ./homepage.en.yhtml2
-
 page "pyPEG – a PEG Parser-Interpreter in Python" {
-    h1 > Introduction
+    h1 id=intro > Introduction
 
     p   >>
         ∑Python is a nice ∫scripting language∫. It even gives you access to its
@@ -14,7 +12,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         ƒpyPEG for. And ƒpyPEG supports ∑Unicode.
         >>
 
-    h1 id="whatis" > What is pyPEG?
+    h2 id=whatis > What is pyPEG?
 
     p   >>
         ƒpyPEG is a plain and simple parser interpreter framework for Python.
@@ -22,7 +20,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         parse many formal languages in a very easy way.  How does that work?
         >>
 
-    h2 id="parsing" > Parsing text with pyPEG
+    h1 id=parsing > Parsing text with pyPEG
 
     p   >>
         PEG is something like ∫Regular Expressions∫ which recursion. The
@@ -300,7 +298,7 @@ Symbol('long')
 'do_that'
 ||
 
-    h2 id="composing" > Composing text – the other way around
+    h1 id=composing > Composing text
 
     p   >>
         ƒpyPEG can do more. It is not only a framework for parsing text, it can
@@ -352,7 +350,7 @@ Symbol('long')
 
     Code | Parameter, maybe_some(",", blank, Parameter)
 
-    h2 id="indenting" > Indenting text
+    h2 id=indenting > Indenting text
 
     p   >>
         In C like languages (like our example) we like to indent blocks.
@@ -394,7 +392,7 @@ class Function(List):
             }
             ||
 
-    h2 id="usercallbacks" > User defined Callback Functions
+    h2 id=usercallbacks > User defined Callback Functions
 
     p   >>
         With User defined Callback Functions ƒpyPEG offers the needed flexibility
@@ -454,7 +452,7 @@ class Function(List):
         }
         ||
 
-    h1 id="xml" > XML output
+    h1 id=xmlout > XML output
 
     p   >>
         Sometimes you want to process what you parsed with

@@ -1,0 +1,9 @@
+include yslt.yml2
+
+stylesheet {
+    template "/page" div id=contents apply "h1";
+    template "h1" {
+        a href="#{@id}" value ".";
+        br;
+    }
+}
