@@ -7,7 +7,7 @@ docs:
 
 clean:
 	$(MAKE) -C docs clean
-	rm -Rf dist
+	rm -Rf dist MANIFEST
 
 push:
 	hg push ssh://hg@bitbucket.org/fdik/pypeg
