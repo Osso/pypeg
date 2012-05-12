@@ -1,12 +1,12 @@
 import unittest
 import re, sys
-import pyPEG2, xmlast2
+import pypeg2, pypeg2.xmlast2
 
 class Another:
-    grammar = pyPEG2.name(), "=", pyPEG2.attr("value")
+    grammar = pypeg2.name(), "=", pypeg2.attr("value")
 
-class Something(pyPEG2.List):
-    grammar = pyPEG2.name(), pyPEG2.some(Another), str
+class Something(pypeg2.List):
+    grammar = pypeg2.name(), pypeg2.some(Another), str
 
 class Thing2etreeTestCase1(unittest.TestCase):
     def runTest(self):
@@ -22,7 +22,7 @@ class Thing2etreeTestCase1(unittest.TestCase):
         s.append(a2)
         s.append("hello, world")
 
-        root = xmlast2.create_tree(s)
+        root = pypeg2.xmlast2.create_tree(s)
 
         self.assertEqual(root.tag, "Something")
         self.assertEqual(root.attrib["name"], "hello")
@@ -30,12 +30,12 @@ class Thing2etreeTestCase1(unittest.TestCase):
         try:
             import lxml
         except ImportError:
-            self.assertEqual(xmlast2.etree.tostring(root), b'<Something name="hello"><Another name="bla" value="blub" /><Another name="foo" value="bar" />hello, world</Something>')
+            self.assertEqual(pypeg2.xmlast2.etree.tostring(root), b'<Something name="hello"><Another name="bla" value="blub" /><Another name="foo" value="bar" />hello, world</Something>')
         else:
-            self.assertEqual(xmlast2.etree.tostring(root), b'<Something name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/>hello, world</Something>')
+            self.assertEqual(pypeg2.xmlast2.etree.tostring(root), b'<Something name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/>hello, world</Something>')
 
-class SomethingElse(pyPEG2.Namespace):
-    grammar = pyPEG2.name(), pyPEG2.some(Another)
+class SomethingElse(pypeg2.Namespace):
+    grammar = pypeg2.name(), pypeg2.some(Another)
 
 class Thing2etreeTestCase2(unittest.TestCase):
     def runTest(self):
@@ -50,7 +50,7 @@ class Thing2etreeTestCase2(unittest.TestCase):
         s[a1.name] = a1
         s[a2.name] = a2
 
-        root = xmlast2.create_tree(s)
+        root = pypeg2.xmlast2.create_tree(s)
 
         self.assertEqual(root.tag, "SomethingElse")
         self.assertEqual(root.attrib["name"], "hello")
@@ -58,9 +58,9 @@ class Thing2etreeTestCase2(unittest.TestCase):
         try:
             import lxml
         except ImportError:
-            self.assertEqual(xmlast2.etree.tostring(root), b'<SomethingElse name="hello"><Another name="bla" value="blub" /><Another name="foo" value="bar" /></SomethingElse>')
+            self.assertEqual(pypeg2.xmlast2.etree.tostring(root), b'<SomethingElse name="hello"><Another name="bla" value="blub" /><Another name="foo" value="bar" /></SomethingElse>')
         else:
-            self.assertEqual(xmlast2.etree.tostring(root), b'<SomethingElse name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/></SomethingElse>')
+            self.assertEqual(pypeg2.xmlast2.etree.tostring(root), b'<SomethingElse name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/></SomethingElse>')
 
 class XML2ThingTestCase(unittest.TestCase): pass
 

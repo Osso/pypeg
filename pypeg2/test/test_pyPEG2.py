@@ -1,5 +1,5 @@
 import unittest
-import pyPEG2
+import pypeg2
 import re
 
 class GrammarTestCase1(unittest.TestCase):
