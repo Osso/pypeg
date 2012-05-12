@@ -1,5 +1,6 @@
 ^ws$
 ^__pycache__$
+^dist$
 \.swp$
 \.pyc$
 \.pyo$
