@@ -1,6 +1,9 @@
 ^ws$
 ^__pycache__$
 ^dist$
+^MANIFEST$
 \.swp$
 \.pyc$
 \.pyo$
+\.xml$
+\.html$
