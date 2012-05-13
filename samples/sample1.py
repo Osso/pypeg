@@ -52,7 +52,7 @@ int f(int a, long b)
 
 pyPEG contains an XML backend, too:
 
->>> from pypeg2.xmlast2 import thing2xml
+>>> from pypeg2.xmlast import thing2xml
 >>> print(thing2xml(f, pretty=True).decode())
 <Function typing="int" name="f">
   <Parameters>

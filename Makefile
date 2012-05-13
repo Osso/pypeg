@@ -17,6 +17,6 @@ dist: docs
 
 test:
 	PYTHONPATH=`pwd` $(PYTHON) pypeg2/test/test_pypeg2.py
-	PYTHONPATH=`pwd` $(PYTHON) pypeg2/test/test_xmlast2.py
+	PYTHONPATH=`pwd` $(PYTHON) pypeg2/test/test_xmlast.py
 	PYTHONPATH=`pwd` $(PYTHON) samples/sample1.py
 	PYTHONPATH=`pwd` $(PYTHON) samples/sample2.py

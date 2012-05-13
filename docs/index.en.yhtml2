@@ -266,7 +266,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
 
     Code
 ||
->>> from pyPEG2 import *
+>>> from pypeg2 import *
 >>> class Type(Keyword):
 ...     grammar = Enum( K("int"), K("long") )
 ... 
@@ -464,7 +464,7 @@ class Function(List):
 
     Code
         ||
-        >>> from xmlast2 import thing2xml
+        >>> from pypeg2.xmlast import thing2xml
         >>> print(thing2xml(f, pretty=True).decode())
         <Function typing="int" name="f">
           <Parameters>
