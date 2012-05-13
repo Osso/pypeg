@@ -34,12 +34,9 @@ div id="navigation" {
     include xml contents.xml
 
     h1 "I want this!";
-    ne "pyPEG2.py", "Download pyPEG2.py";
-    ne "sample1.py", "Download sample1.py";
-    ne "sample2.py", "Download sample2.py";
-    ne "xmlast2.py", "Download XML backend";
+    ne "dist/pyPEG-2.0.0.tar.gz", "Download pyPEG 2";
     br;
-    ne "gpl-2.0.txt", "License";
+    ne "LICENSE.txt", "License";
     ne "http://www.pibit.ch", "Commercial support for pyPEG";
     br;
     ne "http://fdik.org/yml", "YML is using pyPEG";
