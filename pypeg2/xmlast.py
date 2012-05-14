@@ -24,9 +24,12 @@ def create_tree(thing, object_names=False, parent=None):
     """Create an XML etree from a thing.
 
     Arguments:
-        thing       thing to interpret
-        parent      etree.Element to put subtree into
-                    default: create a new Element tree
+        thing           thing to interpret
+        parent          etree.Element to put subtree into
+                        default: create a new Element tree
+
+    Returns:
+        etree object created
     """
 
     try:
@@ -92,11 +95,61 @@ def thing2xml(thing, pretty=False, object_names=False):
     """Create XML text from a thing.
 
     Arguments:
-        thing       thing to interpret
-        pretty      True if xml should be indented
-                    False if xml should be plain
+        thing           thing to interpret
+        pretty          True if xml should be indented
+                        False if xml should be plain
+
+    Returns:
+        bytes with encoded XML 
     """
 
     tree = create_tree(thing, object_names)
     return etree.tostring(tree, pretty_print=pretty)
+
+
+def create_thing(tree, symbol_table):
+    """Create thing from an XML etree.
+
+    Arguments:
+        tree            etree object to read
+        symbol_table    symbol table where the classes can be found
+
+    Returns:
+        things created
+    """
+
+    C = symbol_table[tree.tag]
+    if tree.text:
+        thing = C(tree.text)
+    else:
+        thing = C()
+    
+    for e in pypeg2.attributes(C.grammar):
+        key, value = e.name, tree.attrib[e.name]
+        for tp in (str, int, float, complex, bool, bytes):
+            try:
+                if issubclass(e.thing, tp):
+                    setattr(thing, key, e.thing(value))
+                    found = True
+                    break
+            except:
+                pass
+        # if not found:
+        #     t = create_thing(tree, symbol_table)
+
+    return thing
+
+def xml2thing(xml, symbol_table):
+    """Create thing from XML text.
+
+    Arguments:
+        xml             bytes with encoded XML
+        symbol_table    symbol table where the classes can be found
+
+    Returns:
+        created thing
+    """
+
+    tree = etree.fromstring(xml)
+    return create_thing(tree, symbol_table)
 

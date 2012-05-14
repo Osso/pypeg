@@ -7,11 +7,15 @@ page "pyPEG – Features" {
 
     h2 id=literals > String objects
 
+    h3 > Parsing
+
     p   >>
         String objects are parsed as
         `w "Terminal_and_nonterminal_symbols" > Terminal Symbols`.
-        They're removed and no result is put into the ∫Abstract syntax tree∫. Example:
+        They're removed and no result is put into the ∫Abstract syntax tree∫.
         >>
+
+    p > Example:
 
     Code
         ||
@@ -23,6 +27,23 @@ page "pyPEG – Features" {
         Symbol('this')
         >>> k
         'something'
+        ||
+
+    h3 > Composing
+
+    p > String objects are being output literally.
+
+    p > Example:
+
+    Code
+        ||
+        >>> class Key(str):
+        ...     grammar = name(), ◊"="◊, restline, endl
+        ... 
+        >>> k = Key("a value")
+        >>> k.name = Symbol("give me")
+        >>> compose(k)
+        'give me◊=◊a value\\n'
         ||
 
     h2 id=regex > Regular Expressions

@@ -68,7 +68,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         the two possible keywords as its «grammar»:
         >>
 
-    Code Red||
+    Code    ||
             class Type(Keyword):
                 grammar = Enum( K("int"), K("long") )
             ||
