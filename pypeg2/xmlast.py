@@ -115,7 +115,7 @@ def create_thing(element, symbol_table):
         symbol_table    symbol table where the classes can be found
 
     Returns:
-        things created
+        thing created
     """
 
     C = symbol_table[element.tag]
