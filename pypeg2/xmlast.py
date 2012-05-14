@@ -107,36 +107,56 @@ def thing2xml(thing, pretty=False, object_names=False):
     return etree.tostring(tree, pretty_print=pretty)
 
 
-def create_thing(tree, symbol_table):
-    """Create thing from an XML etree.
+def create_thing(element, symbol_table):
+    """Create thing from an XML eelement.
 
     Arguments:
-        tree            etree object to read
+        element         Element instance to read
         symbol_table    symbol table where the classes can be found
 
     Returns:
         things created
     """
 
-    C = symbol_table[tree.tag]
-    if tree.text:
-        thing = C(tree.text)
+    C = symbol_table[element.tag]
+    if element.text:
+        thing = C(element.text)
     else:
         thing = C()
     
-    for e in pypeg2.attributes(C.grammar):
-        key, value = e.name, tree.attrib[e.name]
-        for tp in (str, int, float, complex, bool, bytes):
-            try:
-                if issubclass(e.thing, tp):
-                    setattr(thing, key, e.thing(value))
-                    found = True
-                    break
-            except:
-                pass
-        # if not found:
-        #     t = create_thing(tree, symbol_table)
+    subs = element.iter()
+    me = next(subs)
 
+    try:
+        grammar = C.grammar
+    except AttributeError:
+        if isinstance(C, pypeg2.List) or isinstance(C, pypeg2.Namespace):
+            grammar = pypeg2.csl(pypeg2.word)
+        else:
+            grammar = pypeg2.word
+
+    for e in pypeg2.attributes(grammar):
+        key = e.name
+        try:
+            value = element.attrib[e.name]
+        except KeyError:
+            t = create_thing(subs.__next__(), symbol_table)
+            setattr(thing, key, t)
+        else:
+            setattr(thing, key, e.thing(value))
+
+    if isinstance(thing, pypeg2.List) or isinstance(thing, pypeg2.Namespace):
+        try:
+            while True:
+                sub = next(subs)
+                t = create_thing(sub, symbol_table)
+                if isinstance(thing, pypeg2.List):
+                    thing.append(t)
+                else:
+                    thing[t.name] = t
+        except StopIteration:
+            pass
+    
     return thing
 
 def xml2thing(xml, symbol_table):
@@ -150,6 +170,6 @@ def xml2thing(xml, symbol_table):
         created thing
     """
 
-    tree = etree.fromstring(xml)
-    return create_thing(tree, symbol_table)
+    element = etree.fromstring(xml)
+    return create_thing(element, symbol_table)
 

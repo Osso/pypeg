@@ -62,7 +62,32 @@ class Thing2etreeTestCase2(unittest.TestCase):
         else:
             self.assertEqual(pypeg2.xmlast.etree.tostring(root), b'<SomethingElse name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/></SomethingElse>')
 
-class XML2ThingTestCase(unittest.TestCase): pass
+class Key(str):
+    grammar = pypeg2.name(), "=", pypeg2.restline
+
+class XML2ThingTestCase1(unittest.TestCase):
+    def runTest(self):
+        xml = b'<Key name="foo">bar</Key>'
+        thing = pypeg2.xmlast.xml2thing(xml, globals())
+        self.assertEqual(thing.name, pypeg2.Symbol("foo"))
+        self.assertEqual(thing, "bar")
+
+class Instruction(str): pass
+
+class Parameter:
+    grammar = pypeg2.attr("type", str), pypeg2.name()
+
+class Parameters(pypeg2.Namespace):
+    grammar = pypeg2.optional(pypeg2.csl(Parameter))
+
+class Function(pypeg2.List):
+    grammar = pypeg2.name(), pypeg2.attr("parms", Parameters), "{", pypeg2.maybe_some(Instruction), "}"
+
+class XML2ThingTestCase2(unittest.TestCase):
+    def runTest(self):
+        xml = b'<Function name="f"><Parameters><Parameter name="a" type="int"/></Parameters><Instruction>do_this</Instruction></Function>'
+        f = pypeg2.xmlast.xml2thing(xml, globals())
+        self.assertEqual(f.name, pypeg2.Symbol("f"))
 
 if __name__ == '__main__':
     unittest.main()
