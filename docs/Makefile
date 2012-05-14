@@ -12,4 +12,4 @@ contents.xml: index.en.yhtml2 gen_contents.ysl2
 	$(YML2C) -o $@ ./homepage.en.yhtml2 $<
 
 clean:
-	rm -f index.html contents.xml
+	rm -f *.html *.xml
