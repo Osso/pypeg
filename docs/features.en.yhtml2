@@ -1,0 +1,73 @@
+page "pyPEG – Features" {
+    h1 id=overview "Overview";
+
+    p > ƒpyPEG provides the following things:
+
+    h1 id=basic > Basic Grammar Elements
+
+    h2 id=literals > String Literals
+
+    p   >>
+        String objects are parsed as
+        `w "Terminal_and_nonterminal_symbols" > Terminal Symbols`.
+        They're removed and no result is put into the ¬#ast AST¬. Example:
+        >>
+
+    Code
+        ||
+        >>> class Key(str):
+        ...     grammar = name(), ◊"="◊, restline, endl
+        ... 
+        >>> k = parse("this=something", Key)
+        >>> k.name
+        Symbol('this')
+        >>> k
+        'something'
+        ||
+
+    h2 id=regex > Regular Expressions
+
+    p   >>
+        ƒpyPEG uses Python's «re» module. «pypeg2.RegEx» is an alias for
+        πre.html#re-objects Python Regular Expression Objectsπ.
+        Regular Expressions are parsed as
+        `w "Terminal_and_nonterminal_symbols" > Terminal Symbols`. The matching 
+        result is put into the ¬#ast AST¬.
+        >>
+
+    p   >>
+        ƒpyPEG predefines different RegEx objects:
+        >>
+
+    table border=1 {
+        tr {
+            td Code > word = re.compile(r"\w+")
+            td p > Regular expression for scanning a word.
+        }
+
+        tr {
+            td Code > restline = re.compile(r".*")
+            td p > Regular expression for rest of line.
+        }
+
+        tr {
+            td Code > whitespace = re.compile("(?m)\s+")
+            td p > Regular expression for scanning whitespace.
+        }
+    }
+
+    p > Example:
+
+    Code
+        ||
+        >>> class Key(str):
+        ...     grammar = name(), "=", ◊restline◊, endl
+        ... 
+        >>> k = parse("this=something", Key)
+        >>> k.name
+        Symbol('this')
+        >>> k
+        ◊'something'◊
+        ||
+
+}

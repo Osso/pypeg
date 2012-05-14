@@ -19,9 +19,12 @@ decl page(*title, lang="en", xml:lang="en", xmlns="http://www.w3.org/1999/xhtml"
         content;
 };
 
+decl w(%term, href="https://en.wikipedia.org/wiki/%term") alias a;
+
 define operator "¬\s*(.*?)\s+(.*?)\s*¬" as a href="%1" > %2
-define operator "∑([\w-]*)" as a href="http://en.wikipedia.org/wiki/%1" > %1
-define operator "∫(.*?)∫" as a href="http://en.wikipedia.org/wiki/%1" > %1
+define operator "π\s*(.*?)\s+(.*?)\s*π" as a href="http://docs.python.org/py3k/library/%1" > %2
+define operator "∑([\w-]*)" as a href="https://en.wikipedia.org/wiki/%1" > %1
+define operator "∫(.*?)∫" as a href="https://en.wikipedia.org/wiki/%1" > %1
 define operator "«(.*?)»" as code > %1
 define operator "ƒ([\w-]*)" as em > %1
 define operator "◊(.*?)◊" as mark > %1

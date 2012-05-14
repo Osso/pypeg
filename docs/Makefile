@@ -3,7 +3,7 @@
 YML2C=yml2c
 YML2PROC=yml2proc
 
-documentation: index.html
+documentation: index.html features.html
 
 contents.xml: index.en.yhtml2 gen_contents.ysl2
 	$(YML2PROC) -y gen_contents.ysl2 -o $@ $<
