@@ -75,7 +75,7 @@ class XML2ThingTestCase1(unittest.TestCase):
 class Instruction(str): pass
 
 class Parameter:
-    grammar = pypeg2.attr("type", str), pypeg2.name()
+    grammar = pypeg2.attr("typing", str), pypeg2.name()
 
 class Parameters(pypeg2.Namespace):
     grammar = pypeg2.optional(pypeg2.csl(Parameter))
@@ -85,9 +85,12 @@ class Function(pypeg2.List):
 
 class XML2ThingTestCase2(unittest.TestCase):
     def runTest(self):
-        xml = b'<Function name="f"><Parameters><Parameter name="a" type="int"/></Parameters><Instruction>do_this</Instruction></Function>'
+        xml = b'<Function name="f"><Parameters><Parameter name="a" typing="int"/></Parameters><Instruction>do_this</Instruction></Function>'
         f = pypeg2.xmlast.xml2thing(xml, globals())
         self.assertEqual(f.name, pypeg2.Symbol("f"))
+        self.assertEqual(f.parms["a"].name, pypeg2.Symbol("a"))
+        self.assertEqual(f.parms["a"].typing, pypeg2.Symbol("int"))
+        self.assertEqual(f[0], "do_this")
 
 if __name__ == '__main__':
     unittest.main()

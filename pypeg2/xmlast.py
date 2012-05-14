@@ -124,8 +124,11 @@ def create_thing(element, symbol_table):
     else:
         thing = C()
     
-    subs = element.iter()
-    me = next(subs)
+    subs = iter(list(element))
+    try:
+        sub = next(subs)
+    except StopIteration:
+        pass
 
     try:
         grammar = C.grammar
@@ -140,20 +143,21 @@ def create_thing(element, symbol_table):
         try:
             value = element.attrib[e.name]
         except KeyError:
-            t = create_thing(subs.__next__(), symbol_table)
+            t = create_thing(sub, symbol_table)
             setattr(thing, key, t)
+            sub = next(subs)
         else:
             setattr(thing, key, e.thing(value))
 
     if isinstance(thing, pypeg2.List) or isinstance(thing, pypeg2.Namespace):
         try:
             while True:
-                sub = next(subs)
                 t = create_thing(sub, symbol_table)
                 if isinstance(thing, pypeg2.List):
                     thing.append(t)
                 else:
                     thing[t.name] = t
+                sub = next(subs)
         except StopIteration:
             pass
     
