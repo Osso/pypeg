@@ -133,7 +133,7 @@ def create_thing(element, symbol_table):
     try:
         grammar = C.grammar
     except AttributeError:
-        if isinstance(C, pypeg2.List) or isinstance(C, pypeg2.Namespace):
+        if issubclass(C, pypeg2.List) or issubclass(C, pypeg2.Namespace):
             grammar = pypeg2.csl(pypeg2.word)
         else:
             grammar = pypeg2.word
@@ -149,7 +149,7 @@ def create_thing(element, symbol_table):
         else:
             setattr(thing, key, e.thing(value))
 
-    if isinstance(thing, pypeg2.List) or isinstance(thing, pypeg2.Namespace):
+    if issubclass(C, pypeg2.List) or issubclass(C, pypeg2.Namespace):
         try:
             while True:
                 t = create_thing(sub, symbol_table)
