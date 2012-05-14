@@ -5,12 +5,12 @@ page "pyPEG – Features" {
 
     h1 id=basic > Basic Grammar Elements
 
-    h2 id=literals > String Literals
+    h2 id=literals > String objects
 
     p   >>
         String objects are parsed as
         `w "Terminal_and_nonterminal_symbols" > Terminal Symbols`.
-        They're removed and no result is put into the ¬#ast AST¬. Example:
+        They're removed and no result is put into the ∫Abstract syntax tree∫. Example:
         >>
 
     Code
@@ -69,5 +69,62 @@ page "pyPEG – Features" {
         >>> k
         ◊'something'◊
         ||
+
+    h2 id=tuple > Tuples
+
+    p   >>
+        A «tuple» specifies, that different things have to be parsed one after
+        another. Example:
+        >>
+
+    Code
+        ||
+        >>> class Key(str):
+        ...     grammar = name()◊, ◊"="◊, ◊restline◊, ◊endl
+        ... 
+        >>> k = parse("this=something", Key)
+        >>> k.name
+        Symbol('this')
+        >>> k
+        'something'
+        ||
+
+    p   >>
+        In a «tuple» there may be integers preceding another thing in the
+        «tuple». These integers represent a cardinality. For example, to parse
+        three times a «word», you can have as a «grammar»:
+        >>
+
+    Code | grammar = word, word, word
+
+    p > or:
+
+    Code | grammar = 3, word
+
+    p > which is equivalent. There are special cardinality values:
+
+    table border=1 {
+        tr {
+            td Code > -2, thing
+            td p > «some(thing)»; this represents the plus cardinality, +
+        }
+        tr {
+            td Code > -1, thing
+            td p > «maybe_some(thing)»; this represents the asterisk cardinality, *
+        }
+        tr {
+            td Code > 0, thing
+            td p > «optional(thing)»; this represents the question mark cardinality, ?
+        }
+    }
+
+    p   >>
+        The special cardinality values can be generated with the
+        ¬#cardfuncs Cardinality Functions¬.  The value «-3» is reserved for the
+        indention system. Other negative values are reserved and may not be
+        used.
+        >>
+
+    h2 id=lists > Lists
 
 }
