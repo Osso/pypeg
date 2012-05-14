@@ -163,6 +163,7 @@ def create_thing(element, symbol_table):
     
     return thing
 
+
 def xml2thing(xml, symbol_table):
     """Create thing from XML text.
 
