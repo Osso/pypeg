@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-decl pageContent alias body {
+decl pageContent(style) alias body {
     a name="top";
     include ./heading.en.yhtml2;
     div id="entries"
         content;
 };
 
-decl page(*title, lang="en", xml:lang="en", xmlns="http://www.w3.org/1999/xhtml") alias html {
+decl page(*title, *style="", lang="en", xml:lang="en", xmlns="http://www.w3.org/1999/xhtml") alias html {
     head {
         title *title;
         meta http-equiv="Content-Type", content="text/html;charset=UTF-8";
         link rel="stylesheet", type="text/css", href="format.css";
     }
 
-    pageContent
+    pageContent(*style)
         content;
 };
 

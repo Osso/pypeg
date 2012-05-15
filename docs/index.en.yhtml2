@@ -12,8 +12,6 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         ƒpyPEG for. And ƒpyPEG supports ∑Unicode.
         >>
 
-    h2 id=whatis > What is pyPEG?
-
     p   >>
         ƒpyPEG is a plain and simple parser interpreter framework for Python.
         It's based on ∫Parsing Expression Grammar∫, PEG. With ƒpyPEG you can

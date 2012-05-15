@@ -1,8 +1,4 @@
-page "pyPEG – Features" {
-    h1 id=overview "Overview";
-
-    p > ƒpyPEG provides the following things:
-
+page "pyPEG – Features", "counter-reset: chapter 4;" {
     h1 id=basic > Basic Grammar Elements
 
     h2 id=literals > String objects

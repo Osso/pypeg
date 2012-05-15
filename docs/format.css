@@ -23,6 +23,7 @@ html {
 }
 
 body {
+    counter-reset: chapter;
     margin-left: auto;
     margin-right: auto;
     margin-top: 0;
@@ -77,6 +78,20 @@ td {
     clear: both;
     color: grey;
     padding: 10px;
+}
+
+#entries h1:before {
+    counter-increment: chapter;
+    content: counter(chapter) ". ";
+}
+
+h1 {
+    counter-reset: section;
+}
+
+h2:before {
+    counter-increment: section;
+    content: counter(chapter) "." counter(section) " ";
 }
 
 h1, h2 {
