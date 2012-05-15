@@ -48,6 +48,8 @@ page "pyPEG – Features" {
 
     h2 id=regex > Regular Expressions
 
+    h3 > Parsing
+
     p   >>
         ƒpyPEG uses Python's «re» module. «pypeg2.RegEx» is an alias for
         πre.html#re-objects Python Regular Expression Objectsπ.
@@ -91,7 +93,29 @@ page "pyPEG – Features" {
         ◊'something'◊
         ||
 
+    h3 > Composing
+
+    p   >>
+        For «RegEx» objects their corresponding value in the ¬#ast AST¬ will be
+        output.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> class Key(str):
+        ...     grammar = name(), "=", ◊restline◊, endl
+        ... 
+        >>> k = Key(◊"a value"◊)
+        >>> k.name = Symbol("give me")
+        >>> compose(k)
+        'give me=◊a value\\n◊'
+        ||
+
     h2 id=tuple > Tuples
+
+    h3 > Parsing
 
     p   >>
         A «tuple» specifies, that different things have to be parsed one after
@@ -145,6 +169,27 @@ page "pyPEG – Features" {
         indention system. Other negative values are reserved and may not be
         used.
         >>
+
+    h3 > Composing
+
+    p   >>
+        For «tuple» objects all attributes of the corresponding thing (and
+        elements of the corresponding collection if that applies) in the
+        ¬#ast AST¬ will be composed and the result is concatenated.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> class Key(str):
+        ...     grammar = name()◊, ◊"="◊, ◊restline◊, ◊endl
+        ... 
+        >>> k = Key("a value")
+        >>> k.name = Symbol("give me")
+        >>> compose(k)
+        ◊'give me=a value\\n'◊
+        ||
 
     h2 id=lists > Lists
 
