@@ -142,7 +142,7 @@ def create_thing(element, symbol_table):
             else:
                 setattr(thing, key, e.thing(value))
 
-    if issubclass(C, pypeg2.List) or issubclass(C, pypeg2.Namespace):
+    if issubclass(C, list) or issubclass(C, pypeg2.Namespace):
         try:
             while True:
                 sub = next(subs)
