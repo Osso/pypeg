@@ -117,35 +117,6 @@ def attributes(grammar):
                 yield a
 
 
-class Grammar:
-    """Descriptor for defining grammars with circular references.
-
-    Usage:
-        first_grammar = Grammar()
-        class First:
-            grammar = first_grammar
-
-        class Second:
-            grammar = First
-
-        first_grammar.things = Second
-
-    Be careful: it is easy to define grammars which lead to infinite loops.
-    """
-
-    def __init__(self, *things):
-        if len(things) == 1:
-            self.things = things[0]
-        else:
-            self.things = things
- 
-    def __get__(self, obj, objtype):
-        return self.things
-
-    def __set__(self, obj, val):
-        self.things = val
-
-
 class List(list):
     """A List of things."""
 
