@@ -649,8 +649,6 @@ class Parser:
         elif type(thing) == list:
             found = False
             for e in thing:
-                if type(e) in (int, float, complex, bool, bytes):
-                    e = str(e)
                 t, r = self._parse(text, e, pos)
                 if type(r) != SyntaxError:
                     found = True
