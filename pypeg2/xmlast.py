@@ -125,39 +125,32 @@ def create_thing(element, symbol_table):
         thing = C()
     
     subs = iter(list(element))
-    try:
-        sub = next(subs)
-    except StopIteration:
-        pass
 
     try:
         grammar = C.grammar
     except AttributeError:
-        if issubclass(C, pypeg2.List) or issubclass(C, pypeg2.Namespace):
-            grammar = pypeg2.csl(pypeg2.word)
-        else:
-            grammar = pypeg2.word
-
-    for e in pypeg2.attributes(grammar):
-        key = e.name
-        try:
-            value = element.attrib[e.name]
-        except KeyError:
-            t = create_thing(sub, symbol_table)
-            setattr(thing, key, t)
-            sub = next(subs)
-        else:
-            setattr(thing, key, e.thing(value))
+        pass
+    else:
+        for e in pypeg2.attributes(grammar):
+            key = e.name
+            try:
+                value = element.attrib[e.name]
+            except KeyError:
+                sub = next(subs)
+                t = create_thing(sub, symbol_table)
+                setattr(thing, key, t)
+            else:
+                setattr(thing, key, e.thing(value))
 
     if issubclass(C, pypeg2.List) or issubclass(C, pypeg2.Namespace):
         try:
             while True:
+                sub = next(subs)
                 t = create_thing(sub, symbol_table)
                 if isinstance(thing, pypeg2.List):
                     thing.append(t)
                 else:
                     thing[t.name] = t
-                sub = next(subs)
         except StopIteration:
             pass
     
