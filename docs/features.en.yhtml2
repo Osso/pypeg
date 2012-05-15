@@ -189,4 +189,15 @@ page "pyPEG – Features", "counter-reset: chapter 4;" {
 
     h2 id=lists > Lists
 
+    h3 > Parsing
+
+    p   >>
+        A «list» represents different options. They're tested in their
+        sequence. The first option which parses is chosen, the others are not
+        teste any more.
+        >>
+
+    p > Example:
+
+    Code | expression = ◊[Literal, Operation, Functioncall]◊
 }
