@@ -28,7 +28,7 @@ Because Parameters is a Namespace, we can access its content by name.
 Its content are Parameter instances. Parameter has an Attribute "typing".
 
 >>> f.parms["b"].typing
-Symbol('long')
+Type('long')
 
 The Instructions of our small sample are just words. Because Function is a
 List, we can access them one by one.
@@ -40,6 +40,7 @@ Function(['do_this', 'do_that'])
 
 The result can be composed to a text again.
 
+>>> f.append(Instruction("do_something_else"))
 >>> print(compose(f))
 int f(int a, long b)
 {
@@ -47,13 +48,17 @@ int f(int a, long b)
     do_this;
     /* on level 1 */
     do_that;
+    /* on level 1 */
+    do_something_else;
 }
 ...
 
 pyPEG contains an XML backend, too:
 
+>>> del f[2]
 >>> from pypeg2.xmlast import thing2xml
->>> print(thing2xml(f, pretty=True).decode())
+>>> xml = thing2xml(f, pretty=True)
+>>> print(xml.decode())
 <Function typing="int" name="f">
   <Parameters>
     <Parameter typing="int" name="a"/>
@@ -63,6 +68,20 @@ pyPEG contains an XML backend, too:
   <Instruction>do_that</Instruction>
 </Function>
 ...
+
+The XMl backend can read XML text and create things:
+
+>>> from pypeg2.xmlast import xml2thing
+>>> xml = b'<Function typing="long" name="g"><Parameters><Parameter name="x" typing="int"/></Parameters><Instruction>return</Instruction></Function>'
+>>> g = xml2thing(xml, globals())
+>>> g.name
+Symbol('g')
+>>> g.typing
+Type('long')
+>>> g.parms["x"].typing
+Type('int')
+>>> g[0]
+'return'
 """
 
 from pypeg2 import *

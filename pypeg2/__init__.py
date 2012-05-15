@@ -578,7 +578,7 @@ class Parser:
                         raise TypeError(
                             "only an Enum is allowed as a grammar of a Symbol")
                 if not result:
-                    t, r = text[len(m.group(0)):], Symbol(m.group(0))
+                    t, r = text[len(m.group(0)):], thing(m.group(0))
                     t = self._skip(t)
                     result = t, r
                     update_pos(text, t, pos)
@@ -812,6 +812,12 @@ class Parser:
                 result = terminal_indent() + str(thing)
             else:
                 raise ValueError(repr(thing) + " does not match " + grammar.pattern)
+
+        elif type(grammar) == Enum:
+            if thing in grammar:
+                result = terminal_indent() + str(thing)
+            else:
+                raise ValueError(repr(thing) + " is not in " + repr(grammar))
 
         elif type(grammar) in (str, int, float, complex, bool, bytes):
             result = terminal_indent() + str(thing)
