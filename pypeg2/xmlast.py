@@ -124,7 +124,7 @@ def create_thing(element, symbol_table):
     else:
         thing = C()
     
-    subs = iter(list(element))
+    subs = iter(element)
 
     try:
         grammar = C.grammar
