@@ -324,7 +324,7 @@ def how_many(grammar):
     elif type(grammar) == str or isinstance(grammar, Keyword):
         return 0
 
-    elif isinstance(grammar, Symbol) or type(grammar) == RegEx:
+    elif isinstance(grammar, Symbol) or isinstance(grammar, RegEx):
         return 1
 
     elif isinstance(grammar, attr.Class):
@@ -540,7 +540,7 @@ class Parser:
             else:
                 result = text, syntax_error("expecting " + repr(thing))
 
-        elif type(thing) == RegEx:
+        elif isinstance(thing, RegEx):
             m = thing.match(text)
             if m:
                 t, r = text[len(m.group(0)):], m.group(0)
@@ -552,7 +552,7 @@ class Parser:
                         + thing.pattern)
 
         elif isinstance(thing, Keyword):
-            m = Keyword.regex.match(text)
+            m = type(thing).regex.match(text)
             if m and m.group(0) == thing:
                 t, r = text[len(thing):], thing
                 t = self._skip(t)
@@ -804,14 +804,14 @@ class Parser:
         elif isinstance(grammar, str):
             result = terminal_indent() + str(grammar)
 
-        elif type(grammar) == RegEx:
+        elif isinstance(grammar, RegEx):
             m = grammar.match(str(thing))
             if m:
                 result = terminal_indent() + str(thing)
             else:
                 raise ValueError(repr(thing) + " does not match " + grammar.pattern)
 
-        elif type(grammar) == Enum:
+        elif isinstance(grammar, Enum):
             if thing in grammar:
                 result = terminal_indent() + str(thing)
             else:

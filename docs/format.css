@@ -39,6 +39,14 @@ em {
     font-style: normal;
 }
 
+code {
+    background: #f0f0f0;
+}
+
+pre {
+    background: #f0f0f0;
+}
+
 #headline {
     color: black;
     font-size: x-large;
