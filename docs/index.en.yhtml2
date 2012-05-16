@@ -21,7 +21,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
     h1 id=parsing > Parsing text with pyPEG
 
     p   >>
-        PEG is something like ∫Regular Expressions∫ which recursion. The
+        PEG is something like ∫Regular Expressions∫ with recursion. The
         grammars are like templates.  Let's make an example.  Let's say, you
         want to parse a function declaration in a C like language.  Such a
         function declaration consists of:

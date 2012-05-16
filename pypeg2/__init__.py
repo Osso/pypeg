@@ -562,7 +562,7 @@ class Parser:
                 result = text, syntax_error("expecting " + repr(thing))
 
         elif _issubclass(thing, Symbol):
-            m = Symbol.regex.match(text)
+            m = thing.regex.match(text)
             if m:
                 result = None
                 try:
