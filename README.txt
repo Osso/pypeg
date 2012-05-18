@@ -13,3 +13,6 @@ To build the documentation, you'll need YML 2. You can download YML here:
 
 Homepage:   http://fdik.org/yml/
 Toolchain:  http://fdik.org/yml2.tar.bz2
+
+pyPEG 2 depends on lxml, see http://lxml.de/
+

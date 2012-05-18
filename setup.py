@@ -11,4 +11,5 @@ setup(
     license='LICENSE.txt',
     description='A PEG Parser-Interpreter in Python',
     long_description=open('README.txt').read(),
+    requires=['lxml',],
 )
