@@ -6,9 +6,11 @@ page "pyPEG – Features", "counter-reset: chapter 4;" {
     h3 > Parsing
 
     p   >>
-        String objects are parsed as
-        `w "Terminal_and_nonterminal_symbols" > Terminal Symbols`.
-        They're removed and no result is put into the ∫Abstract syntax tree∫.
+        A string object is parsed in the source text as a
+        `w "Terminal_and_nonterminal_symbols" > Terminal Symbol`.
+        It is removed and no result is put into the ∫Abstract syntax tree∫.
+        If it does not exist at the correct position in the source text,
+        a «SyntaxError» ist generated.
         >>
 
     p > Example:
@@ -51,7 +53,8 @@ page "pyPEG – Features", "counter-reset: chapter 4;" {
         πre.html#re-objects Python Regular Expression Objectsπ.
         Regular Expressions are parsed as
         `w "Terminal_and_nonterminal_symbols" > Terminal Symbols`. The matching 
-        result is put into the ¬#ast AST¬.
+        result is put into the ¬#ast AST¬. If no match can be achieved, a 
+        «SyntaxError» is generated.
         >>
 
     p   >>
@@ -115,8 +118,11 @@ page "pyPEG – Features", "counter-reset: chapter 4;" {
 
     p   >>
         A «tuple» specifies, that different things have to be parsed one after
-        another. Example:
+        another. If not all of them parse in their sequence, a «SyntaxError» is
+        generated.
         >>
+
+    p > Example:
 
     Code
         ||
@@ -194,10 +200,15 @@ page "pyPEG – Features", "counter-reset: chapter 4;" {
     p   >>
         A «list» represents different options. They're tested in their
         sequence. The first option which parses is chosen, the others are not
-        teste any more.
+        tested any more. If none matches, a «SyntaxError» is generated.
         >>
 
     p > Example:
 
-    Code | expression = ◊[Literal, Operation, Functioncall]◊
+    Code 
+        ||
+        >>> number = re.compile(r"\d+")
+        >>> parse("hello", ◊[number, word]◊)
+        'hello'
+        ||
 }
