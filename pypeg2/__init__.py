@@ -209,7 +209,8 @@ class Symbol(str):
         """Construct a Symbol with that name in Namespace namespace.
 
         Raises:
-            ValueError      if check_keywords is True and value is a Keyword
+            ValueError      if check_keywords is True and value is identical to
+                            a Keyword
             TypeError       if namespace is given and not a Namespace
         """
 

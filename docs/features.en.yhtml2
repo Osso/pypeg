@@ -3,12 +3,12 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
 
     h2 id=basic > Basic Grammar Elements
 
-    h3 id=literals > String objects
+    h3 id=literals > «str» instances
 
     h4 > Parsing
 
     p   >>
-        A string object is parsed in the source text as a
+        A «str» instance is parsed in the source text as a
         `w "Terminal_and_nonterminal_symbols" > Terminal Symbol`.
         It is removed and no result is put into the ∫Abstract syntax tree∫.
         If it does not exist at the correct position in the source text,
@@ -31,7 +31,7 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
 
     h4 > Composing
 
-    p > String objects are being output literally.
+    p > «str» instances are being output literally.
 
     p > Example:
 
@@ -114,7 +114,7 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         'give me=◊a value\\n◊'
         ||
 
-    h3 id=tuple > Tuples
+    h3 id=tuple > «tuple» instances
 
     h4 > Parsing
 
@@ -195,12 +195,12 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         ◊'give me=a value\\n'◊
         ||
 
-    h3 id=lists > Lists
+    h3 id=lists > «list» instances
 
     h4 > Parsing
 
     p   >>
-        A «list» represents different options. They're tested in their
+        A «list» instance represents different options. They're tested in their
         sequence. The first option which parses is chosen, the others are not
         tested any more. If none matches, a «SyntaxError» is generated.
         >>
@@ -233,10 +233,16 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
 
     h2 id=goclasses > Grammar Element Classes
 
-    h3 id=symbol > Symbol
+    h3 id=symbol > Class «Symbol(str)»
+
+    p > Used to scan a «Symbol».
 
     p   >>
-        Used to scan Symbols.
+        If you're putting a «Symbol» somewhere in your «grammar», then
+        «Symbol.regex» is used to scan while parsing. The result will be a
+        «Symbol» instance. Optionally it is possible to check that a «Symbol»
+        instance will not be identical to any «Keyword» instance.  This can be
+        helpful if the source language forbids that.
         >>
 
     h4 > Class variables
@@ -252,9 +258,7 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         }
     }
 
-    h4 > Methods
-
-    Code | def __init__(self, name, namespace=None)
+    h4 > Method «__init__(self, name, namespace=None)»
 
     p > Construct a «Symbol» with that «name» in «namespace».
 
@@ -263,12 +267,12 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
     table border=1 {
         tr {
             td p code > ValueError
-            td p > if «check_keywords» is «True» and value is a «Keyword»
+            td p > if «check_keywords» is «True» and value is identical to a «Keyword»
         }
 
         tr {
             td p code > TypeError
-            td p > if «namespace» is given and not a «Namespace»
+            td p > if «namespace» is given and not an instance of «Namespace»
         }
     }
 }
