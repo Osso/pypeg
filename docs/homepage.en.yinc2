@@ -3,7 +3,7 @@
 
 decl pageContent(style) alias body {
     a name="top";
-    include ./heading.en.yhtml2;
+    include ./heading.en.yinc2;
     div id="entries"
         content;
 };

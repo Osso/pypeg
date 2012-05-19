@@ -1,9 +1,11 @@
-page "pyPEG – Features", "counter-reset: chapter 4;" {
-    h1 id=basic > Basic Grammar Elements
+page "pyPEG – Features", "counter-reset: chapter 1;" {
+    h1 id="features" > Features
 
-    h2 id=literals > String objects
+    h2 id=basic > Basic Grammar Elements
 
-    h3 > Parsing
+    h3 id=literals > String objects
+
+    h4 > Parsing
 
     p   >>
         A string object is parsed in the source text as a
@@ -27,7 +29,7 @@ page "pyPEG – Features", "counter-reset: chapter 4;" {
         'something'
         ||
 
-    h3 > Composing
+    h4 > Composing
 
     p > String objects are being output literally.
 
@@ -44,9 +46,9 @@ page "pyPEG – Features", "counter-reset: chapter 4;" {
         'give me◊=◊a value\\n'
         ||
 
-    h2 id=regex > Regular Expressions
+    h3 id=regex > Regular Expressions
 
-    h3 > Parsing
+    h4 > Parsing
 
     p   >>
         ƒpyPEG uses Python's «re» module. «pypeg2.RegEx» is an alias for
@@ -92,11 +94,11 @@ page "pyPEG – Features", "counter-reset: chapter 4;" {
         ◊'something'◊
         ||
 
-    h3 > Composing
+    h4 > Composing
 
     p   >>
         For «RegEx» objects their corresponding value in the ¬#ast AST¬ will be
-        output.
+        output. If this value does not match the «RegEx» a «ValueError» is raised.
         >>
 
     p > Example:
@@ -112,9 +114,9 @@ page "pyPEG – Features", "counter-reset: chapter 4;" {
         'give me=◊a value\\n◊'
         ||
 
-    h2 id=tuple > Tuples
+    h3 id=tuple > Tuples
 
-    h3 > Parsing
+    h4 > Parsing
 
     p   >>
         A «tuple» specifies, that different things have to be parsed one after
@@ -172,7 +174,7 @@ page "pyPEG – Features", "counter-reset: chapter 4;" {
         used.
         >>
 
-    h3 > Composing
+    h4 > Composing
 
     p   >>
         For «tuple» objects all attributes of the corresponding thing (and
@@ -193,9 +195,9 @@ page "pyPEG – Features", "counter-reset: chapter 4;" {
         ◊'give me=a value\\n'◊
         ||
 
-    h2 id=lists > Lists
+    h3 id=lists > Lists
 
-    h3 > Parsing
+    h4 > Parsing
 
     p   >>
         A «list» represents different options. They're tested in their
@@ -210,5 +212,22 @@ page "pyPEG – Features", "counter-reset: chapter 4;" {
         >>> number = re.compile(r"\d+")
         >>> parse("hello", ◊[number, word]◊)
         'hello'
+        ||
+
+    h4 > Composing
+
+    p   >>
+        The elements of the «list» are tried out in their sequence, if one of
+        them can be composed. If none can a «ValueError» is raised.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> letters = re.compile(r"[a-zA-Z]")
+        >>> number = re.compile(r"\d+")
+        >>> compose(23, ◊[letters, number]◊)
+        '23'
         ||
 }

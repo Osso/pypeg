@@ -97,6 +97,10 @@ h1 {
     counter-reset: section;
 }
 
+h2 {
+    counter-reset: subsection;
+}
+
 h2:before {
     counter-increment: section;
     content: counter(chapter) "." counter(section) " ";
@@ -105,6 +109,11 @@ h2:before {
 h1, h2 {
     font-size: medium;
     color: darkblue;
+}
+
+h3:before {
+    counter-increment: subsection;
+    content: counter(chapter) "." counter(section) "." counter(subsection) " ";
 }
 
 h3 {

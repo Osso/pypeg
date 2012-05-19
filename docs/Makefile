@@ -3,13 +3,18 @@
 YML2C=yml2c
 YML2PROC=yml2proc
 
-documentation: index.html features.html
+YHTML=$(wildcard *.en.yhtml2)
+HTML=$(subst en.yhtml2,html,$(YHTML))
+XML=$(subst en.yhtml2,xml,$(YHTML))
+YINC=$(wildcard *.en.yinc2)
 
-contents.xml: index.en.yhtml2 gen_contents.ysl2
-	$(YML2PROC) -y gen_contents.ysl2 -o $@ $<
+documentation: $(HTML)
 
-%.html: %.en.yhtml2 homepage.en.yhtml2 heading.en.yhtml2 contents.xml
-	$(YML2C) -o $@ ./homepage.en.yhtml2 $<
+%.xml: %.en.yhtml2 gen_contents.ysl2
+	$(YML2PROC) -y gen_contents.ysl2 -s 'dict(file="$(subst .xml,,$@)")' -o $@ $<
+
+%.html: %.en.yhtml2 $(YINC) $(XML)
+	$(YML2C) -o $@ ./homepage.en.yinc2 $<
 
 clean:
 	rm -f *.html *.xml

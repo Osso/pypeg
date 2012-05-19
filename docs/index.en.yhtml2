@@ -18,7 +18,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         parse many formal languages in a very easy way.  How does that work?
         >>
 
-    h1 id=parsing > Parsing text with pyPEG
+    h2 id=parsing > Parsing text with pyPEG
 
     p   >>
         PEG is something like ∫Regular Expressions∫ with recursion. The
@@ -296,7 +296,7 @@ Symbol('long')
 'do_that'
 ||
 
-    h1 id=composing > Composing text
+    h2 id=composing > Composing text
 
     p   >>
         ƒpyPEG can do more. It is not only a framework for parsing text, it can
@@ -348,7 +348,7 @@ Symbol('long')
 
     Code | Parameter, maybe_some(",", blank, Parameter)
 
-    h2 id=indenting > Indenting text
+    h3 id=indenting > Indenting text
 
     p   >>
         In C like languages (like our example) we like to indent blocks.
@@ -390,7 +390,7 @@ class Function(List):
             }
             ||
 
-    h2 id=usercallbacks > User defined Callback Functions
+    h3 id=usercallbacks > User defined Callback Functions
 
     p   >>
         With User defined Callback Functions ƒpyPEG offers the needed flexibility
@@ -450,7 +450,7 @@ class Function(List):
         }
         ||
 
-    h1 id=xmlout > XML output
+    h2 id=xmlout > XML output
 
     p   >>
         Sometimes you want to process what you parsed with

@@ -31,7 +31,9 @@ div id="headline" {
 
 div id="navigation" {
     h1 "How to use pyPEG";
-    include xml contents.xml
+    include xml index.xml
+    h1 "Features";
+    include xml features.xml
 
     h1 "I want this!";
     ne "dist/pyPEG-2.0.0.tar.gz", "Download pyPEG 2";
