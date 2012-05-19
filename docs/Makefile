@@ -4,6 +4,7 @@ YML2C=yml2c
 YML2PROC=yml2proc
 
 # for validating documentation (optional)
+# see http://xmlstar.sourceforge.net/
 
 XMLSTARLET=xmlstarlet
 XHTML1_DTD=/opt/local/share/xml/html/4/xhtml1-transitional.dtd
