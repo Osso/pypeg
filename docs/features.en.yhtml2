@@ -410,7 +410,8 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
     
     p   >>
         A «List» is a collection for parsed things. It can be used as a base class
-        for collections in the «grammar».
+        for collections in the «grammar». If a «List» class has no «grammar»,
+        «csl(Symbol)» is assumed.
         >>
 
     h4 > Method «__init__(self, L=[], **kwargs)»
