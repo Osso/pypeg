@@ -1,6 +1,6 @@
 PYTHON=python3.2
 
-.PHONY: docs clean push dist test
+.PHONY: docs test_docs clean push dist test
 
 docs:
 	$(MAKE) -C docs
