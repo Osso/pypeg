@@ -3,6 +3,12 @@
 YML2C=yml2c
 YML2PROC=yml2proc
 
+# for validating documentation (optional)
+
+XMLSTARLET=xmlstarlet
+XHTML1_DTD=/opt/local/share/xml/html/4/xhtml1-transitional.dtd
+XHTML_VALIDATOR=$(XMLSTARLET) val -e -d $(XHTML1_DTD)
+
 YHTML=$(wildcard *.en.yhtml2)
 HTML=$(subst en.yhtml2,html,$(YHTML))
 XML=$(subst en.yhtml2,xml,$(YHTML))
@@ -15,6 +21,13 @@ documentation: $(HTML)
 
 %.html: %.en.yhtml2 $(YINC) $(XML)
 	$(YML2C) -o $@ ./homepage.en.yinc2 $<
+
+.PHONY: test clean
+
+test: $(subst .html,.test,$(HTML))
+
+%.test: %.html
+	$(XHTML_VALIDATOR) $<
 
 clean:
 	rm -f *.html *.xml

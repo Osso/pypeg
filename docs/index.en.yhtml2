@@ -46,9 +46,9 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         }
     }
 
-    Code {
-            | `red > int` `orange > f`(`green > int a, long b`)
-            Blue    ||
+    pre {
+        code | `red > int` `orange > f`(`green > int a, long b`)
+        code blue   ||
                     {
                         do_this;
                         do_that;
@@ -108,7 +108,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         «Parameters» have names (in our example: «a» and «b»). We write it like this:
         >>
 
-    Code Green
+    Green Code
         ||
         class Parameters(Namespace):
             grammar = …
@@ -119,7 +119,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         So let's define:
         >>
 
-    Code Green
+    Green Code
         ||
         class Parameter:
             grammar = Type, name()
@@ -136,7 +136,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         offers the «attr()» function:
         >>
 
-    Code Green
+    Green Code
         ||
         class Parameter:
             grammar = attr("typing", Type), name()
@@ -157,7 +157,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         we can use «maybe_some()». This function represents the asterisk cardinality, *
         >>
 
-    Code Green
+    Green Code
         ||
         class Parameter:
             grammar = attr("typing", Type), name()
@@ -172,7 +172,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         the same as the code above:
         >>
 
-    Code Green
+    Green Code
         ||
         class Parameter:
             grammar = attr("typing", Type), name()
@@ -188,7 +188,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         represents the question mark cardinality, ?
         >>
 
-    Code Green
+    Green Code
         ||
         class Parameter:
             grammar = attr("typing", Type), name()
@@ -240,7 +240,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         have it as a «word». A «word» is a predefined «RegEx»; it is «re.compile(r"\w+")».
         >>
 
-    Code Blue
+    Blue Code
         ||
         class Instruction(str):
             grammar = word, ";"
@@ -366,16 +366,16 @@ Symbol('long')
         >>
 
     Code
-||
-class Instruction(str):
-    grammar = word, ";", ◊endl◊
+        ||
+        class Instruction(str):
+            grammar = word, ";", ◊endl◊
 
-block = "{", ◊endl◊, maybe_some(◊indent(◊Instruction◊)◊), "}", ◊endl◊
+        block = "{", ◊endl◊, maybe_some(◊indent(◊Instruction◊)◊), "}", ◊endl◊
 
-class Function(List):
-    grammar = attr("typing", Type), blank, name(), \\
-            "(", attr("parms", Parameters), ")", ◊endl◊, block
-||
+        class Function(List):
+            grammar = attr("typing", Type), blank, name(), \\
+                    "(", attr("parms", Parameters), ")", ◊endl◊, block
+        ||
 
     p   >>
         This changes the output to:
@@ -402,7 +402,7 @@ class Function(List):
 
     Code {
         | class Instruction(str):
-        Mark
+        mark
         ||
             def heading(self, parser):
                 return "/* on level " + str(parser.indention_level) \\

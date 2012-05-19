@@ -65,17 +65,17 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
 
     table border=1 {
         tr {
-            td Code > word = re.compile(r"\w+")
+            td p code > word = re.compile(r"\w+")
             td p > Regular expression for scanning a word.
         }
 
         tr {
-            td Code > restline = re.compile(r".*")
+            td p code > restline = re.compile(r".*")
             td p > Regular expression for rest of line.
         }
 
         tr {
-            td Code > whitespace = re.compile("(?m)\s+")
+            td p code > whitespace = re.compile("(?m)\s+")
             td p > Regular expression for scanning whitespace.
         }
     }
@@ -154,15 +154,15 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
 
     table border=1 {
         tr {
-            td Code > -2, thing
+            td p code > -2, thing
             td p > «some(thing)»; this represents the plus cardinality, +
         }
         tr {
-            td Code > -1, thing
+            td p code > -1, thing
             td p > «maybe_some(thing)»; this represents the asterisk cardinality, *
         }
         tr {
-            td Code > 0, thing
+            td p code > 0, thing
             td p > «optional(thing)»; this represents the question mark cardinality, ?
         }
     }
@@ -301,9 +301,7 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
 
     h4 > Composing
 
-    p   >>
-        Composing a «Symbol» is done by converting it to text.
-        >>
+    p > Composing a «Symbol» is done by converting it to text.
 
     p > Example:
 

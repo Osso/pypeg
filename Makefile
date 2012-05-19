@@ -5,6 +5,9 @@ PYTHON=python3.2
 docs:
 	$(MAKE) -C docs
 
+test_docs:
+	$(MAKE) -C docs test
+
 clean:
 	$(MAKE) -C docs clean
 	rm -Rf dist MANIFEST
