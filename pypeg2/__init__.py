@@ -243,7 +243,7 @@ class Keyword(Symbol):
     table = Namespace()
 
     def __init__(self, keyword):
-        """Adds name to the keyword table."""
+        """Adds keyword to the keyword table."""
         Keyword.table[keyword] = self
 
 K = Keyword

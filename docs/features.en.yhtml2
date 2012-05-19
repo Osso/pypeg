@@ -245,6 +245,14 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         helpful if the source language forbids that.
         >>
 
+    p   >>
+        A class which is derived from «Symbol» can have an «Enum» as its
+        «grammar» only. Other values for its «grammar» are forbidden and will
+        generate a «TypeError». If such an «Enum» is specified, each parsed
+        value will be checked if being a member of this «Enum» additionally to
+        the «RegEx» matching.
+        >>
+
     h4 > Class variables
 
     table border=1 {
@@ -255,6 +263,15 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         tr {
             td p code > check_keywords
             td p > flag if a «Symbol» has to be checked for not being a «Keyword»; default: «False»
+        }
+    }
+
+    h4 > Instance variables
+
+    table border=1 {
+        tr {
+            td p code > name
+            td p > name of the «Keyword» as «str» instance
         }
     }
 
@@ -310,6 +327,81 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         >>> k.name = ◊Symbol("that one")◊
         >>> print(compose(k))
         ◊that one◊=foo bar
+        ||
+
+    h3 id=keyword > Class «Keyword(Symbol)»
+
+    p > Used to access the keyword table.
+
+    p   >>
+        The «Keyword» class is meant to be instanciated for each «Keyword» of
+        the source language. The class holds the keyword table as a «Namespace»
+        instance. There is the abbreviation «K» for «Keyword». The latter is
+        useful for instancing keywords.
+        >>
+
+    h4 > Class variables
+
+    table border=1 {
+        tr {
+            td p code > regex
+            td p > regular expression to scan; default «r"\w+"»
+        }
+        tr {
+            td p code > table
+            td p > «Namespace» with keyword table
+        }
+    }
+
+    h4 > Instance variables
+
+    table border=1 {
+        tr {
+            td p code > name
+            td p > name of the «Keyword» as «str» instance
+        }
+    }
+
+    h4 > Method «__init__(self, keyword)»
+
+    p > Adds «keyword» to the keyword table.
+
+    h4 > Parsing
+
+    p   >>
+        When a «Keyword» instance is parsed, it is removed and nothing is put
+        into the resulting ¬#ast AST¬. When a «Keyword» class is parsed, an
+        instance is created and put into the ¬#ast AST¬.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> class ◊Type(Keyword)◊:
+        ...     grammar = ◊Enum( K("int"), K("long") )◊
+        ... 
+        >>> k = parse("long", ◊Type◊)
+        >>> k.name
+        'long'
+        ||
+
+    h4 > Composing
+
+    p   >>
+        When a «Keyword» instance is in a «grammar», it is converted into a
+        «str» instance, and the resulting text is added to the result. When a
+        «Keyword» class is in the «grammar», the correspoding instance in the
+        ¬#ast AST¬ is converted into a «str» instance and added to the result.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> k = ◊K("do")◊
+        >>> print(compose(k))
+        do
         ||
 
     div id="bottom" {
