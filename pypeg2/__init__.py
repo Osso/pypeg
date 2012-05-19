@@ -817,12 +817,6 @@ class Parser:
             else:
                 raise ValueError(repr(thing) + " is not in " + repr(grammar))
 
-        elif _issubclass(grammar, Symbol):
-            if isinstance(thing, Symbol):
-                result = terminal_indent() + str(thing)
-            else:
-                raise ValueError(repr(thing) + " is not a Symbol")
-
         elif type(grammar) == attr.Class:
             if grammar.subtype == "Flag":
                 if getattr(thing, grammar.name):

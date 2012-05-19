@@ -276,8 +276,7 @@ class ComposeKeywordTestCase(ComposeTestCase):
         t = pypeg2.compose(x)
         self.assertEqual(t, "hallo")
 
-class ComposeSymbol(pypeg2.Symbol):
-    grammar = pypeg2.Symbol
+class ComposeSymbol(pypeg2.Symbol): pass
 
 class ComposeSymbolTestCase(ComposeTestCase):
     def runTest(self):
