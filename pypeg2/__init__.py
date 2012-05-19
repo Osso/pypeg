@@ -198,7 +198,7 @@ class Symbol(str):
 
     Class variables:
         regex               regular expression to scan, default r"\w+"
-        check_keywords      flag if Symbols are checked for not being Keywords
+        check_keywords      flag if a Symbol is checked for not being a Keyword
                             default: False
     """
 

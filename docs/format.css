@@ -121,6 +121,18 @@ h3 {
     color: black;
 }
 
+h4 {
+    font-size: medium;
+    color: black;
+}
+
+h5 {
+    font-size: medium;
+    font-weight: normal;
+    font-style: italic;
+    color: black;
+}
+
 .subscript {
     font-size: small;
     border-bottom-width: 1px;

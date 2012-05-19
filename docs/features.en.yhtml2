@@ -230,4 +230,45 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         >>> compose(23, ◊[letters, number]◊)
         '23'
         ||
+
+    h2 id=goclasses > Grammar Element Classes
+
+    h3 id=symbol > Symbol
+
+    p   >>
+        Used to scan Symbols.
+        >>
+
+    h4 > Class variables
+
+    table border=1 {
+        tr {
+            td p code > regex
+            td p > regular expression to scan, default «r"\w+"»
+        }
+        tr {
+            td p code > check_keywords
+            td p > flag if a «Symbol» has to be checked for not being a «Keyword»; default: «False»
+        }
+    }
+
+    h4 > Methods
+
+    Code | def __init__(self, name, namespace=None)
+
+    p > Construct a «Symbol» with that «name» in «namespace».
+
+    h5 > Raises:
+
+    table border=1 {
+        tr {
+            td p code > ValueError
+            td p > if «check_keywords» is «True» and value is a «Keyword»
+        }
+
+        tr {
+            td p code > TypeError
+            td p > if «namespace» is given and not a «Namespace»
+        }
+    }
 }
