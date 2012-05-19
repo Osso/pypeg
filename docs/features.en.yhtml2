@@ -275,4 +275,47 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
             td p > if «namespace» is given and not an instance of «Namespace»
         }
     }
+
+    h4 > Parsing
+
+    p   >>
+        Parsing a «Symbol» is done by scanning with «Symbol.regex». In our
+        example we're using the «name()» function, which is often used to parse
+        a «Symbol». «name()» equals to «attr("name", Symbol)».
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> ◊Symbol.regex = re.compile(r"[\w\s]+")◊
+        >>> class Key(str):
+        ...     grammar = ◊name()◊, "=", restline, endl
+        ...
+        >>> k = parse("this one=foo bar", Key)
+        >>> k.name
+        ◊Symbol('this one')◊
+        >>> k
+        'foo bar'
+        ||
+
+    h4 > Composing
+
+    p   >>
+        Composing a «Symbol» is done by converting it to text.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> k.name = ◊Symbol("that one")◊
+        >>> print(compose(k))
+        ◊that one◊=foo bar
+        ||
+
+    div id="bottom" {
+        "Want to download? Go to the "
+        a "#top", "^Top^"; " and look to the right ;-)"
+    }
 }
