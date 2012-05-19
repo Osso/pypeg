@@ -30,9 +30,9 @@ div id="headline" {
 }
 
 div id="navigation" {
-    h1 "How to use pyPEG";
+    h1 a href="index.html" > How to use pyPEG
     include xml index.xml
-    h1 "Features";
+    h1 a href="features.html" > Features
     include xml features.xml
 
     h1 "I want this!";

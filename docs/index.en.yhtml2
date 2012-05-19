@@ -108,7 +108,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         «Parameters» have names (in our example: «a» and «b»). We write it like this:
         >>
 
-    Green Code
+    Code
         ||
         class Parameters(Namespace):
             grammar = …
@@ -119,7 +119,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         So let's define:
         >>
 
-    Green Code
+    Code
         ||
         class Parameter:
             grammar = Type, name()
@@ -136,7 +136,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         offers the «attr()» function:
         >>
 
-    Green Code
+    Code
         ||
         class Parameter:
             grammar = attr("typing", Type), name()
@@ -157,7 +157,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         we can use «maybe_some()». This function represents the asterisk cardinality, *
         >>
 
-    Green Code
+    Code
         ||
         class Parameter:
             grammar = attr("typing", Type), name()
@@ -172,7 +172,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         the same as the code above:
         >>
 
-    Green Code
+    Code
         ||
         class Parameter:
             grammar = attr("typing", Type), name()
@@ -188,7 +188,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         represents the question mark cardinality, ?
         >>
 
-    Green Code
+    Code
         ||
         class Parameter:
             grammar = attr("typing", Type), name()
@@ -240,12 +240,12 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         have it as a «word». A «word» is a predefined «RegEx»; it is «re.compile(r"\w+")».
         >>
 
-    Blue Code
+    Code
         ||
         class Instruction(str):
             grammar = word, ";"
 
-        block = "{", maybe_some(Instruction), "}"
+        block = `blue > "{", maybe_some(Instruction), "}"`
         ||
 
     p   >>
