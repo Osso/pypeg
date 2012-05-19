@@ -801,7 +801,7 @@ class Parser:
             else:
                 result = self.compose(thing, grammar(thing, self))
 
-        elif isinstance(grammar, str):
+        elif isinstance(grammar, (str, int, float, complex, bool, bytes)):
             result = terminal_indent() + str(grammar)
 
         elif isinstance(grammar, RegEx):
@@ -817,11 +817,11 @@ class Parser:
             else:
                 raise ValueError(repr(thing) + " is not in " + repr(grammar))
 
-        elif type(grammar) in (str, int, float, complex, bool, bytes):
-            result = terminal_indent() + str(thing)
-
         elif _issubclass(grammar, Symbol):
-            result = terminal_indent() + str(thing)
+            if isinstance(thing, Symbol):
+                result = terminal_indent() + str(thing)
+            else:
+                raise ValueError(repr(thing) + " is not a Symbol")
 
         elif type(grammar) == attr.Class:
             if grammar.subtype == "Flag":
@@ -830,19 +830,13 @@ class Parser:
                 else:
                     result = ""
             else:
-                if type(grammar.thing) in (str, int, float, complex, bool, bytes):
-                    result = str(getattr(thing, grammar.name))
-                else:
-                    result = self.compose(getattr(thing, grammar.name))
+                result = self.compose(getattr(thing, grammar.name))
 
         elif type(grammar) == list:
             found = False
             for g in grammar:
                 try:
-                    if type(g) in (int, float, complex, bool, bytes):
-                        result = self.compose(thing, str(g))
-                    else:
-                        result = self.compose(thing, g)
+                    result = self.compose(thing, g)
                     found = True
                     break
                 except GrammarTypeError:
@@ -934,12 +928,15 @@ class Parser:
             result = ""
 
         elif _issubclass(grammar, object):
-            try:
-                grammar.grammar
-            except AttributeError:
-                result = self.compose(thing, word)
+            if isinstance(thing, grammar):
+                try:
+                    grammar.grammar
+                except AttributeError:
+                    result = self.compose(thing, word)
+                else:
+                    result = self.compose(thing, grammar.grammar)
             else:
-                result = self.compose(thing, grammar.grammar)
+                raise ValueError(repr(thing) + " is not a " + repr(grammar))
 
         else:
             raise GrammarTypeError("in grammar: " + repr(grammar))
