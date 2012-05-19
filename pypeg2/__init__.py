@@ -914,7 +914,7 @@ class Parser:
             if isinstance(thing, Namespace):
                 L = [e for e in thing.values()]
                 result = compose_tuple(thing, L, grammar)
-            elif type(thing) == list or isinstance(thing, List):
+            elif isinstance(thing, list):
                 result = compose_tuple(thing, thing[:], grammar)
             else:
                 result = compose_tuple(thing, thing, grammar)
@@ -927,7 +927,10 @@ class Parser:
                 try:
                     grammar.grammar
                 except AttributeError:
-                    result = self.compose(thing, word)
+                    if isinstance(grammar, List):
+                        result = self.compose(thing, csl(word))
+                    else:
+                        result = self.compose(thing, word)
                 else:
                     result = self.compose(thing, grammar.grammar)
             else:

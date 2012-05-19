@@ -404,6 +404,69 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         do
         ||
 
+    h3 id=attr > Class «List(list)»
+
+    p > A List of things.
+    
+    p   >>
+        A «List» is a collection for parsed things. It can be used as a base class
+        for collections in the «grammar».
+        >>
+
+    h4 > Method «__init__(self, L=[], **kwargs)»
+    
+    p   >>
+        Construct a List, and construct its attributes from keyword
+        arguments.
+        >>
+
+    h4 > Parsing
+
+    p   >>
+        If a «List» is parsed, then all things which are parsed because of its
+        «grammar» and which are not attributes are being appended to the
+        «List».
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> class Instruction(str): pass
+        ...
+        >>> class ◊Block(List)◊:
+        ...     grammar = "{", maybe_some(Instruction), "}"
+        ... 
+        >>> b = parse("{ ◊hello world◊ }", ◊Block◊)
+        >>> b◊[0]◊
+        'hello'
+        >>> b◊[1]◊
+        'world'
+        >>> 
+        ||
+
+    h4 > Composing
+
+    p   >>
+        If a «List» is composed, then its grammar is followed and composed.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> class Instruction(str): pass
+        ... 
+        >>> class ◊Block(List)◊:
+        ...     grammar = "{", blank, csl(Instruction), blank, "}"
+        ... 
+        >>> b = Block()
+        >>> b.◊append(Instruction("hello"))◊
+        >>> b.◊append(Instruction("world"))◊
+        >>> print(compose(b))
+        { hello, world }
+        ||
+
     div id="bottom" {
         "Want to download? Go to the "
         a "#top", "^Top^"; " and look to the right ;-)"
