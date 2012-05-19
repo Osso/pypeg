@@ -553,8 +553,8 @@ class Parser:
 
         elif isinstance(thing, Keyword):
             m = type(thing).regex.match(text)
-            if m and m.group(0) == thing:
-                t, r = text[len(thing):], thing
+            if m and m.group(0) == str(thing):
+                t, r = text[len(thing):], None
                 t = self._skip(t)
                 result = t, r
                 update_pos(text, t, pos)

@@ -42,7 +42,7 @@ class ParseKeywordTestCase1(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hallo, world", pypeg2.K("hallo"))
-        self.assertEqual(r, (", world", pypeg2.Keyword("hallo")))
+        self.assertEqual(r, (", world", None))
         pypeg2.Keyword.table[pypeg2.K("hallo")]
 
 class ParseKeywordTestCase2(ParserTestCase):
