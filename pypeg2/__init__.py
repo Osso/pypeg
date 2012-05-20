@@ -467,7 +467,7 @@ class Parser:
         self._got_endl = False
 
     def parse(self, text, thing, filename=None):
-        """(Partial) parse text following thing.grammar and return the
+        """(Partial) parse text following thing grammar and return the
         resulting things.
 
         Arguments:
