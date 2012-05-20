@@ -663,7 +663,7 @@ class Parser:
             try:
                 g = thing.grammar
             except AttributeError:
-                g = csl(name())
+                g = csl(Symbol)
             t, r = self._parse(text, g, pos)
             if type(r) != SyntaxError:
                 obj = thing()
@@ -788,9 +788,9 @@ class Parser:
                 grammar = type(thing).grammar
             except AttributeError:
                 if isinstance(thing, list):
-                    grammar = csl(name())
+                    grammar = csl(Symbol)
                 else:
-                    grammar = word
+                    grammar = Symbol
 
         if grammar is None:
             result = ""
@@ -928,9 +928,9 @@ class Parser:
                     grammar.grammar
                 except AttributeError:
                     if isinstance(grammar, list):
-                        result = self.compose(thing, csl(word))
+                        result = self.compose(thing, csl(Symbol))
                     else:
-                        result = self.compose(thing, word)
+                        result = self.compose(thing, Symbol)
                 else:
                     result = self.compose(thing, grammar.grammar)
             else:
