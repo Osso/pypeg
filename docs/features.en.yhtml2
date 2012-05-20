@@ -829,6 +829,64 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         'int x'
         ||
 
+    h3 id=flag > Function «flag(name, thing)»
+
+    p   >>
+        Generate an «Attribute» with that «name» which is valued «True» or
+        «False».
+        >>
+
+    h4 > Parsing
+
+    p   >>
+        A «flag» is usually a «Keyword» which can be there or not. If it is
+        there, the resulting value is «True». If it is not there, the resulting
+        value is «False».
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> class BoolLiteral(Symbol):
+        ...     grammar = Enum( K("True"), K("False") )
+        ... 
+        >>> class Fact:
+        ...     grammar = name(), K("is"), ◊flag("negated", K("not"))◊, \\
+        ...             attr("value", BoolLiteral)
+        ... 
+        >>> f1 = parse("a is not True", Fact)
+        >>> f2 = parse("b is False", Fact)
+        >>> f1.name
+        Symbol('a')
+        >>> f1.value
+        BoolLiteral('True')
+        >>> ◊f1.negated◊
+        True
+        >>> ◊f2.negated◊
+        False
+        ||
+
+    h4 > Composing
+
+    p   >>
+        If the «flag» is «True» compose the grammar. If the «flag» is «False»
+        don't compose anything.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> class ValidSign:
+        ...     grammar = ◊flag("invalid", K("not"))◊, blank, "valid"
+        ... 
+        >>> v = ValidSign()
+        >>> ◊v.invalid = True◊
+        >>> compose(v)
+        '◊not◊ valid'
+        ||
+
     div id="bottom" {
         "Want to download? Go to the "
         a "#top", "^Top^"; " and look to the right ;-)"
