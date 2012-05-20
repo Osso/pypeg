@@ -40,15 +40,11 @@ em {
     font-style: normal;
 }
 
-code {
+code, pre {
     background: #f0f0f0;
     font-size: 11pt;
     line-height: 120%;
     vertical-align: 2%;
-}
-
-pre {
-    background: #f0f0f0;
 }
 
 #headline {

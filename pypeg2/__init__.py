@@ -467,8 +467,8 @@ class Parser:
         self._got_endl = False
 
     def parse(self, text, thing, filename=None):
-        """Parse text following thing.grammar and return the resulting things
-        or raise an error.
+        """(Partial) parse text following thing.grammar and return the
+        resulting things.
 
         Arguments:
             text            text to parse
@@ -477,7 +477,7 @@ class Parser:
 
         Returns (text, result) with:
             text            unparsed text
-            result          generated objects
+            result          generated objects or SyntaxError object
 
         Raises:
             ValueError      if input does not match types
