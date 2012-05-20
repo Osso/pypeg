@@ -941,6 +941,50 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         ||
         ||
 
+    h2 id=callbacks > Callback functions
+    
+    p   >>
+        Callback functions are called while composing only. They're ignored
+        while parsing.
+        >>
+
+    h3 id=blank > Callback function «blank(thing, parser)»
+
+    p > Space marker for composing text.
+
+    p > «blank» is outputting a space character (ASCII 32) when called.
+
+    h3 id=endl > Callback function «endl(thing, parser)»
+
+    p > End of line marker for composing text.
+ 
+    p   >>
+        «endl» is never called. instead, the indention system reacts when reading
+        «endl» while composing.
+        >>
+
+    h3 id=udcf > User defined callback functions «f(thing, parser)»
+
+    p   >>
+        Arbitrary callback functions can be defined and put into the «grammar».
+        They will be called while composing.
+        >>
+
+    p > Example:
+
+    Code {
+        """>>> class Instruction(str):
+...     ◊def heading(self, parser):◊
+...     ◊    return "/* on level " + str(parser.indention_level) \\\\◊
+...     ◊            + " */", endl◊
+...     grammar = ◊heading◊, word, ";", endl
+... 
+>>> print(compose(Instruction("do_this")))
+◊/* on level 0 */◊
+do_this;
+"""
+    }
+
     div id="bottom" {
         "Want to download? Go to the "
         a "#top", "^Top^"; " and look to the right ;-)"
