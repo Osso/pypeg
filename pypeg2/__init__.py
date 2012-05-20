@@ -790,7 +790,7 @@ class Parser:
                 if isinstance(thing, list):
                     grammar = csl(Symbol)
                 else:
-                    grammar = Symbol
+                    grammar = word
 
         if grammar is None:
             result = ""
@@ -930,7 +930,7 @@ class Parser:
                     if isinstance(grammar, list):
                         result = self.compose(thing, csl(Symbol))
                     else:
-                        result = self.compose(thing, Symbol)
+                        result = self.compose(thing, word)
                 else:
                     result = self.compose(thing, grammar.grammar)
             else:
