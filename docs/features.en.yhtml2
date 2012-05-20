@@ -887,6 +887,60 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         '◊not◊ valid'
         ||
 
+    h3 id=name > Function «name()»
+
+    p   >>
+        Generate a grammar for a Symbol with a name. This is a shortcut for
+        «attr("name", Symbol)».
+        >>
+
+    h3 id=ignore > Function «ignore(*grammar)»
+
+    p > Ignore what matches to the grammar.
+
+    p   >>
+        Usually you shouldn't use this function. It is for some handy tricks
+        only. In common grammars it will not be there.
+        >>
+
+    h3 id=indent > Function «indent(*thing)»
+
+    p   >>
+        Indent thing by one level. Inserts «-3» as cardinality before thing.
+        >>
+
+    h4 > Parsing
+
+    p   >>
+        The «indent» function has no meaning while parsing. The parameters are
+        parsed as if they would be in a «tuple».
+        >>
+
+    h4 > Composing
+
+    p   >>
+        While composing the «indent» function increases the level of indention.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> class Instruction(str):
+        ...     grammar = word, ";", endl
+        ... 
+        >>> class Block(List):
+        ...     grammar = "{", endl, maybe_some(◊indent(Instruction)◊), "}"
+        ... 
+        >>> print(compose(Block(Instruction("first"), \\
+        ...         Instruction("second"))))
+        {
+        ◊    first;◊
+        ◊    second;◊
+        }
+        ||
+        ||
+
     div id="bottom" {
         "Want to download? Go to the "
         a "#top", "^Top^"; " and look to the right ;-)"
