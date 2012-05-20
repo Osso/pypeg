@@ -13,10 +13,13 @@ __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
 
 try:
+    import lxml
     from lxml import etree
 except ImportError:
     import xml.etree.ElementTree as etree
 
+if __debug__:
+    import warnings
 import pypeg2
 
 
@@ -104,7 +107,15 @@ def thing2xml(thing, pretty=False, object_names=False):
     """
 
     tree = create_tree(thing, object_names)
-    return etree.tostring(tree, pretty_print=pretty)
+    try:
+        if lxml:
+            return etree.tostring(tree, pretty_print=pretty)
+    except NameError:
+        if __debug__:
+            if pretty:
+                warnings.warn("lxml is needed for pretty printing",
+                        ImportWarning)
+        return etree.tostring(tree)
 
 
 def create_thing(element, symbol_table):
