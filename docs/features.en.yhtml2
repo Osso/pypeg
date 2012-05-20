@@ -55,7 +55,7 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         πre.html#re-objects Python Regular Expression Objectsπ.
         Regular Expressions are parsed as
         `w "Terminal_and_nonterminal_symbols" > Terminal Symbols`. The matching 
-        result is put into the ¬#ast AST¬. If no match can be achieved, a 
+        result is put into the AST. If no match can be achieved, a 
         «SyntaxError» is generated.
         >>
 
@@ -97,7 +97,7 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
     h4 > Composing
 
     p   >>
-        For «RegEx» objects their corresponding value in the ¬#ast AST¬ will be
+        For «RegEx» objects their corresponding value in the AST will be
         output. If this value does not match the «RegEx» a «ValueError» is raised.
         >>
 
@@ -179,7 +179,7 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
     p   >>
         For «tuple» objects all attributes of the corresponding thing (and
         elements of the corresponding collection if that applies) in the
-        ¬#ast AST¬ will be composed and the result is concatenated.
+        AST will be composed and the result is concatenated.
         >>
 
     p > Example:
@@ -370,8 +370,8 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
 
     p   >>
         When a «Keyword» instance is parsed, it is removed and nothing is put
-        into the resulting ¬#ast AST¬. When a «Keyword» class is parsed, an
-        instance is created and put into the ¬#ast AST¬.
+        into the resulting AST. When a «Keyword» class is parsed, an
+        instance is created and put into the AST.
         >>
 
     p > Example:
@@ -392,7 +392,7 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         When a «Keyword» instance is in a «grammar», it is converted into a
         «str» instance, and the resulting text is added to the result. When a
         «Keyword» class is in the «grammar», the correspoding instance in the
-        ¬#ast AST¬ is converted into a «str» instance and added to the result.
+        AST is converted into a «str» instance and added to the result.
         >>
 
     p > Example:
@@ -615,6 +615,15 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         ValueError: Type('string') is not in Enum([Keyword('int'),
         Keyword('long')])
         ||
+
+    h2 id=cardfunc > Cardinality functions
+
+    h3 id=some > Function «some(*thing)»
+
+    p   >>
+        At least one occurrence of thing, + operator. Inserts «-2» as
+        cardinality before thing.
+        >>
 
     div id="bottom" {
         "Want to download? Go to the "

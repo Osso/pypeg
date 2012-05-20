@@ -287,8 +287,16 @@ def blank(thing, parser):
     return " "
 
 
-class GrammarTypeError(TypeError):
+class GrammarError(Exception):
+    """Base class for errors in grammars."""
+
+
+class GrammarTypeError(TypeError, GrammarError):
     """Raised if grammar contains an object of unkown type."""
+
+
+class GrammarValueError(ValueError, GrammarError):
+    """Raised if grammar contains an illegal value."""
 
 
 def how_many(grammar):
@@ -308,7 +316,7 @@ def how_many(grammar):
         for e in grammar:
             if type(e) == int:
                 if e < -3:
-                    raise ValueError(
+                    raise GrammarValueError(
                         "illegal cardinality value in grammar: " + str(e))
                 if e in (-1, -2):
                     card = 2
@@ -609,7 +617,7 @@ class Parser:
             for e in thing:
                 if type(e) == int:
                     if e < -3:
-                        raise ValueError(
+                        raise GrammarValueError(
                             "illegal cardinality value in grammar: " + str(e))
                     if e == -3:
                         _min, _max = 1, 1
@@ -856,7 +864,7 @@ class Parser:
                 for g in grammar:
                     if type(g) == int:
                         if g < -3:
-                            raise ValueError(
+                            raise GrammarValueError(
                                 "illegal cardinality value in grammar: " +
                                 str(g)
                             )
