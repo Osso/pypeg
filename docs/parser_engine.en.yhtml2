@@ -1,0 +1,51 @@
+page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
+    h1 id=pengine> Parser Engine
+
+    h2 id=classes > Classes
+
+    h3 id=parser > Class «Parser»
+
+    p   >>
+        Offers parsing and composing capabilities. Implements a ∫Packrat parser∫.
+        >>
+    
+    h4 > Instance variables
+
+    table border=1 {
+        tr {
+            td p code > whitespace
+            td p    >>
+                    regular expression to scan whitespace; default:
+                    «re.compile("(?m)\s+")»
+                    >>
+        }
+        tr {
+            td p code > comment
+            td p > «grammar» to parse comments
+        }
+        tr {
+            td p code > last_error
+            td p > «SyntaxError» which ended parsing
+        }
+        tr {
+            td p code > indent
+            td p    >>
+                    string to use to indent while composing; default: four
+                    spaces «"    "»
+                    >>
+        }
+        tr {
+            td p code > indention_level
+            td p > level to indent to; default: «0»
+        }
+
+        tr {
+            td p code > text
+            td p > original text to parse; set for decorated syntax errors
+        }
+        tr {
+            td p code > filename
+            td p > filename where text is origin from
+        }
+    }
+}

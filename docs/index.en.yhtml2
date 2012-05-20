@@ -13,9 +13,10 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         >>
 
     p   >>
-        ƒpyPEG is a plain and simple parser interpreter framework for Python.
-        It's based on ∫Parsing Expression Grammar∫, PEG. With ƒpyPEG you can
-        parse many formal languages in a very easy way.  How does that work?
+        ƒpyPEG is a plain and simple intrinsic parser interpreter framework for
+        Python.  It's based on ∫Parsing Expression Grammar∫, PEG. With ƒpyPEG
+        you can parse many formal languages in a very easy way.  How does that
+        work?
         >>
 
     h2 id=parsing > Parsing text with pyPEG

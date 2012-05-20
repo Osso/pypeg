@@ -32,8 +32,10 @@ div id="headline" {
 div id="navigation" {
     h1 a href="index.html" > How to use pyPEG
     include xml index.xml
-    h1 a href="features.html" > Features
-    include xml features.xml
+    h1 a href="grammar_elements.html" > Grammar Elements
+    include xml grammar_elements.xml
+    h1 a href="parser_engine.html" > Parser Engine
+    include xml parser_engine.xml
 
     h1 "I want this!";
     ne "dist/pyPEG-2.0.0.tar.gz", "Download pyPEG 2";

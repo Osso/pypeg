@@ -1,5 +1,5 @@
-page "pyPEG – Features", "counter-reset: chapter 1;" {
-    h1 id="features" > Features
+page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
+    h1 id=gelements > Grammar Elements
 
     h2 id=basic > Basic Grammar Elements
 
@@ -963,7 +963,7 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         «endl» while composing.
         >>
 
-    h3 id=udcf > User defined callback functions «f(thing, parser)»
+    h3 id=udcf > User defined callback functions «callback_function(thing, parser)»
 
     p   >>
         Arbitrary callback functions can be defined and put into the «grammar».
