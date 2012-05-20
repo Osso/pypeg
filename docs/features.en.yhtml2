@@ -720,6 +720,34 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         ''
         ||
 
+    h3 id=optional > Function «optional(*thing)»
+
+    p > Thing or no thing, ? operator. Inserts «0» as cardinality before thing.
+
+    h4 > Parsing
+
+    p   >>
+        Parsing «optional()» parses one occurrence of «thing». If there
+        aren't things then the result is empty.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> parse("hello", optional(word))
+        ['hello']
+        >>> parse("", optional(word))
+        []
+        ||
+
+    h4 > Composing
+
+    p > Composing «optional()» composes one thing if there is any.
+
+    
+    Code
+        ||
     div id="bottom" {
         "Want to download? Go to the "
         a "#top", "^Top^"; " and look to the right ;-)"

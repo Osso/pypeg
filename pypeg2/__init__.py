@@ -900,25 +900,36 @@ class Parser:
                                 text.append(terminal_indent() + str(g))
                         else:
                             for j in range(multiple):
-                                if type(g) == tuple:
-                                    if not things:
-                                        return ''.join(text)
-                                    text.append(compose_tuple(thing, things, g))
-                                else:
-                                    if g is None:
-                                        pass
-                                    elif type(g) == FunctionType:
-                                        text.append(self.compose(things, g))
-                                    elif type(g) == str or isinstance(g,
-                                            Keyword):
-                                        text.append(self.compose(things, g))
-                                    elif type(things) == list:
+                                try:
+                                    if type(g) == tuple:
                                         if not things:
                                             return ''.join(text)
-                                        text.append(self.compose(things[0], g))
-                                        del things[0]
+                                        text.append(compose_tuple(thing,
+                                            things, g))
                                     else:
-                                        text.append(self.compose(things, g))
+                                        if g is None:
+                                            pass
+                                        elif type(g) == FunctionType:
+                                            text.append(self.compose(things,
+                                                g))
+                                        elif type(g) == str or isinstance(g,
+                                                Keyword):
+                                            text.append(self.compose(things,
+                                                g))
+                                        elif type(things) == list:
+                                            if not things:
+                                                return ''.join(text)
+                                            text.append(self.compose(things[0],
+                                                g))
+                                            del things[0]
+                                        else:
+                                            text.append(self.compose(things,
+                                                g))
+                                except ValueError:
+                                    if card == -1 or card == 0:
+                                        return ''.join(text)
+                                    else:
+                                        raise
                         multiple = 1
                     if indenting == 2:
                         self.indention_level -= 1
