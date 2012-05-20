@@ -19,11 +19,17 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     glossary {
         term "whitespace"
             > regular expression to scan whitespace; default: «re.compile(r"(?m)\s+")»
-        term "comment" > «grammar» to parse comments; default: «None»
-        term "last_error" > after parsing, «SyntaxError» which ended parsing
-        term "indent" > string to use to indent while composing; default: four spaces
-        term "indention_level" > level to indent to; default: «0»
-        term "text" > original text to parse; set for decorated syntax errors
-        term "filename" > filename where text is origin from
+        term "comment"
+            > «grammar» to parse comments; default: «None»
+        term "last_error"
+            > after parsing, «SyntaxError» which ended parsing
+        term "indent"
+            > string to use to indent while composing; default: four spaces
+        term "indention_level"
+            > level to indent to; default: «0»
+        term "text"
+            > original text to parse; set for decorated syntax errors
+        term "filename"
+            > filename where text is origin from
     }
 }

@@ -64,12 +64,16 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         >>
 
     glossary {
-        term 'word = re.compile(r"\w+")' > Regular expression for scanning a word.
-        term 'restline = re.compile(r".*")' > Regular expression for rest of line.
+        term 'word = re.compile(r"\w+")'
+            > Regular expression for scanning a word.
+        term 'restline = re.compile(r".*")'
+            > Regular expression for rest of line.
         term 'whitespace = re.compile("(?m)\s+")'
             > Regular expression for scanning whitespace.
-        term 'comment_sh  = re.compile(r"\#.*")' > Shell script style comment.
-        term 'comment_cpp = re.compile(r"//.*")' > C++ style comment.
+        term 'comment_sh  = re.compile(r"\#.*")'
+            > Shell script style comment.
+        term 'comment_cpp = re.compile(r"//.*")'
+            > C++ style comment.
         term 'comment_c   = re.compile(r"(?m)/\*.*?\*/")'
             > C style comment without nesting comments.
         term 'comment_pas = re.compile(r"(?m)\(\*.*?\*\)")'
@@ -250,7 +254,8 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     h4 > Class variables
 
     glossary {
-        term "regex" > regular expression to scan, default «re.compile(r"\w+")»
+        term "regex"
+            > regular expression to scan, default «re.compile(r"\w+")»
         term "check_keywords"
             > flag if a «Symbol» has to be checked for not being a «Keyword»; default: «False»
     }
