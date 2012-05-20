@@ -6,46 +6,24 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     h3 id=parser > Class «Parser»
 
     p   >>
-        Offers parsing and composing capabilities. Implements a ∫Packrat parser∫.
+        Offers parsing and composing capabilities. Implements an intrinsic
+        ∫Packrat parser∫.
         >>
     
     h4 > Instance variables
 
-    table border=1 {
-        tr {
-            td p code > whitespace
-            td p    >>
-                    regular expression to scan whitespace; default:
-                    «re.compile("(?m)\s+")»
-                    >>
-        }
-        tr {
-            td p code > comment
-            td p > «grammar» to parse comments
-        }
-        tr {
-            td p code > last_error
-            td p > «SyntaxError» which ended parsing
-        }
-        tr {
-            td p code > indent
-            td p    >>
-                    string to use to indent while composing; default: four
-                    spaces «"    "»
-                    >>
-        }
-        tr {
-            td p code > indention_level
-            td p > level to indent to; default: «0»
-        }
+    p   >>
+        The instance variables are representing the parser's state.
+        >>
 
-        tr {
-            td p code > text
-            td p > original text to parse; set for decorated syntax errors
-        }
-        tr {
-            td p code > filename
-            td p > filename where text is origin from
-        }
+    glossary {
+        term "whitespace"
+            > regular expression to scan whitespace; default: «re.compile(r"(?m)\s+")»
+        term "comment" > «grammar» to parse comments; default: «None»
+        term "last_error" > after parsing, «SyntaxError» which ended parsing
+        term "indent" > string to use to indent while composing; default: four spaces
+        term "indention_level" > level to indent to; default: «0»
+        term "text" > original text to parse; set for decorated syntax errors
+        term "filename" > filename where text is origin from
     }
 }

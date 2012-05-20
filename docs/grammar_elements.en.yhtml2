@@ -63,21 +63,17 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         ƒpyPEG predefines different RegEx objects:
         >>
 
-    table border=1 {
-        tr {
-            td p code > word = re.compile(r"\w+")
-            td p > Regular expression for scanning a word.
-        }
-
-        tr {
-            td p code > restline = re.compile(r".*")
-            td p > Regular expression for rest of line.
-        }
-
-        tr {
-            td p code > whitespace = re.compile("(?m)\s+")
-            td p > Regular expression for scanning whitespace.
-        }
+    glossary {
+        term 'word = re.compile(r"\w+")' > Regular expression for scanning a word.
+        term 'restline = re.compile(r".*")' > Regular expression for rest of line.
+        term 'whitespace = re.compile("(?m)\s+")'
+            > Regular expression for scanning whitespace.
+        term 'comment_sh  = re.compile(r"\#.*")' > Shell script style comment.
+        term 'comment_cpp = re.compile(r"//.*")' > C++ style comment.
+        term 'comment_c   = re.compile(r"(?m)/\*.*?\*/")'
+            > C style comment without nesting comments.
+        term 'comment_pas = re.compile(r"(?m)\(\*.*?\*\)")'
+            > Pascal style comment without nesting comments.
     }
 
     p > Example:
@@ -152,19 +148,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     p > which is equivalent. There are special cardinality values:
 
-    table border=1 {
-        tr {
-            td p code > -2, thing
-            td p > «some(thing)»; this represents the plus cardinality, +
-        }
-        tr {
-            td p code > -1, thing
-            td p > «maybe_some(thing)»; this represents the asterisk cardinality, *
-        }
-        tr {
-            td p code > 0, thing
-            td p > «optional(thing)»; this represents the question mark cardinality, ?
-        }
+    glossary {
+        term "-2, thing" > «some(thing)»; this represents the plus cardinality, +
+        term "-1, thing" > «maybe_some(thing)»; this represents the asterisk cardinality, *
+        term "0, thing" > «optional(thing)»; this represents the question mark cardinality, ?
     }
 
     p   >>
@@ -231,6 +218,13 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         '23'
         ||
 
+    h3 id=none > Constant «None»
+
+    p   >>
+        «None» parses to nothing. And it composes to nothing. It represents
+        the no-operation value.
+        >>
+
     h2 id=goclasses > Grammar Element Classes
 
     h3 id=symbol > Class «Symbol(str)»
@@ -255,25 +249,16 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     h4 > Class variables
 
-    table border=1 {
-        tr {
-            td p code > regex
-            td p > regular expression to scan, default «re.compile(r"\w+")»
-        }
-        tr {
-            td p code > check_keywords
-            td p > flag if a «Symbol» has to be checked for not being a «Keyword»; default: «False»
-        }
+    glossary {
+        term "regex" > regular expression to scan, default «re.compile(r"\w+")»
+        term "check_keywords"
+            > flag if a «Symbol» has to be checked for not being a «Keyword»; default: «False»
     }
 
     h4 > Instance variables
 
-    table border=1 {
-        tr {
-            td p code > name
-            td p > name of the «Keyword» as «str» instance
-        }
-    }
+    glossary
+        term "name" > name of the «Keyword» as «str» instance
 
     h4 > Method «__init__(self, name, namespace=None)»
 
@@ -281,16 +266,11 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     h5 > Raises:
 
-    table border=1 {
-        tr {
-            td p code > ValueError
-            td p > if «check_keywords» is «True» and value is identical to a «Keyword»
-        }
-
-        tr {
-            td p code > TypeError
-            td p > if «namespace» is given and not an instance of «Namespace»
-        }
+    glossary {
+        term "ValueError"
+            > if «check_keywords» is «True» and value is identical to a «Keyword»
+        term "TypeError"
+            > if «namespace» is given and not an instance of «Namespace»
     }
 
     h4 > Parsing
@@ -342,25 +322,15 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     h4 > Class variables
 
-    table border=1 {
-        tr {
-            td p code > regex
-            td p > regular expression to scan; default «re.compile(r"\w+")»
-        }
-        tr {
-            td p code > table
-            td p > «Namespace» with keyword table
-        }
+    glossary {
+        term "regex" > regular expression to scan; default «re.compile(r"\w+")»
+        term "table" > «Namespace» with keyword table
     }
 
     h4 > Instance variables
 
-    table border=1 {
-        tr {
-            td p code > name
-            td p > name of the «Keyword» as «str» instance
-        }
-    }
+    glossary
+        term "name" > name of the «Keyword» as «str» instance
 
     h4 > Method «__init__(self, keyword)»
 
@@ -784,12 +754,8 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     h4 > Instance variables
 
-    table border=1 {
-        tr {
-            td p code > Class
-            td p > reference to «Attribute» class generated by «namedtuple()»
-        }
-    }
+    glossary
+        term "Class" > reference to «Attribute» class generated by «namedtuple()»
 
     h4 > Parsing
 

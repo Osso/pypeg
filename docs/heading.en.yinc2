@@ -16,6 +16,13 @@ decl Orange(class="orange") alias div;
 decl mark(class="mark") alias span;
 decl Mark(class="mark") alias div;
 
+decl term(*term) alias tr {
+    td p code *term;
+    td p content;
+};
+
+decl glossary(border=1) alias table;
+
 decl ne is a {
     content;
     br;
