@@ -735,17 +735,32 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
 
     Code
         ||
-        >>> parse("hello", optional(word))
+        >>> parse("hello", ◊optional(word)◊)
         ['hello']
-        >>> parse("", optional(word))
+        >>> parse("", ◊optional(word)◊)
         []
+        >>> number = re.compile("[-+]?\d+")
+        >>> parse("-23 world", (◊optional(word)◊, number, word))
+        ['-23', 'world']
         ||
 
     h4 > Composing
 
     p > Composing «optional()» composes one thing if there is any.
 
-    
+    p > Example:
+
+    Code
+        ||
+        >>> class OptionalWord(str):
+        ...     grammar = ◊optional(word)◊
+        ... 
+        >>> compose(OptionalWord("hello"))
+        'hello'
+        >>> compose(OptionalWord())
+        ''
+        ||
+
     Code
         ||
     div id="bottom" {
