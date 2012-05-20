@@ -120,11 +120,14 @@ def attributes(grammar):
 class List(list):
     """A List of things."""
 
-    def __init__(self, L=[], **kwargs):
+    def __init__(self, *args, **kwargs):
         """Construct a List, and construct its attributes from keyword
         arguments.
         """
-        super().__init__(L)
+        if len(args) == 1 and isinstance(args, collections.Iterable):
+            super().__init__(args[0])
+        else:
+            super().__init__(args)
         for k, v in kwargs:
             setattr(self, k, v)
 
@@ -879,6 +882,9 @@ class Parser:
                         else:
                             multiple = g
                     else:
+                        if card == -2 and not things:
+                            raise ValueError("not enough things to compose; "
+                                    + "expecting " + repr(g))
                         if indenting == 1:
                             indenting = 2
                         elif indenting == 2:

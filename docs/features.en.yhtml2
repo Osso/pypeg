@@ -325,8 +325,8 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
     Code
         ||
         >>> k.name = ◊Symbol("that one")◊
-        >>> print(compose(k))
-        ◊that one◊=foo bar
+        >>> compose(k)
+        '◊that one◊=foo bar'
         ||
 
     h3 id=keyword > Class «Keyword(Symbol)»
@@ -400,8 +400,8 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
     Code
         ||
         >>> k = ◊K("do")◊
-        >>> print(compose(k))
-        do
+        >>> compose(k)
+        'do'
         ||
 
     h3 id=list > Class «List(list)»
@@ -464,8 +464,8 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         >>> b = Block()
         >>> b.◊append(Instruction("hello"))◊
         >>> b.◊append(Instruction("world"))◊
-        >>> print(compose(b))
-        { hello, world }
+        >>> compose(b)
+        '{ hello, world }'
         ||
 
     h3 id=namespace > Class «Namespace(collections.UserDict)»
@@ -602,10 +602,10 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         ...     grammar = ◊Enum( K("int"), K("long") )◊
         ... 
         >>> t = Type("int")
-        >>> print(compose(t))
-        int
+        >>> compose(t)
+        'int'
         >>> t = Type("string")
-        >>> print(compose(t))
+        >>> compose(t)
         Traceback (most recent call last):
           File "<stdin>", line 1, in <module>
           File "pypeg2/__init__.py", line 403, in compose
@@ -624,6 +624,101 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         At least one occurrence of thing, + operator. Inserts «-2» as
         cardinality before thing.
         >>
+
+    h4 > Parsing
+
+    p   >>
+        Parsing «some()» parses at least one occurence of «thing», or as many
+        as there are. If there aren't things then a «SyntaxError» is generated.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> w = parse("hello world", ◊some(word)◊)
+        >>> w
+        ['hello', 'world']
+        >>> w = parse("", ◊some(word)◊)
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+          File "pypeg2/__init__.py", line 390, in parse
+            t, r = parser.parse(text, thing)
+          File "pypeg2/__init__.py", line 477, in parse
+            raise r
+          File "<string>", line 1
+            
+            ^
+        SyntaxError: expecting match on \w+
+        ||
+
+    h4 > Composing
+
+    p   >>
+        Composing «some()» composes as many things as there are, but at least
+        one. If there is no matching thing, a «ValueError» is generated.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> class Words(List):
+        ...     grammar = ◊some(word, blank)◊
+        ... 
+        >>> compose(Words("hello", "world"))
+        'hello world '
+        >>> compose(Words())
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+          File "pypeg2/__init__.py", line 414, in compose
+            return parser.compose(thing, grammar)
+          File "pypeg2/__init__.py", line 931, in compose
+            result = compose_tuple(thing, thing[:], grammar)
+          File "pypeg2/__init__.py", line 886, in compose_tuple
+            raise ValueError("not enough things to compose")
+        ValueError: not enough things to compose
+        >>> 
+        ||
+
+    h3 id=maybesome > Function «maybe_some(*thing)»
+
+    p   >>
+        No thing or some of them, * operator. Inserts «-1» as cardinality
+        before thing.
+        >>
+
+    h4 > Parsing
+
+    p   >>
+        Parsing «maybe_some()» parses all occurrences of «thing». If there
+        aren't things then the result is empty.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> parse("hello world", ◊maybe_some(word)◊)
+        ['hello', 'world']
+        >>> parse("", ◊maybe_some(word)◊)
+        []
+        ||
+
+    h4 > Composing
+
+    p > Composing «maybe_some()» composes as many things as there are.
+
+    Code
+        ||
+        >>> class Words(List):
+        ...     grammar = ◊maybe_some(word, blank)◊
+        ... 
+        >>> compose(Words("hello", "world"))
+        'hello world '
+        >>> compose(Words())
+        ''
+        ||
 
     div id="bottom" {
         "Want to download? Go to the "
