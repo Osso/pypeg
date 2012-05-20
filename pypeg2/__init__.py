@@ -309,6 +309,12 @@ def how_many(grammar):
         0 if there will be no objects
         1 if there will be a maximum of one object
         2 if there can be more than one object
+    
+    Raises:
+        GrammarTypeError
+                    if grammar contains an object of unkown type
+        GrammarValueError
+                    if grammar contains an illegal cardinality value
     """
 
     if type(grammar) == list:
@@ -382,6 +388,8 @@ def parse(text, thing, filename=None, whitespace=whitespace, comment=None):
         TypeError   if output classes have wrong syntax for __init__()
         GrammarTypeError
                     if grammar contains an object of unkown type
+        GrammarValueError
+                    if grammar contains an illegal cardinality value
     """
 
     parser = Parser()
@@ -407,6 +415,13 @@ def compose(thing, grammar=None, indent="    "):
                         default: four spaces
 
     Returns text
+
+    Raises:
+        ValueError  if input does not match grammar
+        GrammarTypeError
+                    if grammar contains an object of unkown type
+        GrammarValueError
+                    if grammar contains an illegal cardinality value
     """
 
     parser = Parser()
@@ -468,6 +483,8 @@ class Parser:
             TypeError   if output classes have wrong syntax for __init__()
             GrammarTypeError
                         if grammar contains an object of unkown type
+            GrammarValueError
+                        if grammar contains an illegal cardinality value
         """
 
         self.text = text
@@ -784,6 +801,13 @@ class Parser:
                             default: thing.grammar
 
         Returns text
+
+        Raises:
+            ValueError  if input does not match grammar
+            GrammarTypeError
+                        if grammar contains an object of unkown type
+            GrammarValueError
+                        if grammar contains an illegal cardinality value
         """
  
         def terminal_indent():

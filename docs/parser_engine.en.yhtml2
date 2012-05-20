@@ -1,16 +1,14 @@
 page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     h1 id=pengine> Parser Engine
 
-    h2 id=classes > Classes
-
-    h3 id=parser > Class «Parser»
+    h2 id=parser > Class «Parser»
 
     p   >>
         Offers parsing and composing capabilities. Implements an intrinsic
         ∫Packrat parser∫.
         >>
     
-    h4 > Instance variables
+    h3 id=parser_vars > Instance variables
 
     p   >>
         The instance variables are representing the parser's state.
@@ -31,5 +29,46 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
             > original text to parse; set for decorated syntax errors
         term "filename"
             > filename where text is origin from
+    }
+
+    h3 id=parser_init > Method «__init__(self)»
+
+    p > Initialize instance variables to their defaults.
+
+    h3 id=parser_parse > Method «parse(self, text, thing, filename=None)»
+
+    p   >>
+        Parse text following thing.grammar and return the resulting things
+        or raise an error.
+        >>
+
+    h4 > Arguments
+
+    glossary {
+        term "text" > text to parse
+        term "thing" > grammar for things to parse
+        term "filename" > filename where text is origin from
+    }
+
+    h4 > Returns
+
+    p > Returns «(text, result)» with:
+
+    glossary {
+        term "text" > unparsed text
+        term "result" > generated objects
+    }
+
+    h4 > Raises
+
+    glossary {
+        term "ValueError"
+            > if input does not match types
+        term "TypeError"
+            > if output classes have wrong syntax for their respective «__init__(self, ...)»
+        term "GrammarTypeError"
+            > if grammar contains an object of unkown type
+        term "GrammarValueError"
+            > if grammar contains an illegal cardinality value
     }
 }
