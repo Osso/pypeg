@@ -258,7 +258,7 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
     table border=1 {
         tr {
             td p code > regex
-            td p > regular expression to scan, default «r"\w+"»
+            td p > regular expression to scan, default «re.compile(r"\w+")»
         }
         tr {
             td p code > check_keywords
@@ -345,7 +345,7 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
     table border=1 {
         tr {
             td p code > regex
-            td p > regular expression to scan; default «r"\w+"»
+            td p > regular expression to scan; default «re.compile(r"\w+")»
         }
         tr {
             td p code > table
@@ -404,14 +404,14 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         do
         ||
 
-    h3 id=attr > Class «List(list)»
+    h3 id=list > Class «List(list)»
 
     p > A List of things.
     
     p   >>
         A «List» is a collection for parsed things. It can be used as a base class
-        for collections in the «grammar». If a «List» class has no «grammar»,
-        «csl(Symbol)» is assumed.
+        for collections in the «grammar». If a «List» class has no class
+        variable «grammar», «grammar = csl(Symbol)» is assumed.
         >>
 
     h4 > Method «__init__(self, L=[], **kwargs)»
@@ -424,9 +424,9 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
     h4 > Parsing
 
     p   >>
-        If a «List» is parsed, then all things which are parsed because of its
-        «grammar» and which are not attributes are being appended to the
-        «List».
+        A «List» is parsed by following its «grammar». If a «List» is parsed,
+        then all things which are parsed and which are not attributes are being
+        appended to the «List».
         >>
 
     p > Example:
@@ -466,6 +466,154 @@ page "pyPEG – Features", "counter-reset: chapter 1;" {
         >>> b.◊append(Instruction("world"))◊
         >>> print(compose(b))
         { hello, world }
+        ||
+
+    h3 id=namespace > Class «Namespace(collections.UserDict)»
+
+    p > A dictionary of things, indexed by their name.
+
+    p   >>
+        A Namespace holds an «OrderedDict» mapping the «name» attributes of the
+        collected things to their respective representation instance. Unnamed
+        things cannot be collected with a «Namespace».
+        >>
+
+    h4 > Method «__init__(self, *args, **kwargs)»
+
+    p   >>
+        Initialize an OrderedDict containing the data of the Namespace.
+        Arguments are being put into the Namespace, keyword arguments give the
+        attributes of the Namespace.
+        >>
+
+    h4 > Parsing
+
+    p   >>
+        A «Namespace» is parsed by following its «grammar». If a «Namespace» is
+        parsed, then all things which are parsed and which are not attributes
+        are being appended to the «Namespace» and indexed by their «name»
+        attribute.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> Symbol.regex = re.compile(r"[\w\s]+")
+        >>> class Key(str):
+        ...     grammar = ◊name()◊, "=", restline, endl
+        ... 
+        >>> class Section(◊Namespace◊):
+        ...     grammar = "[", ◊name()◊, "]", endl, maybe_some(Key)
+        ... 
+        >>> class IniFile(◊Namespace◊):
+        ...     grammar = some(Section)
+        ... 
+        >>> ini_file_text = """[Number 1]
+        ... this=something
+        ... that=something else
+        ... [Number 2]
+        ... once=anything
+        ... twice=goes
+        ... """
+        >>> ini_file = parse(ini_file_text, IniFile)
+        >>> ini_file◊["Number 2"]["once"]◊
+        'anything'
+        ||
+
+    h4 > Composing
+
+    p   >>
+        If a «Namespace» is composed, then its grammar is followed and
+        composed.
+        >>
+    
+    p > Example:
+
+    Code
+        ||
+        >>> ini_file◊["Number 1"]["that"]◊ = Key("new one")
+        >>> ini_file◊["Number 3"]◊ = Section()
+        >>> print(◊compose(ini_file)◊)
+        [Number 1]
+        this=something
+        that=new one
+        [Number 2]
+        once=anything
+        twice=goes
+        [Number 3]
+        ||
+
+    h3 id=enum > Class «Enum(Namespace)»
+
+    p   >>
+        A Namespace which is being treated as an Enum. Enums can only contain
+        «Keyword» or «Symbol» instances. An «Enum» cannot be modified after
+        creation. An «Enum» is allowed as the grammar of a «Symbol» only.
+        >>
+
+    h4 > Method «__init__(self, *things)»
+
+    p > Construct an «Enum» using a «tuple» of things.
+
+    h4 > Parsing
+    
+    p   >>
+        An «Enum» is parsed as a selection for possible values for a «Symbol».
+        If a value is parsed which is not member of the «Enum», a «SyntaxError»
+        is generated.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> class Type(Keyword):
+        ...     grammar = ◊Enum( K("int"), K("long") )◊
+        ... 
+        >>> parse("int", Type)
+        Type('int')
+        >>> parse("string", Type)
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+          File "pypeg2/__init__.py", line 382, in parse
+            t, r = parser.parse(text, thing)
+          File "pypeg2/__init__.py", line 469, in parse
+            raise r
+          File "<string>", line 1
+            string
+            ^
+        SyntaxError: 'string' is not a member of Enum([Keyword('int'),
+        Keyword('long')])
+        >>> 
+        ||
+
+    h4 > Composing
+
+    p   >>
+        When a «Symbol» is composed which has an «Enum» as its grammar, the
+        composed value is checked if it is a member of the «Enum». If not, a
+        «ValueError» is raised.
+        >>
+
+    Code
+        ||
+        >>> class Type(Keyword):
+        ...     grammar = ◊Enum( K("int"), K("long") )◊
+        ... 
+        >>> t = Type("int")
+        >>> print(compose(t))
+        int
+        >>> t = Type("string")
+        >>> print(compose(t))
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+          File "pypeg2/__init__.py", line 403, in compose
+            return parser.compose(thing, grammar)
+          File "pypeg2/__init__.py", line 819, in compose
+            raise ValueError(repr(thing) + " is not in " + repr(grammar))
+        ValueError: Type('string') is not in Enum([Keyword('int'),
+        Keyword('long')])
         ||
 
     div id="bottom" {

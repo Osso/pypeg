@@ -338,7 +338,7 @@ def how_many(grammar):
         try:
             grammar.grammar
         except AttributeError:
-            if subclass(grammar, List) or subclass(grammar, Namespace):
+            if subclass(grammar, list) or subclass(grammar, Namespace):
                 return 2
             else:
                 return 1
@@ -659,7 +659,7 @@ class Parser:
             else:
                 result = text, syntax_error("expecting one of " + repr(thing))
 
-        elif _issubclass(thing, List):
+        elif _issubclass(thing, list):
             try:
                 g = thing.grammar
             except AttributeError:
@@ -787,7 +787,7 @@ class Parser:
             try:
                 grammar = type(thing).grammar
             except AttributeError:
-                if isinstance(thing, List):
+                if isinstance(thing, list):
                     grammar = csl(name())
                 else:
                     grammar = word
@@ -927,7 +927,7 @@ class Parser:
                 try:
                     grammar.grammar
                 except AttributeError:
-                    if isinstance(grammar, List):
+                    if isinstance(grammar, list):
                         result = self.compose(thing, csl(word))
                     else:
                         result = self.compose(thing, word)
