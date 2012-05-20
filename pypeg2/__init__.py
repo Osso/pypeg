@@ -441,16 +441,17 @@ class Parser:
     """Offers parsing and composing capabilities. Implements a Packrat parser.
     
     Instance variables:
-        whitespace      regular expression to scan whitespace
-                        default: "(?m)\s+"
-        comment         grammar to parse comments
-        last_error      syntax error which ended parsing
-        indent          string to use to indent while composing
-                        default: four spaces
-        indention_level level to indent to
-                        default: 0
-        text            original text to parse; set for decorated syntax errors
-        filename        filename where text is origin from
+        whitespace          regular expression to scan whitespace
+                            default: "(?m)\s+"
+        comment             grammar to parse comments
+        last_error          syntax error which ended parsing
+        indent              string to use to indent while composing
+                            default: four spaces
+        indention_level     level to indent to
+                            default: 0
+        text                original text to parse; set for decorated syntax
+                            errors
+        filename            filename where text is origin from
     """
 
     def __init__(self):
@@ -470,21 +471,21 @@ class Parser:
         or raise an error.
 
         Arguments:
-            text        text to parse
-            thing       grammar for things to parse
-            filename    filename where text is origin from
+            text            text to parse
+            thing           grammar for things to parse
+            filename        filename where text is origin from
 
         Returns (text, result) with:
-            text        unparsed text
-            result      generated objects
+            text            unparsed text
+            result          generated objects
 
         Raises:
-            ValueError  if input does not match types
-            TypeError   if output classes have wrong syntax for __init__()
+            ValueError      if input does not match types
+            TypeError       if output classes have wrong syntax for __init__()
             GrammarTypeError
-                        if grammar contains an object of unkown type
+                            if grammar contains an object of unkown type
             GrammarValueError
-                        if grammar contains an illegal cardinality value
+                            if grammar contains an illegal cardinality value
         """
 
         self.text = text
@@ -803,11 +804,11 @@ class Parser:
         Returns text
 
         Raises:
-            ValueError  if input does not match grammar
+            ValueError      if input does not match grammar
             GrammarTypeError
-                        if grammar contains an object of unkown type
+                            if grammar contains an object of unkown type
             GrammarValueError
-                        if grammar contains an illegal cardinality value
+                            if grammar contains an illegal cardinality value
         """
  
         def terminal_indent():
