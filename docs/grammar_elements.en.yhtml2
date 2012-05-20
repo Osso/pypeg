@@ -153,9 +153,12 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     p > which is equivalent. There are special cardinality values:
 
     glossary {
-        term "-2, thing" > «some(thing)»; this represents the plus cardinality, +
-        term "-1, thing" > «maybe_some(thing)»; this represents the asterisk cardinality, *
-        term "0, thing" > «optional(thing)»; this represents the question mark cardinality, ?
+        term "-2, thing"
+            > «some(thing)»; this represents the plus cardinality, +
+        term "-1, thing"
+            > «maybe_some(thing)»; this represents the asterisk cardinality, *
+        term "0, thing"
+            > «optional(thing)»; this represents the question mark cardinality, ?
     }
 
     p   >>
