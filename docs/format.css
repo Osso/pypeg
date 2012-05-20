@@ -30,7 +30,8 @@ body {
     width: 900px;
     min-height: 768px;
     background-color: white;
-    font-family: Arial,Helvetica,FreeSans
+    font-family: Sans-serif;
+    font-size: 12pt;
 }
 
 em {
@@ -41,6 +42,9 @@ em {
 
 code {
     background: #f0f0f0;
+    font-size: 11pt;
+    line-height: 120%;
+    vertical-align: 2%;
 }
 
 pre {
@@ -49,7 +53,7 @@ pre {
 
 #headline {
     color: black;
-    font-size: x-large;
+    font-size: 18pt;
     font-weight: normal;
     border-bottom-width: 1px;
     border-bottom-style: solid;
@@ -67,7 +71,12 @@ td {
     border-left-width: 1px;
     border-left-style: dotted;
     padding: 10px;
-    font-size: small;
+    font-size: 10pt;
+}
+
+.head {
+    font-size: 12pt;
+    font-weight: bold;
 }
 
 #entries {
@@ -79,7 +88,7 @@ td {
     width: 569px;
     padding-left: 10px;
     padding-right: 10px;
-    font-size: small;
+    font-size: 10pt;
 }
 
 #bottom {
@@ -107,7 +116,7 @@ h2:before {
 }
 
 h1, h2 {
-    font-size: medium;
+    font-size: 12pt;
     color: darkblue;
 }
 
@@ -117,24 +126,24 @@ h3:before {
 }
 
 h3 {
-    font-size: medium;
+    font-size: 12pt;
     color: black;
 }
 
 h4 {
-    font-size: medium;
+    font-size: 12pt;
     color: black;
 }
 
 h5 {
-    font-size: medium;
+    font-size: 12pt;
     font-weight: normal;
     font-style: italic;
     color: black;
 }
 
 .subscript {
-    font-size: small;
+    font-size: 10pt;
     border-bottom-width: 1px;
     border-bottom-style: dotted;
     margin-bottom: 1em;
@@ -142,7 +151,7 @@ h5 {
 }
 
 .small {
-    font-size: small;
+    font-size: 10pt;
     margin-bottom: 1em;
     padding-bottom: 1em;
 }

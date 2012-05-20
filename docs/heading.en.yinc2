@@ -23,10 +23,11 @@ decl term(*term) alias tr {
 
 decl glossary(border=1) alias table;
 
-decl ne is a {
-    content;
-    br;
+decl ne(*href) alias li {
+    a href=*href content;
 };
+
+decl P(class="head") alias p;
 
 div id="headline" {
     p > pyPEG – a PEG Parser-Interpreter in Python
@@ -37,18 +38,18 @@ div id="headline" {
 }
 
 div id="navigation" {
-    h1 a href="index.html" > How to use pyPEG
+    P a href="index.html" > How to use pyPEG
     include xml index.xml
-    h1 a href="grammar_elements.html" > Grammar Elements
+    P a href="grammar_elements.html" > Grammar Elements
     include xml grammar_elements.xml
-    h1 a href="parser_engine.html" > Parser Engine
+    P a href="parser_engine.html" > Parser Engine
     include xml parser_engine.xml
 
-    h1 "I want this!";
-    ne "dist/pyPEG-2.0.0.tar.gz", "Download pyPEG 2";
-    br;
-    ne "LICENSE.txt", "License";
-    ne "http://www.pibit.ch", "Commercial support for pyPEG";
-    br;
-    ne "http://fdik.org/yml", "YML is using pyPEG";
+    P "I want this!";
+    menu {
+        ne "dist/pyPEG-2.0.0.tar.gz" > Download pyPEG 2
+        ne "LICENSE.txt" > License
+        ne "http://www.pibit.ch" > Commercial support for pyPEG
+        ne "http://fdik.org/yml" > YML is using pyPEG
+    }
 }
