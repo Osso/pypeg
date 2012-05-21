@@ -13,7 +13,7 @@ clean:
 	rm -Rf dist MANIFEST
 
 push:
-	hg push ssh://hg@bitbucket.org/fdik/pypeg
+	hg push ssh://hg@bitbucket.org/fdik/pypeg2
 
 dist: docs
 	$(PYTHON) setup.py sdist
