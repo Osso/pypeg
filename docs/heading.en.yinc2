@@ -32,7 +32,7 @@ decl P(class="head") alias p;
 div id="headline" {
     p > pyPEG – a PEG Parser-Interpreter in Python
     div class="small" {
-        "pyPEG 2.0 of So May 06 2012 – Copyleft 2009-2012, "
+        "pyPEG 2.0 of Mo May 21 2012 – Copyleft 2009-2012, "
         a "http://fdik.org", "Volker Birk";
     }
     div id=python1 p {
@@ -55,7 +55,7 @@ div id="navigation" {
     menu {
         ne "http://fdik.org/pyPEG2/pyPEG2.tar.gz" > Download pyPEG 2
         ne "LICENSE.txt" > License
-        ne "https://bitbucket.org/fdik/pypeg2/" > Bitbucket Repository
+        ne "https://bitbucket.org/fdik/pypeg/" > Bitbucket Repository
         ne "http://www.pibit.ch" > Commercial support for pyPEG
         ne "http://fdik.org/yml" > YML is using pyPEG
     }

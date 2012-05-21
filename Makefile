@@ -7,7 +7,7 @@ docs:
 	zip -j docs.zip docs/*.html docs/format.css LICENSE.txt
 
 deploy: dist
-	rm -f pyPEG2.tar.gz2
+	rm -f pyPEG2.tar.gz
 	ln -s dist/pyPEG2-*.tar.gz pyPEG2.tar.gz
 	scp docs/*.html docs/format.css pyPEG2.tar.gz *.txt dragon:fdik.org/pyPEG2/
 
@@ -22,7 +22,7 @@ clean:
 	rm -Rf dist MANIFEST docs.zip pyPEG2.tar.gz
 
 push:
-	hg push ssh://hg@bitbucket.org/fdik/pypeg2
+	hg push ssh://hg@bitbucket.org/fdik/pypeg
 
 dist: docs
 	$(PYTHON) setup.py sdist
