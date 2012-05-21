@@ -44,6 +44,8 @@ div id="navigation" {
     include xml grammar_elements.xml
     P a href="parser_engine.html" > Parser Engine
     include xml parser_engine.xml
+    P a href="xml_backend.html" > XML Backend
+    include xml xml_backend.xml
 
     P "I want this!";
     menu {

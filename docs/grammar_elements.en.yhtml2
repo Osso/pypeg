@@ -3,7 +3,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     h2 id=basic > Basic Grammar Elements
 
-    h3 id=literals > «str» instances
+    h3 id=literals > str instances
 
     h4 > Parsing
 
@@ -114,7 +114,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         'give me=◊a value\\n◊'
         ||
 
-    h3 id=tuple > «tuple» instances
+    h3 id=tuple > tuple instances
 
     h4 > Parsing
 
@@ -189,7 +189,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         ◊'give me=a value\\n'◊
         ||
 
-    h3 id=lists > «list» instances
+    h3 id=lists > list instances
 
     h4 > Parsing
 
@@ -225,7 +225,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         '23'
         ||
 
-    h3 id=none > Constant «None»
+    h3 id=none > Constant None
 
     p   >>
         «None» parses to nothing. And it composes to nothing. It represents
@@ -234,7 +234,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     h2 id=goclasses > Grammar Element Classes
 
-    h3 id=symbol > Class «Symbol(str)»
+    h3 id=symbol > Class Symbol
+ 
+    h4 > Class definition
+    p > «Symbol(str)»
 
     p > Used to scan a «Symbol».
 
@@ -317,7 +320,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         '◊that one◊=foo bar'
         ||
 
-    h3 id=keyword > Class «Keyword(Symbol)»
+    h3 id=keyword > Class Keyword
+
+    h4 > Class definition
+    p > «Keyword(Symbol)»
 
     p > Used to access the keyword table.
 
@@ -382,7 +388,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         'do'
         ||
 
-    h3 id=list > Class «List(list)»
+    h3 id=list > Class List
+
+    h4 > Class definition
+    p > «List(list)»
 
     p > A List of things.
     
@@ -446,7 +455,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         '{ hello, world }'
         ||
 
-    h3 id=namespace > Class «Namespace(collections.UserDict)»
+    h3 id=namespace > Class Namespace
+
+    h4 > Class definition
+    p > «Namespace(collections.UserDict)»
 
     p > A dictionary of things, indexed by their name.
 
@@ -522,7 +534,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         [Number 3]
         ||
 
-    h3 id=enum > Class «Enum(Namespace)»
+    h3 id=enum > Class Enum
+
+    h4 > Class definition
+    p > «Enum(Namespace)»
 
     p   >>
         A Namespace which is being treated as an Enum. Enums can only contain
@@ -601,7 +616,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         meant to be used in a «grammar» directly.
         >>
 
-    h3 id=some > Cardinality function «some(*thing)»
+    h3 id=some > Function some()
+    
+    h4 > Synopsis
+    p > «some(*thing)»
 
     p   >>
         At least one occurrence of thing, + operator. Inserts «-2» as
@@ -664,7 +682,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         >>> 
         ||
 
-    h3 id=maybesome > Cardinality function «maybe_some(*thing)»
+    h3 id=maybesome > Function maybe_some()
+
+    h4 > Synopsis
+    p > «maybe_some(*thing)»
 
     p   >>
         No thing or some of them, * operator. Inserts «-1» as cardinality
@@ -703,7 +724,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         ''
         ||
 
-    h3 id=optional > Cardinality function «optional(*thing)»
+    h3 id=optional > Function optional()
+
+    h4 > Synopsis
+    p > «optional(*thing)»
 
     p > Thing or no thing, ? operator. Inserts «0» as cardinality before thing.
 
@@ -744,7 +768,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         ''
         ||
 
-    h3 id=csl > Function «csl(*thing)»
+    h3 id=csl > Function csl()
+
+    h4 > Synopsis
+    p > «csl(*thing)»
 
     p > Generate a grammar for a simple comma separated list.
 
@@ -753,7 +780,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         «Something, maybe_some(",", blank, Something)»
         >>
 
-    h3 id=attr > Function «attr(name, thing=word, subtype=None)»
+    h3 id=attr > Function attr()
+
+    h4 > Synopsis
+    p > «attr(name, thing=word, subtype=None)»
 
     p   >>
         Generate an «Attribute» with that «name», referencing the «thing». An
@@ -803,7 +833,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         'int x'
         ||
 
-    h3 id=flag > Function «flag(name, thing)»
+    h3 id=flag > Function flag()
+
+    h4 > Synopsis
+    p > «flag(name, thing)»
 
     p   >>
         Generate an «Attribute» with that «name» which is valued «True» or
@@ -861,14 +894,20 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         '◊not◊ valid'
         ||
 
-    h3 id=name > Function «name()»
+    h3 id=name > Function name()
+
+    h4 > Synopsis
+    p > «name()»
 
     p   >>
         Generate a grammar for a Symbol with a name. This is a shortcut for
         «attr("name", Symbol)».
         >>
 
-    h3 id=ignore > Function «ignore(*grammar)»
+    h3 id=ignore > Function ignore()
+
+    h4 > Synopsis
+    p > «ignore(*grammar)»
 
     p > Ignore what matches to the grammar.
 
@@ -877,7 +916,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         only. In common grammars it will not be there.
         >>
 
-    h3 id=indent > Function «indent(*thing)»
+    h3 id=indent > Function indent()
+
+    h4 > Synopsis
+    p > «indent(*thing)»
 
     p   >>
         Indent thing by one level. Inserts «-3» as cardinality before thing.
@@ -922,13 +964,19 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         while parsing.
         >>
 
-    h3 id=blank > Callback function «blank(thing, parser)»
+    h3 id=blank > Callback function blank()
+
+    h4 > Synopsis
+    p > «blank(thing, parser)»
 
     p > Space marker for composing text.
 
     p > «blank» is outputting a space character (ASCII 32) when called.
 
-    h3 id=endl > Callback function «endl(thing, parser)»
+    h3 id=endl > Callback function endl()
+
+    h4 > Synopsis
+    p > «endl(thing, parser)»
 
     p > End of line marker for composing text.
  
@@ -937,7 +985,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         «endl» while composing.
         >>
 
-    h3 id=udcf > User defined callback functions «callback_function(thing, parser)»
+    h3 id=udcf > User defined callback functions
+
+    h4 > Synopsis
+    p > «callback_function(thing, parser)»
 
     p   >>
         Arbitrary callback functions can be defined and put into the «grammar».

@@ -7,7 +7,15 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
         Offers parsing and composing capabilities. Implements an intrinsic
         ∫Packrat parser∫.
         >>
-    
+ 
+    p   >>
+        ƒpyPEG uses memoization as speed enhancement. Create a «Parser»
+        instance to have a reset memory. Usually this is recommended if you're
+        parsing another text – the memory will not provide wrong results but
+        a reset will save memory consumption. If you're altering the grammar
+        then a memory reset is required for having correct parsing results.
+        >>
+
     h3 id=parser_vars > Instance variables
 
     p   >>
@@ -16,9 +24,16 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
 
     glossary {
         term "whitespace"
-            > regular expression to scan whitespace; default: «re.compile(r"(?m)\s+")»
+            >>
+            Regular expression to scan whitespace; default: «re.compile(r"(?m)\s+")».
+            Set to «None» to disable automatic «whitespace» removing.
+            >>
         term "comment"
-            > «grammar» to parse comments; default: «None»
+            >>
+            «grammar» to parse comments; default: «None».
+            If a «grammar» is set here, comments will be removed from the
+            source text automatically.
+            >>
         term "last_error"
             > after parsing, «SyntaxError» which ended parsing
         term "indent"
@@ -31,22 +46,29 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
             > filename where text is origin from
     }
 
-    h3 id=parser_init > Method «__init__(self)»
+    h3 id=parser_init > Method init()
+
+    h4 > Synopsis
+    p > «__init__(self)»
 
     p > Initialize instance variables to their defaults.
 
-    h3 id=parser_parse > Method «parse(self, text, thing, filename=None)»
+    h3 id=parser_parse > Method parse()
+
+    h4 > Synopsis
+    p > «parse(self, text, thing, filename=None)»
 
     p   >>
-        (Partial) parse text following thing.grammar and return the resulting
-        things.
+        (Partially) parse «text» following «thing.grammar» and return the
+        resulting things.
         >>
 
     p   >>
         This method parses as far as possible. It does not generate a
-        «SyntaxError» if the source «text» does not parse completely.  It
+        «SyntaxError» if the source «text» does not parse completely. It
         returns a «SyntaxError» object as «result» part of the return value if
-        the source «text» does not comply with grammar «thing».
+        the beginning of the source «text» does not comply with grammar
+        «thing».
         >>
 
     h4 > Arguments
@@ -77,5 +99,215 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
             > if grammar contains an object of unkown type
         term "GrammarValueError"
             > if grammar contains an illegal cardinality value
+    }
+
+    p > Example:
+
+    Code
+        ||
+        >>> from pypeg2 import Parser, csl, word
+        >>> ◊p = Parser()◊
+        >>> ◊p.parse("hello, world!", csl(word))◊
+        ('!', ['hello', 'world'])
+        ||
+
+
+    h3 id=parser_compose > Method compose()
+
+    h4 > Synopsis
+    p > «compose(self, thing, grammar=None)»
+
+    p > Compose text using «thing» with «grammar».
+
+    h4 > Arguments
+
+    glossary {
+        term "thing" > «thing» containing other things with «grammar»
+        term "grammar" > «grammar» to use for composing «thing»; default: «thing.grammar»
+    }
+
+    h4 > Returns
+   
+    p > Composed text
+
+    h4 > Raises
+
+    glossary {
+        term "ValueError" > if «thing» does not match «grammar»
+        term "GrammarTypeError" > if «grammar» contains an object of unkown type
+        term "GrammarValueError" > if «grammar» contains an illegal cardinality value
+    }
+
+    p > Example:
+
+    Code
+        ||
+        >>> from pypeg2 import Parser, csl, word
+        >>> ◊p = Parser()◊
+        >>> ◊p.compose(['hello', 'world'], csl(word))◊
+        'hello, world'
+        ||
+
+    h2 id=convenience > Convenience functions
+
+    h3 id=parse > Function parse()
+   
+    h4 > Synopsis
+    p > «parse(text, thing, filename=None, whitespace=whitespace, comment=None)»
+
+    p   >>
+        Parse text following «thing.grammar» and return the resulting things or
+        raise an error.
+        >>
+
+    h4 > Arguments
+
+    glossary {
+        term "text"
+            > «text» to parse
+        term "thing"
+            > «grammar» for things to parse
+        term "filename"
+            > «filename» where «text» is origin from
+        term "whitespace"
+            > regular expression to skip «whitespace»; default: «re.compile(r"(?m)\s+")»
+        term "comment"
+            > «grammar» to parse comments; default: «None»
+    }
+
+    h4 > Returns
+        p > generated things
+
+    h4 > Raises
+
+    glossary {
+        term "SyntaxError" > if «text» does not match the «grammar» in «thing»
+        term "ValueError" > if input does not match types
+        term "TypeError" > if output classes have wrong syntax for «__init__()»
+        term "GrammarTypeError"
+            > if «grammar» contains an object of unkown type
+        term "GrammarValueError"
+            > if «grammar» contains an illegal cardinality value
+    }
+
+    p > Example:
+
+    Code
+        ||
+        >>> from pypeg2 import parse, csl, word
+        >>> ◊parse("hello, world", csl(word))◊
+        ['hello', 'world']
+        ||
+
+    h3 id=compose > Function compose()
+
+    h4 > Synopsis
+    p > «compose(thing, grammar=None, indent="    ")»
+
+    p > Compose text using «thing» with «grammar».
+
+    h4 > Arguments
+
+    glossary {
+        term "thing" > «thing» containing other things with «grammar»
+        term "grammar" > «grammar» to use to compose thing; default: «thing.grammar»
+        term "indent" > string to use to indent while composing; default: four spaces
+    }
+
+    h4 > Returns
+    
+    p > composed text
+
+    h4 > Raises
+
+    glossary {
+        term "ValueError" > if input does not match «grammar»
+        term "GrammarTypeError"
+            > if «grammar» contains an object of unkown type
+        term "GrammarValueError"
+            > if «grammar» contains an illegal cardinality value
+    }
+
+    p > Example:
+
+    Code
+        ||
+        >>> from pypeg2 import compose, csl, word
+        >>> ◊compose(['hello', 'world'], csl(word))◊
+        'hello, world'
+        ||
+
+    h3 id=attributes > Function attributes()
+
+    h4 > Synopsis
+    p > «attributes(grammar)»
+
+    p > Iterates all attributes of a «grammar».
+
+    p   >>
+        This function can be used to iterate through all attributes which
+        will be generated for the top level object of the «grammar».
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> from pypeg2 import attr, name, attributes, word, restline
+        >>> class Me:
+        ...     grammar = name(), attr("typing", word), restline
+        ... 
+        >>> for a in ◊attributes(Me.grammar)◊: print(a.name)
+        ... 
+        name
+        typing
+        >>> 
+        ||
+
+    h3 id=howmany > Function how_many()
+
+    h4 > Synopsis
+    p > «how_many(grammar)»
+
+    p > Determines the possibly parsed objects of grammar.
+
+    p   >>
+        This function is meant to check if the results of a grammar
+        can be stored in a single object or a collection will be needed.
+        >>
+
+    h4 > Returns
+
+    glossary {
+        term "0" > if there will be no objects
+        term "1" > if there will be a maximum of one object
+        term "2" > if there can be more than one object
+    }
+
+    h4 > Raises
+
+    glossary {
+        term "GrammarTypeError"
+            > if «grammar» contains an object of unkown type
+        term "GrammarValueError"
+            > if «grammar» contains an illegal cardinality value
+    }
+
+    p > Example:
+
+    Code
+        ||
+        >>> from pypeg2 import how_many, word, csl
+        >>> ◊how_many("some")◊
+        0
+        >>> ◊how_many(word)◊
+        1
+        >>> ◊how_many(csl(word))◊
+        2
+        ||
+
+    div id="bottom" {
+        "Want to download? Go to the "
+        a "#top", "^Top^"; " and look to the right ;-)"
     }
 }

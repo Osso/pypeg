@@ -380,7 +380,7 @@ def parse(text, thing, filename=None, whitespace=whitespace, comment=None):
         comment     grammar to parse comments
                     default: None
 
-    Returns generated objects.
+    Returns generated things.
 
     Raises:
         SyntaxError if text does not match the grammar in thing
@@ -467,7 +467,7 @@ class Parser:
         self._got_endl = False
 
     def parse(self, text, thing, filename=None):
-        """(Partial) parse text following thing grammar and return the
+        """(Partially) parse text following thing grammar and return the
         resulting things.
 
         Arguments:
@@ -798,13 +798,13 @@ class Parser:
 
         Arguments:
             thing           thing containing other things with grammar
-            grammar         grammar to use to compose thing
+            grammar         grammar to use for composing thing
                             default: thing.grammar
 
         Returns text
 
         Raises:
-            ValueError      if input does not match grammar
+            ValueError      if thing does not match grammar
             GrammarTypeError
                             if grammar contains an object of unkown type
             GrammarValueError

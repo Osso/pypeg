@@ -1,0 +1,175 @@
+page "pyPEG – XML Backend", "counter-reset: chapter 3;" {
+    h1 id=xmlbackend > XML Backend of ƒpyPEG
+
+    h2 id=workhorses > «etree» functions
+
+    p   >>
+        The ƒpyPEG XML Backend uses Python's «etree» semantic. This way it can
+        easily be integrated into existing working code using XML. The usage of
+        ¬http://lxml.de/ lxml¬ is recommended. If the module «lxml» is
+        installed, ƒpyPEG uses it automatically.
+        >>
+
+    h3 id=create_tree > Function create_tree()
+
+    h4 > Synopsis
+    p > «create_tree(thing, parent=None, object_names=False)»
+
+    p > Create an XML etree from a thing.
+
+    h4 > Arguments
+
+    glossary {
+        term "thing" > «thing» to interpret
+        term "parent" > «etree.Element» to put subtree into; default: create a new «Element» tree
+        term "object_names"
+            >>
+            experimental feature: if «True» tag names are object
+            names instead of types
+            >>
+    }
+
+    h4 > Returns
+
+    p > «etree.Element» instance created
+
+    p > Example:
+
+    Code
+        ||
+        >>> from pypeg2.xmlast import create_tree
+        >>> from pypeg2 import name, restline
+        >>> class Key(str):
+        ...     grammar = name(), "=", restline
+        ... 
+        >>> k = Key("world")
+        >>> k.name = "hello"
+        >>> t = ◊create_tree(k)◊
+        >>> t.attrib["name"]
+        'hello'
+        >>> t.text
+        'world'
+        >>> type(t)
+        <class 'lxml.etree._Element'>
+        ||
+
+    h3 id=create_thing > Function create_thing()
+
+    h4 > Synopsis
+    p > «create_thing(element, symbol_table)»
+
+    p > Create thing from an XML element.
+
+    h4 > Arguments
+
+    glossary {
+        term "element" > «etree.Element» instance to read
+        term "symbol_table" > symbol table where the classes can be found; usually call «globals()»
+    }
+
+    h4 > Returns
+
+    p > «thing» created
+
+    p > Example:
+
+    Code
+        ||
+        >>> from pypeg2.xmlast import create_thing, etree
+        >>> from pypeg2 import name, restline
+        >>> class Key(str):
+        ...     grammar = name(), "=", restline
+        ... 
+        >>> e = etree.fromstring("<Key name='hello'>world</Key>")
+        >>> k = ◊create_thing(e, globals())◊
+        >>> k.name
+        Symbol('hello')
+        >>> k
+        'world'
+        >>> type(k)
+        <class '__main__.Key'>
+        ||
+
+    h2 id=xmlconvenience > XML convenience functions
+
+    h3 id=thing2xml > Function thing2xml()
+
+    h4 > Synopsis
+    p > «thing2xml(thing, pretty=False, object_names=False)»
+
+    p > Create XML text from a thing.
+
+    h4 > Arguments
+
+    glossary {
+        term "thing" > «thing» to interpret
+        term "pretty"
+            >>
+            «True» if XML should be indented, «False» if XML should be plain
+            (this feature requires ¬http://lxml.de lxml¬)
+            >>
+        term "object_names"
+            >>
+            experimental feature: if «True» tag names are object
+            names instead of types
+            >>
+    }
+
+    h4 > Returns
+
+    p > «bytes» with encoded XML 
+
+    p > Example:
+
+    Code
+        ||
+        >>> from pypeg2 import name, restline
+        >>> from pypeg2.xmlast import thing2xml
+        >>> class Key(str):
+        ...     grammar = name(), "=", restline
+        ... 
+        >>> k = Key("world")
+        >>> k.name = "hello"
+        >>> ◊thing2xml(k)◊
+        b'<Key name="hello">world</Key>'
+        ||
+
+    h3 id=xml2thing > Function xml2thing()
+
+    h4 > Synopsis
+    p > «xml2thing(xml, symbol_table)»
+
+    p > Create «thing» from XML text.
+
+    h4 > Arguments
+
+    glossary {
+        term "xml" > «bytes» with encoded XML
+        term "symbol_table" > symbol table where the classes can be found; usually call «globals()»
+    }
+
+    h4 > Returns
+
+    p > created «thing»
+
+    p > Example:
+
+    Code
+        ||
+        >>> from pypeg2 import name, restline
+        >>> from pypeg2.xmlast import xml2thing
+        >>> class Key(str):
+        ...     grammar = name(), "=", restline
+        ... 
+        >>> k = ◊xml2thing(b"<Key name='hello'>world</Key>", globals())◊
+        >>> k.name
+        Symbol('hello')
+        >>> k
+        'world'
+        ||
+
+    div id="bottom" {
+        "Want to download? Go to the "
+        a "#top", "^Top^"; " and look to the right ;-)"
+    }
+}

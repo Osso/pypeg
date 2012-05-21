@@ -23,16 +23,18 @@ if __debug__:
 import pypeg2
 
 
-def create_tree(thing, object_names=False, parent=None):
+def create_tree(thing, parent=None, object_names=False):
     """Create an XML etree from a thing.
 
     Arguments:
         thing           thing to interpret
         parent          etree.Element to put subtree into
                         default: create a new Element tree
+        object_names    experimental feature: if True tag names are object
+                        names instead of types
 
     Returns:
-        etree object created
+        etree.Element instance created
     """
 
     try:
@@ -69,7 +71,7 @@ def create_tree(thing, object_names=False, parent=None):
                 found = True
                 break
         if not found:
-            create_tree(value, object_names, me)
+            create_tree(value, me, object_names)
 
     if isinstance(thing, list):
         things = thing
@@ -86,7 +88,7 @@ def create_tree(thing, object_names=False, parent=None):
             else:
                 me.text = str(t)
         else:
-            last = create_tree(t, object_names, me)
+            last = create_tree(t, me, object_names)
 
     if isinstance(thing, str):
         me.text = str(thing)
@@ -99,14 +101,16 @@ def thing2xml(thing, pretty=False, object_names=False):
 
     Arguments:
         thing           thing to interpret
-        pretty          True if xml should be indented
-                        False if xml should be plain
+        pretty          True if XML should be indented
+                        False if XML should be plain
+        object_names    experimental feature: if True tag names are object
+                        names instead of types
 
     Returns:
         bytes with encoded XML 
     """
 
-    tree = create_tree(thing, object_names)
+    tree = create_tree(thing, None, object_names)
     try:
         if lxml:
             return etree.tostring(tree, pretty_print=pretty)
@@ -119,10 +123,10 @@ def thing2xml(thing, pretty=False, object_names=False):
 
 
 def create_thing(element, symbol_table):
-    """Create thing from an XML eelement.
+    """Create thing from an XML element.
 
     Arguments:
-        element         Element instance to read
+        element         etree.Element instance to read
         symbol_table    symbol table where the classes can be found
 
     Returns:
