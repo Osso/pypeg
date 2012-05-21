@@ -368,7 +368,7 @@ def how_many(grammar):
 
 
 def parse(text, thing, filename=None, whitespace=whitespace, comment=None):
-    """Parse text following thing.grammar and return the resulting things or
+    """Parse text following thing as grammar and return the resulting things or
     raise an error.
 
     Arguments:
@@ -467,7 +467,7 @@ class Parser:
         self._got_endl = False
 
     def parse(self, text, thing, filename=None):
-        """(Partially) parse text following thing grammar and return the
+        """(Partially) parse text following thing as grammar and return the
         resulting things.
 
         Arguments:

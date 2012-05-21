@@ -35,6 +35,10 @@ div id="headline" {
         "pyPEG 2.0 of So May 06 2012 – Copyleft 2009-2012, "
         a "http://fdik.org", "Volker Birk";
     }
+    div id=python1 p {
+        > for Python version 2.x see 
+        a href="http://fdik.org/pyPEG1" > pyPEG version 1
+    }
 }
 
 div id="navigation" {
@@ -49,7 +53,7 @@ div id="navigation" {
 
     P "I want this!";
     menu {
-        ne "dist/pyPEG-2.0.0.tar.gz" > Download pyPEG 2
+        ne "pyPEG2.tar.gz" > Download pyPEG 2
         ne "LICENSE.txt" > License
         ne "http://www.pibit.ch" > Commercial support for pyPEG
         ne "http://fdik.org/yml" > YML is using pyPEG

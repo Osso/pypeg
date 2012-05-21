@@ -22,6 +22,16 @@ html {
         background:#ffe0c0;
 }
 
+#python1 {
+    position: absolute;
+    top: 40px; left: 910px;
+    width: 200px;
+    background: #f0f0f0;
+    font-size: 12pt;
+    font-weight: normal;
+    padding: 10px;
+}
+
 body {
     counter-reset: chapter;
     margin-left: auto;

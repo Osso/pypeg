@@ -1,7 +1,7 @@
 page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     h1 id=pengine> Parser Engine
 
-    h2 id=parser > Class «Parser»
+    h2 id=parser > Class Parser
 
     p   >>
         Offers parsing and composing capabilities. Implements an intrinsic
@@ -59,7 +59,7 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     p > «parse(self, text, thing, filename=None)»
 
     p   >>
-        (Partially) parse «text» following «thing.grammar» and return the
+        (Partially) parse «text» following «thing» as grammar and return the
         resulting things.
         >>
 
@@ -156,7 +156,7 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     p > «parse(text, thing, filename=None, whitespace=whitespace, comment=None)»
 
     p   >>
-        Parse text following «thing.grammar» and return the resulting things or
+        Parse text following «thing» as grammar and return the resulting things or
         raise an error.
         >>
 

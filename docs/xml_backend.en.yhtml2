@@ -1,7 +1,7 @@
 page "pyPEG – XML Backend", "counter-reset: chapter 3;" {
     h1 id=xmlbackend > XML Backend of ƒpyPEG
 
-    h2 id=workhorses > «etree» functions
+    h2 id=workhorses > etree functions
 
     p   >>
         The ƒpyPEG XML Backend uses Python's «etree» semantic. This way it can
