@@ -9,7 +9,7 @@ docs:
 deploy: dist
 	rm -f pyPEG2.tar.gz
 	ln -s dist/pyPEG2-*.tar.gz pyPEG2.tar.gz
-	scp docs/*.html docs/format.css pyPEG2.tar.gz *.txt dragon:fdik.org/pyPEG2/
+	scp docs/*.html docs/format.css pyPEG2.tar.gz *.txt samples/* dragon:fdik.org/pyPEG2/
 
 register:
 	$(PYTHON) setup.py register

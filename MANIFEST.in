@@ -1,2 +1,2 @@
 include *.txt
-recursive-include docs *.txt *.html
+recursive-include docs *.txt *.html *.css
