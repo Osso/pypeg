@@ -8,6 +8,7 @@ setup(
     packages=['pypeg2', 'pypeg2.test'],
     scripts=['samples/sample1.py', 'samples/sample2.py'],
     url='http://fdik.org/pyPEG2',
+    download_url='http://fdik.org/pyPEG2/pyPEG2.tar.gz',
     license='LICENSE.txt',
     description='An intrinsic PEG Parser-Interpreter for Python 3',
     long_description=open('README.txt').read(),
