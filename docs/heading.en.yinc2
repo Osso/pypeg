@@ -17,11 +17,11 @@ decl mark(class="mark") alias span;
 decl Mark(class="mark") alias div;
 
 decl term(*term) alias tr {
-    td p code *term;
-    td p content;
+    td class=glossary p code *term;
+    td class=glossary p content;
 };
 
-decl glossary alias table;
+decl glossary(class="glossary") alias table;
 
 decl ne(*href) alias li {
     a href=*href content;

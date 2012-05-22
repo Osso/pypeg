@@ -28,7 +28,7 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
         function declaration consists of:
         >>
 
-    table border=0 style="margin-bottom:3ex;" {
+    table style="margin-bottom:3ex;" {
         tr {
             td red >     
             td style="padding-left:.5em;" > type declaration

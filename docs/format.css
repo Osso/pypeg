@@ -67,12 +67,13 @@ code, pre {
     padding: 10px;
 }
 
-table {
+table.glossary {
     padding: 0;
     border-collapse: collapse;
+    border: none;
 }
 
-td {
+td.glossary {
     vertical-align: baseline;
     margin: 0;
     padding-left: 0.3em;
