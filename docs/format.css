@@ -51,6 +51,7 @@ em {
 }
 
 code, pre {
+    white-space: pre;
     background: #f0f0f0;
     font-size: 11pt;
     line-height: 120%;
@@ -66,8 +67,18 @@ code, pre {
     padding: 10px;
 }
 
+table {
+    padding: 0;
+    border-collapse: collapse;
+}
+
 td {
-    vertical-align: top;
+    vertical-align: baseline;
+    margin: 0;
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    border: solid gray 1px;
+    border-spacing: 0;
 }
 
 #navigation {

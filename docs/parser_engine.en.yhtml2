@@ -153,7 +153,11 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     h3 id=parse > Function parse()
    
     h4 > Synopsis
-    p > «parse(text, thing, filename=None, whitespace=whitespace, comment=None)»
+    pre
+        ||
+        parse(text, thing, filename=None, whitespace=whitespace,
+                comment=None)
+        ||
 
     p   >>
         Parse text following «thing» as grammar and return the resulting things or

@@ -464,7 +464,7 @@ Symbol('long')
     Code
         ||
         >>> from pypeg2.xmlast import thing2xml
-        >>> print(thing2xml(f, pretty=True).decode())
+        >>> print(◊thing2xml(f, pretty=True)◊.decode())
         <Function typing="int" name="f">
           <Parameters>
             <Parameter typing="int" name="a"/>
