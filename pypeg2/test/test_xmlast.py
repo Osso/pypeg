@@ -62,6 +62,14 @@ class Thing2etreeTestCase2(unittest.TestCase):
         else:
             self.assertEqual(pypeg2.xmlast.etree.tostring(root), b'<SomethingElse name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/></SomethingElse>')
 
+class Thing2XMLTestCase3(unittest.TestCase):
+    class C1(str):
+        grammar = pypeg2.ignore("!"), pypeg2.restline
+    def runTest(self):
+        r = pypeg2.parse("!all", type(self).C1)
+        xml = pypeg2.xmlast.thing2xml(r)
+        self.assertEqual(xml, b"<C1>all</C1>")
+
 class Key(str):
     grammar = pypeg2.name(), "=", pypeg2.restline
 

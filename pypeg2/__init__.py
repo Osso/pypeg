@@ -8,7 +8,7 @@ Copyleft 2012, Volker Birk.
 This program is under GNU General Public License 2.0.
 """
 
-__version__ = 2.0
+__version__ = 2.1
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
@@ -107,13 +107,13 @@ def flag(name, thing):
     return attr(name, thing, "Flag")
 
 
-def attributes(grammar):
+def attributes(grammar, invisible=False):
     """Iterates all attributes of a grammar."""
-    if type(grammar) == attr.Class:
+    if type(grammar) == attr.Class and (invisible or grammar.name[0] != "_"):
         yield grammar
     elif type(grammar) == tuple:
         for e in grammar:
-            for a in attributes(e):
+            for a in attributes(e, invisible):
                 yield a
 
 
@@ -150,7 +150,7 @@ class Namespace(collections.UserDict):
 
     def __setitem__(self, key, value):
         """x.__setitem__(i, y) <==> x[i]=y"""
-        value.name = key
+        value.name = Symbol(key)
         try:
             value.namespace
         except AttributeError:
@@ -258,19 +258,14 @@ def name():
     return attr("name", Symbol)
 
 
-class _Ignore:
-    pass
-
-
-def ignore(*grammar):
+def ignore(grammar):
     """Ignore what matches to the grammar."""
 
     try:
         ignore.serial += 1
     except AttributeError:
         ignore.serial = 1
-    return type("_Ignore" + str(ignore.serial), (_Ignore,),
-            dict(grammar=optional(grammar)))
+    return attr("_ignore" + str(ignore.serial), grammar)
 
 
 def indent(*thing):
@@ -348,7 +343,7 @@ def how_many(grammar):
     elif isinstance(grammar, attr.Class):
         return 0
 
-    elif _issubclass(grammar, _Ignore) or type(grammar) == FunctionType:
+    elif type(grammar) == FunctionType:
         return 0
 
     elif _issubclass(grammar, object):
@@ -726,13 +721,6 @@ class Parser:
             else:
                 result = text, r
 
-        elif _issubclass(thing, _Ignore):
-            t, r = self._parse(text, thing.grammar, pos)
-            if type(r) == SyntaxError:
-                result = t, r
-            else:
-                result = t, None
-
         elif _issubclass(thing, object):
             try:
                 g = thing.grammar
@@ -861,7 +849,7 @@ class Parser:
                 else:
                     result = ""
             else:
-                result = self.compose(getattr(thing, grammar.name))
+                result = self.compose(getattr(thing, grammar.name), grammar.thing)
 
         elif type(grammar) == list:
             found = False
@@ -968,9 +956,6 @@ class Parser:
                 result = compose_tuple(thing, thing[:], grammar)
             else:
                 result = compose_tuple(thing, thing, grammar)
-
-        elif _issubclass(grammar, _Ignore):
-            result = ""
 
         elif _issubclass(grammar, object):
             if isinstance(thing, grammar):

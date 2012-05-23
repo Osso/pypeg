@@ -911,9 +911,17 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     p > Ignore what matches to the grammar.
 
+    h4 > Parsing
+
     p   >>
-        Usually you shouldn't use this function. It is for some handy tricks
-        only. In common grammars it will not be there.
+        Parse what's to be ignored. The result is added to an attribute
+        named «"_ignore" + str(i)» with i as a serial number.
+        >>
+
+    h4 > Composing
+
+    p   >>
+        Compose the result as with any «attr()».
         >>
 
     h3 id=indent > Function indent()

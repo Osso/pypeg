@@ -244,13 +244,15 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     h3 id=attributes > Function attributes()
 
     h4 > Synopsis
-    p > «attributes(grammar)»
+    p > «attributes(grammar, invisible=False)»
 
     p > Iterates all attributes of a «grammar».
 
     p   >>
         This function can be used to iterate through all attributes which
-        will be generated for the top level object of the «grammar».
+        will be generated for the top level object of the «grammar». If
+        invisible is «False» omit attributes whose names are starting with
+        an underscore «_».
         >>
 
     p > Example:

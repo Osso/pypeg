@@ -247,6 +247,14 @@ class ParseEnumTestCase2(ParserTestCase):
         with self.assertRaises(SyntaxError):
             t, r = parser.parse("float", EnumTest)
 
+class ParseInvisibleTestCase(ParserTestCase):
+    class C1(str):
+        grammar = pypeg2.ignore("!"), pypeg2.restline
+    def runTest(self):
+        r = pypeg2.parse("!all", type(self).C1)
+        self.assertEqual(str(r), "all")
+        self.assertEqual(r._ignore1, None)
+
 class ComposeTestCase(unittest.TestCase): pass
 
 class ComposeString:
@@ -290,7 +298,7 @@ class ComposeAttribute:
 class ComposeAttributeTestCase(ComposeTestCase):
     def runTest(self):
         x = ComposeAttribute()
-        x.name = "hello"
+        x.name = pypeg2.Symbol("hello")
         t = pypeg2.compose(x)
         self.assertEqual(t, "hello")
 
@@ -328,6 +336,17 @@ class ComposeListTestCase(ComposeTestCase):
         x = ComposeList("hello")
         t = pypeg2.compose(x)
         self.assertEqual(t, "hello")
+
+class C2(str):
+    grammar = pypeg2.attr("some", "!"), pypeg2.restline
+
+class ComposeInvisibleTestCase(ParserTestCase):
+    def runTest(self):
+        r = pypeg2.parse("!all", C2)
+        self.assertEqual(str(r), "all")
+        self.assertEqual(r.some, None)
+        t = pypeg2.compose(r, C2)
+        self.assertEqual(t, "!all")
 
 if __name__ == '__main__':
     unittest.main()

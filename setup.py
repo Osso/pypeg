@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='pyPEG2',
-    version='2.0.0',
+    version='2.1.0',
     author='Volker Birk',
     author_email='vb@dingens.org',
     packages=['pypeg2', 'pypeg2.test'],
