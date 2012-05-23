@@ -845,7 +845,7 @@ class Parser:
         elif type(grammar) == attr.Class:
             if grammar.subtype == "Flag":
                 if getattr(thing, grammar.name):
-                    result = terminal_indent() + str(grammar.thing)
+                    result = terminal_indent() + compose(grammar.thing)
                 else:
                     result = ""
             else:
