@@ -787,7 +787,7 @@ class Parser:
         Arguments:
             thing           thing containing other things with grammar
             grammar         grammar to use for composing thing
-                            default: thing.grammar
+                            default: type(thing).grammar
 
         Returns text
 

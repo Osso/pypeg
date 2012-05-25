@@ -123,7 +123,7 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
 
     glossary {
         term "thing" > «thing» containing other things with «grammar»
-        term "grammar" > «grammar» to use for composing «thing»; default: «thing.grammar»
+        term "grammar" > «grammar» to use for composing «thing»; default: «type(thing).grammar»
     }
 
     h4 > Returns
