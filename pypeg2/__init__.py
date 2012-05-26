@@ -8,7 +8,7 @@ Copyleft 2012, Volker Birk.
 This program is under GNU General Public License 2.0.
 """
 
-__version__ = 2.1
+__version__ = 2.2
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
@@ -556,7 +556,17 @@ class Parser:
         if thing is None or type(thing) == FunctionType:
             result = text, None
 
-        elif type(thing) == str:
+        elif isinstance(thing, Keyword):
+            m = type(thing).regex.match(text)
+            if m and m.group(0) == str(thing):
+                t, r = text[len(thing):], None
+                t = self._skip(t)
+                result = t, r
+                update_pos(text, t, pos)
+            else:
+                result = text, syntax_error("expecting " + repr(thing))
+
+        elif isinstance(thing, str):
             if text.startswith(thing):
                 t, r = text[len(thing):], None
                 t = self._skip(t)
@@ -575,16 +585,6 @@ class Parser:
             else:
                 result = text, syntax_error("expecting match on "
                         + thing.pattern)
-
-        elif isinstance(thing, Keyword):
-            m = type(thing).regex.match(text)
-            if m and m.group(0) == str(thing):
-                t, r = text[len(thing):], None
-                t = self._skip(t)
-                result = t, r
-                update_pos(text, t, pos)
-            else:
-                result = text, syntax_error("expecting " + repr(thing))
 
         elif _issubclass(thing, Symbol):
             m = thing.regex.match(text)
@@ -612,7 +612,7 @@ class Parser:
 
         # non-terminal constructs
 
-        elif type(thing) == attr.Class:
+        elif isinstance(thing, attr.Class):
             t, r = self._parse(text, thing.thing, pos)
             if type(r) == SyntaxError:
                 if thing.subtype == "Flag":
@@ -625,7 +625,7 @@ class Parser:
                 else:
                     result = t, attr(thing.name, r)
 
-        elif type(thing) == tuple:
+        elif isinstance(thing, tuple):
             L = []
             t = text
             flag = True
@@ -671,7 +671,7 @@ class Parser:
             else:
                 result = text, r
 
-        elif type(thing) == list:
+        elif isinstance(thing, list):
             found = False
             for e in thing:
                 t, r = self._parse(text, e, pos)
@@ -826,7 +826,7 @@ class Parser:
             else:
                 result = self.compose(thing, grammar(thing, self))
 
-        elif isinstance(grammar, (str, int, float, complex, bool, bytes)):
+        elif isinstance(grammar, str):
             result = terminal_indent() + str(grammar)
 
         elif isinstance(grammar, RegEx):
@@ -842,7 +842,7 @@ class Parser:
             else:
                 raise ValueError(repr(thing) + " is not in " + repr(grammar))
 
-        elif type(grammar) == attr.Class:
+        elif isinstance(grammar, attr.Class):
             if grammar.subtype == "Flag":
                 if getattr(thing, grammar.name):
                     result = terminal_indent() + compose(grammar.thing)
@@ -851,7 +851,7 @@ class Parser:
             else:
                 result = self.compose(getattr(thing, grammar.name), grammar.thing)
 
-        elif type(grammar) == list:
+        elif isinstance(grammar, list):
             found = False
             for g in grammar:
                 try:
@@ -872,7 +872,7 @@ class Parser:
                 raise ValueError("none of the options in " + repr(grammar)
                         + " found")
 
-        elif type(grammar) == tuple:
+        elif isinstance(grammar, tuple):
             def compose_tuple(thing, things, grammar):
                 text = []
                 multiple, card = 1, 1
