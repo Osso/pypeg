@@ -8,7 +8,7 @@ Copyleft 2012, Volker Birk.
 This program is under GNU General Public License 2.0.
 """
 
-__version__ = 2.2
+__version__ = 2.3
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
@@ -24,8 +24,7 @@ from types import FunctionType
 word = re.compile(r"\w+")
 """Regular expression for scanning a word."""
 
-RegEx = type(word)
-"""Type of compiled regex."""
+_RegEx = type(word)
 
 restline = re.compile(r".*")
 """Regular expression for rest of line."""
@@ -117,6 +116,31 @@ def attributes(grammar, invisible=False):
                 yield a
 
 
+class RegEx:
+    """Regular Expression.
+
+    Instance Variables:
+        regex       pre-compiled object from re.compile()
+    """
+
+    def __init__(self, value):
+        self.value = value
+        self.regex = re.compile(value)
+        self.search = self.regex.search
+        self.match = self.regex.match
+        self.split = self.regex.split
+        self.findall = self.regex.findall
+        self.finditer = self.regex.finditer
+        self.sub = self.regex.sub
+        self.subn = self.regex.subn
+        self.flags = self.regex.flags
+        self.groups = self.regex.groups
+        self.groupindex = self.regex.groupindex
+        self.pattern = value
+
+    def __str__(self):
+        return self.value
+
 class List(list):
     """A List of things."""
 
@@ -124,10 +148,14 @@ class List(list):
         """Construct a List, and construct its attributes from keyword
         arguments.
         """
-        if len(args) == 1 and isinstance(args, collections.Iterable):
-            super().__init__(args[0])
+        if len(args) == 1:
+            if isinstance(args[0], str):
+                self.append(args[0])
+            else:
+                super().__init__(args[0])
         else:
             super().__init__(args)
+
         for k, v in kwargs:
             setattr(self, k, v)
 
@@ -136,7 +164,35 @@ class List(list):
         return ''.join((type(self).__name__, "(", super().__repr__(), ")"))
 
 
-class Namespace(collections.UserDict):
+class _UserDict:
+    # collections.UserDict cannot be used because of metaclass conflicts
+    def __init__(self, *args, **kwargs):
+        self.data = dict(args, kwargs)
+    def __len__(self):
+        return len(self.data)
+    def __getitem__(self, key):
+        return self.data[key]
+    def __setitem__(self, key, value):
+        self.data[key] = value
+    def __delitem__(self, key):
+        del self.data[key]
+    def __iter__(self):
+        return self.data.keys()
+    def __contains__(self, item):
+        return item in self.data
+    def items(self):
+        return self.data.items()
+    def keys(self):
+        return self.data.keys()
+    def values(self):
+        return self.data.values()
+    def clear(self):
+        self.data.clear()
+    def copy(self):
+        return self.data.copy()
+
+
+class Namespace(_UserDict):
     """A dictionary of things, indexed by their name."""
 
     def __init__(self, *args, **kwargs):
@@ -253,6 +309,13 @@ K = Keyword
 """Shortcut for Keyword."""
 
 
+class Concat(List):
+    """Concatenation of things.
+
+    This class exists as a mutable alternative to using a tuple.
+    """
+
+
 def name():
     """Generate a grammar for a symbol with name."""
     return attr("name", Symbol)
@@ -312,10 +375,22 @@ def how_many(grammar):
                     if grammar contains an illegal cardinality value
     """
 
-    if type(grammar) == list:
-        return reduce(lambda a, b: max(how_many(a), how_many(b)), grammar)
+    if grammar is None:
+        return 0
 
-    elif type(grammar) == tuple:
+    elif _issubclass(grammar, Symbol) or isinstance(grammar, (RegEx, _RegEx)):
+        return 1
+
+    elif isinstance(grammar, str):
+        return 0
+
+    elif isinstance(grammar, attr.Class):
+        return 0
+
+    elif type(grammar) == FunctionType:
+        return 0
+
+    elif isinstance(grammar, (tuple, Concat)):
         length, card = 0, 1
         for e in grammar:
             if type(e) == int:
@@ -334,17 +409,8 @@ def how_many(grammar):
                     return 2
         return length
 
-    elif type(grammar) == str or isinstance(grammar, Keyword):
-        return 0
-
-    elif isinstance(grammar, Symbol) or isinstance(grammar, RegEx):
-        return 1
-
-    elif isinstance(grammar, attr.Class):
-        return 0
-
-    elif type(grammar) == FunctionType:
-        return 0
+    elif isinstance(grammar, list):
+        return reduce(lambda a, b: max(how_many(a), how_many(b)), grammar)
 
     elif _issubclass(grammar, object):
         try:
@@ -566,16 +632,7 @@ class Parser:
             else:
                 result = text, syntax_error("expecting " + repr(thing))
 
-        elif isinstance(thing, str):
-            if text.startswith(thing):
-                t, r = text[len(thing):], None
-                t = self._skip(t)
-                result = t, r
-                update_pos(text, t, pos)
-            else:
-                result = text, syntax_error("expecting " + repr(thing))
-
-        elif isinstance(thing, RegEx):
+        elif isinstance(thing, (RegEx, _RegEx)):
             m = thing.match(text)
             if m:
                 t, r = text[len(m.group(0)):], m.group(0)
@@ -585,6 +642,15 @@ class Parser:
             else:
                 result = text, syntax_error("expecting match on "
                         + thing.pattern)
+
+        elif isinstance(thing, str):
+            if text.startswith(thing):
+                t, r = text[len(thing):], None
+                t = self._skip(t)
+                result = t, r
+                update_pos(text, t, pos)
+            else:
+                result = text, syntax_error("expecting " + repr(thing))
 
         elif _issubclass(thing, Symbol):
             m = thing.regex.match(text)
@@ -625,7 +691,7 @@ class Parser:
                 else:
                     result = t, attr(thing.name, r)
 
-        elif isinstance(thing, tuple):
+        elif isinstance(thing, (tuple, Concat)):
             L = []
             t = text
             flag = True
@@ -691,11 +757,17 @@ class Parser:
             t, r = self._parse(text, g, pos)
             if type(r) != SyntaxError:
                 obj = thing()
-                for e in r:
-                    if type(e) == attr.Class:
-                        setattr(obj, e.name, e.thing)
+                if type(r) == list:
+                    for e in r:
+                        if type(e) == attr.Class:
+                            setattr(obj, e.name, e.thing)
+                        else:
+                            obj.append(e)
+                else:
+                    if type(r) == attr.Class:
+                        setattr(obj, r.name, r.thing)
                     else:
-                        obj.append(e)
+                        obj.append(r)
                 try:
                     obj.polish()
                 except AttributeError:
@@ -826,15 +898,15 @@ class Parser:
             else:
                 result = self.compose(thing, grammar(thing, self))
 
-        elif isinstance(grammar, str):
-            result = terminal_indent() + str(grammar)
-
-        elif isinstance(grammar, RegEx):
+        elif isinstance(grammar, (RegEx, _RegEx)):
             m = grammar.match(str(thing))
             if m:
                 result = terminal_indent() + str(thing)
             else:
                 raise ValueError(repr(thing) + " does not match " + grammar.pattern)
+
+        elif isinstance(grammar, str):
+            result = terminal_indent() + str(grammar)
 
         elif isinstance(grammar, Enum):
             if thing in grammar:
@@ -851,28 +923,7 @@ class Parser:
             else:
                 result = self.compose(getattr(thing, grammar.name), grammar.thing)
 
-        elif isinstance(grammar, list):
-            found = False
-            for g in grammar:
-                try:
-                    result = self.compose(thing, g)
-                    found = True
-                    break
-                except GrammarTypeError:
-                    raise
-                except AttributeError:
-                    pass
-                except KeyError:
-                    pass
-                except TypeError:
-                    pass
-                except ValueError:
-                    pass
-            if not found:
-                raise ValueError("none of the options in " + repr(grammar)
-                        + " found")
-
-        elif isinstance(grammar, tuple):
+        elif isinstance(grammar, (tuple, Concat)):
             def compose_tuple(thing, things, grammar):
                 text = []
                 multiple, card = 1, 1
@@ -956,6 +1007,27 @@ class Parser:
                 result = compose_tuple(thing, thing[:], grammar)
             else:
                 result = compose_tuple(thing, thing, grammar)
+
+        elif isinstance(grammar, list):
+            found = False
+            for g in grammar:
+                try:
+                    result = self.compose(thing, g)
+                    found = True
+                    break
+                except GrammarTypeError:
+                    raise
+                except AttributeError:
+                    pass
+                except KeyError:
+                    pass
+                except TypeError:
+                    pass
+                except ValueError:
+                    pass
+            if not found:
+                raise ValueError("none of the options in " + repr(grammar)
+                        + " found")
 
         elif _issubclass(grammar, object):
             if isinstance(thing, grammar):

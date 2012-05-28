@@ -33,3 +33,6 @@ test:
 	PYTHONPATH=`pwd` $(PYTHON) pypeg2/test/test_xmlast.py
 	PYTHONPATH=`pwd` $(PYTHON) samples/sample1.py
 	PYTHONPATH=`pwd` $(PYTHON) samples/sample2.py
+
+install: dist
+	$(PYTHON) setup.py install --user
