@@ -124,7 +124,6 @@ class RegEx:
     """
 
     def __init__(self, value):
-        self.value = value
         self.regex = re.compile(value)
         self.search = self.regex.search
         self.match = self.regex.match
@@ -139,8 +138,25 @@ class RegEx:
         self.pattern = value
 
     def __str__(self):
+        return self.pattern
+
+    def __repr__(self):
+        return type(self).__name__ + "(" + repr(self.pattern) + ")"
+
+
+class Literal:
+    """Literal value."""
+
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
         return self.value
 
+    def __repr__(self):
+        return type(self).__name__ + "(" + repr(self.value) + ")"
+
+    
 class List(list):
     """A List of things."""
 
@@ -167,7 +183,7 @@ class List(list):
 class _UserDict:
     # collections.UserDict cannot be used because of metaclass conflicts
     def __init__(self, *args, **kwargs):
-        self.data = dict(args, kwargs)
+        self.data = dict(*args, **kwargs)
     def __len__(self):
         return len(self.data)
     def __getitem__(self, key):
@@ -195,12 +211,12 @@ class _UserDict:
 class Namespace(_UserDict):
     """A dictionary of things, indexed by their name."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         """Initialize an OrderedDict containing the data of the Namespace.
         Arguments are being put into the Namespace, keyword arguments give the
         attributes of the Namespace.
         """
-        self.data = collections.OrderedDict(args)
+        self.data = collections.OrderedDict()
         for k, v in kwargs:
             setattr(self, k, v)
 
@@ -585,6 +601,16 @@ class Parser:
             pos[0] += d_text.count("\n")
             pos[1] += len(d_text)
 
+        def has_grammar(thing):
+            try:
+                thing.grammar
+            except AttributeError:
+                return False
+            if isinstance(thing.grammar, Enum):
+                return False
+            else:
+                return True
+
         try:
             return self._memory[(text, id(thing))]
         except KeyError:
@@ -643,7 +669,7 @@ class Parser:
                 result = text, syntax_error("expecting match on "
                         + thing.pattern)
 
-        elif isinstance(thing, str):
+        elif isinstance(thing, (str, Literal)):
             if text.startswith(thing):
                 t, r = text[len(thing):], None
                 t = self._skip(t)
@@ -652,7 +678,7 @@ class Parser:
             else:
                 result = text, syntax_error("expecting " + repr(thing))
 
-        elif _issubclass(thing, Symbol):
+        elif _issubclass(thing, Symbol) and not has_grammar(thing):
             m = thing.regex.match(text)
             if m:
                 result = None
@@ -665,9 +691,6 @@ class Parser:
                         if not m.group(0) in thing.grammar:
                             result = text, syntax_error(repr(m.group(0))
                                 + " is not a member of " + repr(thing.grammar))
-                    else:
-                        raise TypeError(
-                            "only an Enum is allowed as a grammar of a Symbol")
                 if not result:
                     t, r = text[len(m.group(0)):], thing(m.group(0))
                     t = self._skip(t)
@@ -749,6 +772,26 @@ class Parser:
             else:
                 result = text, syntax_error("expecting one of " + repr(thing))
 
+        elif _issubclass(thing, Namespace):
+            t, r = self._parse(text, thing.grammar, pos)
+            if type(r) != SyntaxError:
+                if isinstance(r, thing):
+                    result = t, r
+                else:
+                    obj = thing()
+                    for e in r:
+                        if type(e) == attr.Class:
+                            setattr(obj, e.name, e.thing)
+                        else:
+                            obj[e.name] = e
+                    try:
+                        obj.polish()
+                    except AttributeError:
+                        pass
+                    result = t, obj
+            else:
+                result = text, r
+
         elif _issubclass(thing, list):
             try:
                 g = thing.grammar
@@ -756,40 +799,26 @@ class Parser:
                 g = csl(Symbol)
             t, r = self._parse(text, g, pos)
             if type(r) != SyntaxError:
-                obj = thing()
-                if type(r) == list:
-                    for e in r:
-                        if type(e) == attr.Class:
-                            setattr(obj, e.name, e.thing)
-                        else:
-                            obj.append(e)
+                if isinstance(r, thing):
+                    result = t, r
                 else:
-                    if type(r) == attr.Class:
-                        setattr(obj, r.name, r.thing)
+                    obj = thing()
+                    if type(r) == list:
+                        for e in r:
+                            if type(e) == attr.Class:
+                                setattr(obj, e.name, e.thing)
+                            else:
+                                obj.append(e)
                     else:
-                        obj.append(r)
-                try:
-                    obj.polish()
-                except AttributeError:
-                    pass
-                result = t, obj
-            else:
-                result = text, r
-
-        elif _issubclass(thing, Namespace):
-            t, r = self._parse(text, thing.grammar, pos)
-            if type(r) != SyntaxError:
-                obj = thing()
-                for e in r:
-                    if type(e) == attr.Class:
-                        setattr(obj, e.name, e.thing)
-                    else:
-                        obj[e.name] = e
-                try:
-                    obj.polish()
-                except AttributeError:
-                    pass
-                result = t, obj
+                        if type(r) == attr.Class:
+                            setattr(obj, r.name, r.thing)
+                        else:
+                            obj.append(r)
+                    try:
+                        obj.polish()
+                    except AttributeError:
+                        pass
+                    result = t, obj
             else:
                 result = text, r
 
@@ -800,39 +829,42 @@ class Parser:
                 g = word
             t, r = self._parse(text, g, pos)
             if type(r) != SyntaxError:
-                if isinstance(r, list):
-                    L, a = [], []
-                    for e in r:
-                        if type(e) == attr.Class:
-                            a.append(e)
-                        else:
-                            L.append(e)
-                    if L:
-                        lg = how_many(thing.grammar)
-                        if lg == 0:
-                            obj = None
-                        elif lg == 1:
-                            obj = thing(L[0])
-                        else:
-                            obj = thing(L)
-                    else:
-                        obj = thing()
-                    for e in a:
-                        setattr(obj, e.name, e.thing)
+                if isinstance(r, thing):
+                    result = t, r
                 else:
-                    if type(r) == attr.Class:
-                        obj = thing()
-                        setattr(obj, r.name, r.thing)
-                    else:
-                        if r is None:
-                            obj = thing()
+                    if isinstance(r, list):
+                        L, a = [], []
+                        for e in r:
+                            if type(e) == attr.Class:
+                                a.append(e)
+                            else:
+                                L.append(e)
+                        if L:
+                            lg = how_many(thing.grammar)
+                            if lg == 0:
+                                obj = None
+                            elif lg == 1:
+                                obj = thing(L[0])
+                            else:
+                                obj = thing(L)
                         else:
-                            obj = thing(r)
-                try:
-                    obj.polish()
-                except AttributeError:
-                    pass
-                result = t, obj
+                            obj = thing()
+                        for e in a:
+                            setattr(obj, e.name, e.thing)
+                    else:
+                        if type(r) == attr.Class:
+                            obj = thing()
+                            setattr(obj, r.name, r.thing)
+                        else:
+                            if r is None:
+                                obj = thing()
+                            else:
+                                obj = thing(r)
+                    try:
+                        obj.polish()
+                    except AttributeError:
+                        pass
+                    result = t, obj
             else:
                 result = text, r
 
@@ -905,7 +937,7 @@ class Parser:
             else:
                 raise ValueError(repr(thing) + " does not match " + grammar.pattern)
 
-        elif isinstance(grammar, str):
+        elif isinstance(grammar, (str, Literal)):
             result = terminal_indent() + str(grammar)
 
         elif isinstance(grammar, Enum):
