@@ -3,12 +3,13 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     h2 id=basic > Basic Grammar Elements
 
-    h3 id=literals > str instances
+    h3 id=literals > str instances and Literal
 
     h4 > Parsing
 
     p   >>
-        A «str» instance is parsed in the source text as a
+        A «str» instance as well as an instance of «pypeg2.Literal» is parsed
+        in the source text as a
         `w "Terminal_and_nonterminal_symbols" > Terminal Symbol`.
         It is removed and no result is put into the ∫Abstract syntax tree∫.
         If it does not exist at the correct position in the source text,
@@ -51,9 +52,9 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     h4 > Parsing
 
     p   >>
-        ƒpyPEG uses Python's «re» module. «pypeg2.RegEx» is an alias for
-        πre.html#re-objects Python Regular Expression Objectsπ.
-        Regular Expressions are parsed as
+        ƒpyPEG uses Python's «re» module. You can use
+        πre.html#re-objects Python Regular Expression Objectsπ purely, or use
+        the «pypeg2.RegEx» encapsulation.  Regular Expressions are parsed as
         `w "Terminal_and_nonterminal_symbols" > Terminal Symbols`. The matching 
         result is put into the AST. If no match can be achieved, a 
         «SyntaxError» is generated.
@@ -114,14 +115,14 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         'give me=◊a value\\n◊'
         ||
 
-    h3 id=tuple > tuple instances
+    h3 id=tuple > tuple instances and Concat
 
     h4 > Parsing
 
     p   >>
-        A «tuple» specifies, that different things have to be parsed one after
-        another. If not all of them parse in their sequence, a «SyntaxError» is
-        generated.
+        A «tuple» or an instance of «pypeg2.Concat» specifies, that different
+        things have to be parsed one after another. If not all of them parse in
+        their sequence, a «SyntaxError» is generated.
         >>
 
     p > Example:
@@ -194,9 +195,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     h4 > Parsing
 
     p   >>
-        A «list» instance represents different options. They're tested in their
-        sequence. The first option which parses is chosen, the others are not
-        tested any more. If none matches, a «SyntaxError» is generated.
+        A «list» instance which is not derived from «pypeg2.Concat» represents
+        different options. They're tested in their sequence. The first option
+        which parses is chosen, the others are not tested any more. If none
+        matches, a «SyntaxError» is generated.
         >>
 
     p > Example:
