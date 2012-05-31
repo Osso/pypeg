@@ -394,6 +394,9 @@ def how_many(grammar):
     if grammar is None:
         return 0
 
+    elif type(grammar) == int:
+        return grammar
+
     elif _issubclass(grammar, Symbol) or isinstance(grammar, (RegEx, _RegEx)):
         return 1
 
@@ -433,7 +436,7 @@ def how_many(grammar):
 
     else:
         raise GrammarTypeError("grammar contains an illegal type: "
-                + type(grammar).__name__)
+                + type(grammar).__name__ + ": " + repr(grammar))
 
 
 def parse(text, thing, filename=None, whitespace=whitespace, comment=None):
