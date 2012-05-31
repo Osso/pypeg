@@ -400,7 +400,7 @@ def how_many(grammar):
     elif _issubclass(grammar, Symbol) or isinstance(grammar, (RegEx, _RegEx)):
         return 1
 
-    elif isinstance(grammar, str):
+    elif isinstance(grammar, (str, Literal)):
         return 0
 
     elif isinstance(grammar, attr.Class):
