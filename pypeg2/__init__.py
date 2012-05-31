@@ -758,10 +758,10 @@ class Parser:
                     break
                 _min, _max = 1, 1
             if flag:
-                if len(L) == 0:
-                    return t, None
-                elif len(L) > 1 or how_many(thing) > 1:
+                if len(L) > 1 or how_many(thing) > 1:
                     result = t, L
+                elif not L:
+                    return t, None
                 else:
                     result = t, L[0]
             else:
