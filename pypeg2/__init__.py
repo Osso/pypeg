@@ -760,7 +760,7 @@ class Parser:
             if flag:
                 if len(L) > 1 or how_many(thing) > 1:
                     result = t, L
-                elif len(L) == 0:
+                elif not L:
                     return t, None
                 else:
                     result = t, L[0]
