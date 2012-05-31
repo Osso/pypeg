@@ -460,7 +460,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     h3 id=namespace > Class Namespace
 
     h4 > Class definition
-    p > «Namespace(collections.UserDict)»
+    p > «Namespace(_UserDict)»
 
     p > A dictionary of things, indexed by their name.
 
