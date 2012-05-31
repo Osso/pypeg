@@ -839,7 +839,7 @@ class Parser:
                 if isinstance(r, thing):
                     result = t, r
                 else:
-                    if isinstance(r, list):
+                    if type(r) == list:
                         L, a = [], []
                         for e in r:
                             if type(e) == attr.Class:
