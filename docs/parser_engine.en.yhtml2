@@ -312,6 +312,29 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
         2
         ||
 
+    h2 id=errors > Exceptions
+
+    h3 id=gerror > GrammarError
+
+    p   >>
+        Base class for all errors ƒpyPEG delivers.
+        >>
+
+    h3 id=getype > GrammarTypeError
+
+    p   >>
+        A grammar contains an object of a type which cannot be parsed,
+        for example an instance of an unknown class or of a basic type
+        like «float». It can be caused by an «int» at the wrong place, too.
+        >>
+
+    h3 id=gevalue > GrammarValueError
+
+    p   >>
+        A grammar contains an object with an illegal value, for example
+        an undefined cardinality.
+        >>
+
     div id="bottom" {
         "Want to download? Go to the "
         a "#top", "^Top^"; " and look to the right ;-)"
