@@ -429,15 +429,7 @@ def how_many(grammar):
         return reduce(lambda a, b: max(how_many(a), how_many(b)), grammar)
 
     elif _issubclass(grammar, object):
-        try:
-            grammar.grammar
-        except AttributeError:
-            if subclass(grammar, list) or subclass(grammar, Namespace):
-                return 2
-            else:
-                return 1
-        else:
-            return how_many(grammar.grammar)
+        return 1
 
     else:
         raise GrammarTypeError("grammar contains an illegal type: "
