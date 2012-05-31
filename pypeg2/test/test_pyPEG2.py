@@ -141,7 +141,7 @@ class ParseMaybeSomeTestCase2(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", pypeg2.maybe_some(re.compile(r"\d")))
-        self.assertEqual(r, ('hello, world', []))
+        self.assertEqual(r, ('hello, world', None))
 
 class ParseCardinalityTestCase1(ParserTestCase):
     def runTest(self):

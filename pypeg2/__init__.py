@@ -678,7 +678,7 @@ class Parser:
             else:
                 result = text, syntax_error("expecting " + repr(thing))
 
-        elif _issubclass(thing, Symbol) and not has_grammar(thing):
+        elif _issubclass(thing, Symbol):
             m = thing.regex.match(text)
             if m:
                 result = None
@@ -687,10 +687,17 @@ class Parser:
                 except AttributeError:
                     pass
                 else:
-                    if isinstance(thing.grammar, Enum):
+                    if thing.grammar is None:
+                        pass
+                    elif isinstance(thing.grammar, Enum):
                         if not m.group(0) in thing.grammar:
                             result = text, syntax_error(repr(m.group(0))
                                 + " is not a member of " + repr(thing.grammar))
+                    else:
+                        raise GrammarValueError(
+                                "Symbol " + type(thing).__name__
+                                + " has a grammar which is not an Enum: "
+                                + repr(thing.grammar))
                 if not result:
                     t, r = text[len(m.group(0)):], thing(m.group(0))
                     t = self._skip(t)
@@ -756,7 +763,12 @@ class Parser:
                     break
                 _min, _max = 1, 1
             if flag:
-                result = t, L
+                if len(L) == 0:
+                    return t, None
+                elif len(L) > 1 or how_many(thing) > 1:
+                    result = t, L
+                else:
+                    result = t, L[0]
             else:
                 result = text, r
 
