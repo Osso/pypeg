@@ -359,14 +359,12 @@ def indent(*thing):
     return _card(-3, thing)
 
 
-def endl(thing, parser):
-    """End of line marker for composing text."""
-    return "\n"
+endl = lambda thing, parser: "\n"
+"""End of line marker for composing text."""
 
 
-def blank(thing, parser):
-    """Space marker for composing text."""
-    return " "
+blank = lambda thing, parser: " "
+"""Space marker for composing text."""
 
 
 class GrammarError(Exception):
@@ -947,8 +945,8 @@ class Parser:
             if grammar == endl:
                 result = endl(thing, self)
                 self._got_endl = True
-            elif grammar = blank:
-                result = terminal_indent() + blank()
+            elif grammar == blank:
+                result = terminal_indent() + blank(thing, self)
             else:
                 result = self.compose(thing, grammar(thing, self))
 
