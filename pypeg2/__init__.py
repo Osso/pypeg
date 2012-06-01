@@ -169,7 +169,7 @@ class Literal:
         if isinstance(self, Literal._basic_types):
             return type(self).__name__ + "(" + super().__repr__() + ")"
         else:
-            return type(self).__name__ + "(" + str(self.value) + ")"
+            return type(self).__name__ + "(" + repr(self.value) + ")"
 
     
 class List(list):
