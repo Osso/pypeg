@@ -991,8 +991,8 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     p > End of line marker for composing text.
  
     p   >>
-        «endl» returns "\n". The indention system reacts when reading «endl»
-        while composing.
+        «endl» is outputting a linefeed charater (ASCII 10) when called. The
+        indention system reacts when reading «endl» while composing.
         >>
 
     h3 id=udcf > User defined callback functions
