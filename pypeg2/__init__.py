@@ -151,15 +151,25 @@ class RegEx:
 
 class Literal:
     """Literal value."""
-
+    _basic_types = (bool, int, float, complex, str, bytes, bytearray, list,
+            tuple, range, set, frozenset, dict)
     def __init__(self, value):
-        self.value = value
+        if isinstance(self, Literal._basic_types):
+            pass
+        else:
+            self.value = value
 
     def __str__(self):
-        return self.value
+        if isinstance(self, Literal._basic_types):
+            return super().__str__()
+        else:
+            return str(self.value)
 
     def __repr__(self):
-        return type(self).__name__ + "(" + repr(self.value) + ")"
+        if isinstance(self, Literal._basic_types):
+            return type(self).__name__ + "(" + super().__repr__() + ")"
+        else:
+            return type(self).__name__ + "(" + str(self.value) + ")"
 
     
 class List(list):
