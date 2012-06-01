@@ -8,7 +8,7 @@ Copyleft 2012, Volker Birk.
 This program is under GNU General Public License 2.0.
 """
 
-__version__ = 2.3
+__version__ = 2.4
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
@@ -947,6 +947,8 @@ class Parser:
             if grammar == endl:
                 result = endl(thing, self)
                 self._got_endl = True
+            elif grammar = blank:
+                result = terminal_indent() + blank()
             else:
                 result = self.compose(thing, grammar(thing, self))
 
