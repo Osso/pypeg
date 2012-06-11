@@ -7,10 +7,19 @@ Copyleft 2012, Volker Birk.
 This program is under GNU General Public License 2.0.
 """
 
-__version__ = 2.4
+
+from __future__ import unicode_literals
+try:
+    str = unicode
+except NameError:
+    pass
+
+
+__version__ = 2.5
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
+
 
 try:
     import lxml

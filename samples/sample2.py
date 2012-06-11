@@ -9,8 +9,8 @@ starting with a semicolon ";".
 Because IniFile and Section are Namespaces, we can access their content by
 name.
 
->>> ini_file["Number 1"]["that"]
-'something else'
+>>> print("found: " + repr(ini_file["Number 1"]["that"]))
+found: ...'something else'
 
 pyPEG is measuring the position of each object in the input text with a
 tuple (line_number, offset).
@@ -69,6 +69,7 @@ names as tag names. Spaces in names will be translated into underscores.
 ...
 """
 
+from __future__ import unicode_literals, print_function
 from pypeg2 import *
 import re
 

@@ -1,8 +1,14 @@
+from __future__ import unicode_literals
+try:
+    str = unicode
+except NameError:
+    pass
+
 import unittest
 import re, sys
 import pypeg2, pypeg2.xmlast
 
-class Another:
+class Another(object):
     grammar = pypeg2.name(), "=", pypeg2.attr("value")
 
 class Something(pypeg2.List):
@@ -82,7 +88,7 @@ class XML2ThingTestCase1(unittest.TestCase):
 
 class Instruction(str): pass
 
-class Parameter:
+class Parameter(object):
     grammar = pypeg2.attr("typing", str), pypeg2.name()
 
 class Parameters(pypeg2.Namespace):

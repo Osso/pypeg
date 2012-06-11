@@ -13,6 +13,7 @@ deploy: dist
 	make register
 
 register:
+	$(PYTHON) setup.py check
 	$(PYTHON) setup.py register
 
 test_docs:

@@ -8,10 +8,20 @@ Copyleft 2012, Volker Birk.
 This program is under GNU General Public License 2.0.
 """
 
-__version__ = 2.4
+
+from __future__ import unicode_literals
+try:
+    range = xrange
+    str = unicode
+except NameError:
+    pass
+
+
+__version__ = 2.5
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
+
 
 import re
 import collections
@@ -121,7 +131,7 @@ def attributes(grammar, invisible=False):
                 yield a
 
 
-class RegEx:
+class RegEx(object):
     """Regular Expression.
 
     Instance Variables:
@@ -129,7 +139,7 @@ class RegEx:
     """
 
     def __init__(self, value):
-        self.regex = re.compile(value)
+        self.regex = re.compile(value, re.U)
         self.search = self.regex.search
         self.match = self.regex.match
         self.split = self.regex.split
@@ -149,7 +159,7 @@ class RegEx:
         return type(self).__name__ + "(" + repr(self.pattern) + ")"
 
 
-class Literal:
+class Literal(object):
     """Literal value."""
     _basic_types = (bool, int, float, complex, str, bytes, bytearray, list,
             tuple, range, set, frozenset, dict)
@@ -161,13 +171,13 @@ class Literal:
 
     def __str__(self):
         if isinstance(self, Literal._basic_types):
-            return super().__str__()
+            return super(Literal, self).__str__()
         else:
             return str(self.value)
 
     def __repr__(self):
         if isinstance(self, Literal._basic_types):
-            return type(self).__name__ + "(" + super().__repr__() + ")"
+            return type(self).__name__ + "(" + super(Literal, self).__repr__() + ")"
         else:
             return type(self).__name__ + "(" + repr(self.value) + ")"
 
@@ -183,19 +193,19 @@ class List(list):
             if isinstance(args[0], str):
                 self.append(args[0])
             else:
-                super().__init__(args[0])
+                super(List, self).__init__(args[0])
         else:
-            super().__init__(args)
+            super(List, self).__init__(args)
 
         for k, v in kwargs:
             setattr(self, k, v)
 
     def __repr__(self):
         """x.__repr__() <==> repr(x)"""
-        return ''.join((type(self).__name__, "(", super().__repr__(), ")"))
+        return ''.join((type(self).__name__, "(", super(List, self).__repr__(), ")"))
 
 
-class _UserDict:
+class _UserDict(object):
     # collections.UserDict cannot be used because of metaclass conflicts
     def __init__(self, *args, **kwargs):
         self.data = dict(*args, **kwargs)
@@ -245,12 +255,12 @@ class Namespace(_UserDict):
         else:
             if not(value.namespace):
                 value.namespace = weakref.ref(self)
-        super().__setitem__(key, value)
+        super(Namespace, self).__setitem__(key, value)
 
     def __delitem__(self, key):
         """x.__delitem__(y) <==> del x[y]"""
         self[key].namespace = None
-        super().__delitem__(key)
+        super(Namespace, self).__delitem__(key)
 
     def __repr__(self):
         """x.__repr__() <==> repr(x)"""
@@ -269,7 +279,7 @@ class Enum(Namespace):
                 thing = Symbol(thing)
             if not isinstance(thing, Symbol):
                 raise TypeError(repr(thing) + " is not a Symbol")
-            super().__setitem__(thing.name, thing)
+            super(Enum, self).__setitem__(thing.name, thing)
 
     def __repr__(self):
         """x.__repr__() <==> repr(x)"""
@@ -522,7 +532,7 @@ def _issubclass(obj, cls):
         return False
 
 
-class Parser:
+class Parser(object):
     """Offers parsing and composing capabilities. Implements a Packrat parser.
     
     Instance variables:
@@ -609,16 +619,6 @@ class Parser:
             pos[0] += d_text.count("\n")
             pos[1] += len(d_text)
 
-        def has_grammar(thing):
-            try:
-                thing.grammar
-            except AttributeError:
-                return False
-            if isinstance(thing.grammar, Enum):
-                return False
-            else:
-                return True
-
         try:
             return self._memory[(text, id(thing))]
         except KeyError:
@@ -656,7 +656,7 @@ class Parser:
         if thing is None or type(thing) == FunctionType:
             result = text, None
 
-        elif isinstance(thing, Keyword):
+        elif isinstance(thing, Symbol):
             m = type(thing).regex.match(text)
             if m and m.group(0) == str(thing):
                 t, r = text[len(thing):], None
@@ -1019,7 +1019,7 @@ class Parser:
                         try:
                             for r in range(multiple):
                                 if isinstance(g, (str, Symbol, Literal)):
-                                    text.append(terminal_indent() + str(g))
+                                    text.append(self.compose(thing, g))
                                     if card < 1:
                                         break
                                 elif isinstance(g, FunctionType):

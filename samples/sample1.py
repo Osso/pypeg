@@ -9,16 +9,16 @@ The comment parameter is set to C style /* comments */
 >>> f = parse("int f(int a, long b) { do_this; do_that; }", Function, comment=comment_c)
 
 Because function has a name() in its grammar, we can access this now as an
-attribute.
+attribute. With Python 2.7 this gives Symbol(u'f'), with Python 3.2 it gives Symbol('f'):
 
 >>> f.name
-Symbol('f')
+Symbol(...'f')
 
 A Function has an Attribute "parms" in its grammar, which directs to class
 Parameters.
 
 >>> f.parms
-Parameters([(Symbol('a'), <__main__.Parameter object at 0x...>), (Symbol('b'), <__main__.Parameter object at 0x...>)])
+Parameters([(Symbol(...'a'), <__main__.Parameter object at 0x...>), (Symbol(...'b'), <__main__.Parameter object at 0x...>)])
 
 Because Parameters is a Namespace, we can access its content by name.
 
@@ -28,15 +28,15 @@ Because Parameters is a Namespace, we can access its content by name.
 Its content are Parameter instances. Parameter has an Attribute "typing".
 
 >>> f.parms["b"].typing
-Type('long')
+Type(...'long')
 
 The Instructions of our small sample are just words. Because Function is a
 List, we can access them one by one.
 
 >>> f
-Function(['do_this', 'do_that'])
->>> f[0]
-'do_this'
+Function([...'do_this', ...'do_that'])
+>>> print("f is " + repr(f[0]))
+f is ...'do_this'
 
 The result can be composed to a text again.
 
@@ -75,15 +75,16 @@ The XMl backend can read XML text and create things:
 >>> xml = b'<Function typing="long" name="g"><Parameters><Parameter name="x" typing="int"/></Parameters><Instruction>return</Instruction></Function>'
 >>> g = xml2thing(xml, globals())
 >>> g.name
-Symbol('g')
+Symbol(...'g')
 >>> g.typing
-Type('long')
+Type(...'long')
 >>> g.parms["x"].typing
-Type('int')
->>> g[0]
-'return'
+Type(...'int')
+>>> print("g[0] is " + repr(g[0]))
+g[0] is ...'return'
 """
 
+from __future__ import unicode_literals, print_function
 from pypeg2 import *
 
 # A Symbol can be an arbitrary word or one word of an Enum.
@@ -97,7 +98,7 @@ class Type(Keyword):
 # compose(). parse() ignores callback functions. blank inserts " ".
 # name() generates a name attribute.
 
-class Parameter:
+class Parameter(object):
     grammar = attr("typing", Type), blank, name()
 
 # A Namespace is a container for named things.
