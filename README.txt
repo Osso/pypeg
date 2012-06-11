@@ -1,6 +1,6 @@
-========================
-pyPEG 2.0 for Python 3.x
-========================
+==============================
+pyPEG 2 for Python 2.7 and 3.x
+==============================
 
 Python is a nice scripting language. It even gives you access to its own parser
 and compiler. It also gives you access to different other parsers for special
