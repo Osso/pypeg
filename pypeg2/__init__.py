@@ -24,12 +24,16 @@ __url__ = "http://fdik.org/pyPEG"
 
 
 import re
-import collections
 import sys
 import weakref
 import warnings
 from functools import reduce
 from types import FunctionType
+from collections import namedtuple
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
 
 
 word = re.compile(r"\w+")
@@ -113,7 +117,7 @@ def attr(name, thing=word, subtype=None):
                     + repr(name), SyntaxWarning)
     return attr.Class(name, thing, subtype)
 
-attr.Class = collections.namedtuple("Attribute", ("name", "thing", "subtype"))
+attr.Class = namedtuple("Attribute", ("name", "thing", "subtype"))
 
 
 def flag(name, thing):
@@ -206,7 +210,7 @@ class List(list):
 
 
 class _UserDict(object):
-    # collections.UserDict cannot be used because of metaclass conflicts
+    # UserDict cannot be used because of metaclass conflicts
     def __init__(self, *args, **kwargs):
         self.data = dict(*args, **kwargs)
     def __len__(self):
@@ -241,7 +245,7 @@ class Namespace(_UserDict):
         Arguments are being put into the Namespace, keyword arguments give the
         attributes of the Namespace.
         """
-        self.data = collections.OrderedDict()
+        self.data = OrderedDict()
         for k, v in kwargs:
             setattr(self, k, v)
 
@@ -273,7 +277,7 @@ class Enum(Namespace):
 
     def __init__(self, *things):
         """Construct an Enum using a tuple of things."""
-        self.data = collections.OrderedDict()
+        self.data = OrderedDict()
         for thing in things:
             if type(thing) == str:
                 thing = Symbol(thing)
