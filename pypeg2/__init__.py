@@ -2,7 +2,7 @@
 pyPEG parsing framework
 
 pyPEG offers a packrat parser as well as a framework to parse and output
-languages for Python 3. See http://fdik.org/pyPEG2
+languages for Python 2.7 and 3.x, see http://fdik.org/pyPEG2
 
 Copyleft 2012, Volker Birk.
 This program is under GNU General Public License 2.0.
