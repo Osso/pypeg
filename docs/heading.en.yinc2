@@ -35,9 +35,11 @@ div id="headline" {
         "pyPEG 2.5.5 of Tu Jun 12 2012 – Copyleft 2009-2012, "
         a "http://fdik.org", "Volker Birk";
     }
-    div id=python1 p {
-        > This version supports Python 2.7 and 3.x.
-    }
+    div id=python1 p
+        >>
+        Requires Python 2.7 or 3.x`br`
+        Older versions: ¬http://fdik.org/pyPEG1 pyPEG 1.x¬
+        >>
 }
 
 div id="navigation" {
