@@ -45,7 +45,7 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
         term "filename"
             > filename where text is origin from
         term "autoblank"
-            > add blanks if grammar would possibly be violated otherwise; default: True
+            > add blanks while composing if grammar would possibly be violated otherwise; default: True
     }
 
     h3 id=parser_init > Method init()
@@ -119,7 +119,10 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     h4 > Synopsis
     p > «compose(self, thing, grammar=None)»
 
-    p > Compose text using «thing» with «grammar».
+    p   >>
+        Compose text using «thing» with «grammar». If «thing.compose()»
+        exists, execute it, otherwise use «grammar» to compose.
+        >>
 
     h4 > Arguments
 

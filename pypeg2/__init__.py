@@ -571,8 +571,8 @@ class Parser(object):
         text                original text to parse; set for decorated syntax
                             errors
         filename            filename where text is origin from
-        autoblank           add blanks if grammar would possibly be
-                            violated otherwise
+        autoblank           add blanks while composing if grammar would possibly
+                            be violated otherwise
                             default: True
     """
 
@@ -980,6 +980,13 @@ class Parser(object):
                     return blank(thing, self)
             else:
                 return ""
+
+        try:
+            thing.compose
+        except AttributeError:
+            pass
+        else:
+            return thing.compose()
 
         if not grammar:
             try:
