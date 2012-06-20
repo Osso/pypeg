@@ -965,7 +965,66 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         ◊    second;◊
         }
         ||
+
+    h3 id=contiguous > Function contiguous()
+
+    h4 > Synopsis
+    p > «contiguous(*thing)»
+
+    p   >>
+        Temporary disable automated whitespace removing while parsing «thing».
+        >>
+
+    h4 > Parsing
+
+    p   >>
+        While parsing whitespace removing is disabled. That means, if
+        whitespace is not part of the grammar, it will lead to a «SyntaxError»
+        if whitespace will be found between the parsed objects.
+        >>
+
+    p > Example:
+
+    Code
         ||
+        class Path(List):
+            grammar = flag("relative", "."), maybe_some(Symbol, ".")
+
+        class Reference(GrammarElement):
+            grammar = ◊contiguous(◊attr("path", Path), name()◊)◊
+        ||
+
+    h4 > Composing
+
+    p   >>
+        While composing the «contiguous» function has no effect.
+        >>
+
+    h3 id=separated > Function separated()
+
+    h4 > Synopsis
+    p > «separated(*thing)»
+
+    p   >>
+        Temporary enable automated whitespace removing while parsing «thing».
+        Whitespace removing is enabled by default. This function is for
+        temporary enabling whitespace removing after it was disabled with the
+        ¬#contiguous contiguous function¬.
+        >>
+
+    h4 > Parsing
+
+    p   >>
+        While parsing whitespace removing is enabled again. That means, if
+        whitespace is not part of the grammar, it will be omitted if whitespace
+        will be found between parsed objects.
+        >>
+
+    h4 > Composing
+
+    p   >>
+        While composing the «separated» function has no effect.
+        >>
 
     h2 id=callbacks > Callback functions
     

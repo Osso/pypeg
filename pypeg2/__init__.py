@@ -17,7 +17,7 @@ except NameError:
     pass
 
 
-__version__ = 2.5
+__version__ = 2.6
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
@@ -383,6 +383,20 @@ def indent(*thing):
     return _card(-3, thing)
 
 
+def contiguous(*thing):
+    """Disable automated whitespace matching.
+    Inserts -4 as cardinality before thing.
+    """
+    return _card(-4, thing)
+
+
+def separated(*thing):
+    """Enable automated whitespace matching.
+    Inserts -5 as cardinality before thing.
+    """
+    return _card(-5, thing)
+
+
 endl = lambda thing, parser: "\n"
 """End of line marker for composing text."""
 
@@ -440,12 +454,14 @@ def how_many(grammar):
         length, card = 0, 1
         for e in grammar:
             if type(e) == int:
-                if e < -3:
+                if e < -5:
                     raise GrammarValueError(
                         "illegal cardinality value in grammar: " + str(e))
-                if e in (-1, -2):
+                if e in (-5, -4, -3):
+                    pass
+                elif e in (-1, -2):
                     card = 2
-                elif e in (-3, 0):
+                elif e == 0:
                     card = 1
                 else:
                     card = min(e, 2)
@@ -564,6 +580,7 @@ class Parser(object):
         self.filename = None
         self._memory = {}
         self._got_endl = True
+        self._contiguous = False
 
     def parse(self, text, thing, filename=None):
         """(Partially) parse text following thing as grammar and return the
@@ -603,7 +620,7 @@ class Parser(object):
         t2 = None
         t = text
         while t2 != t:
-            if self.whitespace:
+            if self.whitespace and not self._contiguous:
                 t, r = self._parse(t, self.whitespace, pos)
             t2 = t
             if self.comment:
@@ -612,6 +629,7 @@ class Parser(object):
 
     def _parse(self, text, thing, pos=[1, 0]):
         # Parser implementation
+        parse = None
 
         def update_pos(text, t, pos):
             # Calculate where we are in the text
@@ -716,7 +734,7 @@ class Parser(object):
                     result = t, r
                     update_pos(text, t, pos)
             else:
-                result = text, syntax_error("expecting " + type(thing).__name__)
+                result = text, syntax_error("expecting " + thing.__name__)
 
         # non-terminal constructs
 
@@ -738,13 +756,19 @@ class Parser(object):
             t = text
             flag = True
             _min, _max = 1, 1
+            contiguous = self._contiguous
             for e in thing:
                 if type(e) == int:
-                    if e < -3:
+                    if e < -5:
                         raise GrammarValueError(
                             "illegal cardinality value in grammar: " + str(e))
-                    if e == -3:
-                        _min, _max = 1, 1
+                    if e == -5:
+                        self._contiguous = False
+                        t = self._skip(t)
+                    elif e == -4:
+                        self._contiguous = True
+                    elif e == -3:
+                        pass
                     elif e == -2:
                         _min, _max = 1, sys.maxsize
                     elif e == -1:
@@ -775,6 +799,9 @@ class Parser(object):
                     break
                 _min, _max = 1, 1
             if flag:
+                if self._contiguous and not contiguous:
+                    self._contiguous = False
+                    t = self._skip(t)
                 if len(L) > 1 or how_many(thing) > 1:
                     result = t, L
                 elif not L:
@@ -783,6 +810,7 @@ class Parser(object):
                     result = t, L[0]
             else:
                 result = text, r
+            self._contiguous = contiguous
 
         elif isinstance(thing, list):
             found = False
@@ -1003,7 +1031,7 @@ class Parser(object):
                             self.indention_level -= indenting
                             self.indenting = 0
                     elif type(g) == int:
-                        if g < -3:
+                        if g < -5:
                             raise GrammarValueError(
                                 "illegal cardinality value in grammar: " +
                                 str(g)
@@ -1011,7 +1039,7 @@ class Parser(object):
                         card = g
                         if g in (-2, -1):
                             multiple = sys.maxsize
-                        elif g in (-3, 0):
+                        elif g in (-5, -4, -3, 0):
                             multiple = 1
                             if g == -3:
                                 self.indention_level += 1
