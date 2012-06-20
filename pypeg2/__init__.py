@@ -986,7 +986,7 @@ class Parser(object):
         except AttributeError:
             pass
         else:
-            return thing.compose()
+            return terminal_indent() + thing.compose()
 
         if not grammar:
             try:
@@ -1035,7 +1035,7 @@ class Parser(object):
         elif isinstance(grammar, attr.Class):
             if grammar.subtype == "Flag":
                 if getattr(thing, grammar.name):
-                    result = self.compose(grammar.thing)
+                    result = self.compose(thing, grammar.thing)
                 else:
                     result = terminal_indent()
             else:
