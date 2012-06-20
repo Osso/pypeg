@@ -519,7 +519,7 @@ def parse(text, thing, filename=None, whitespace=whitespace, comment=None):
     return r
 
 
-def compose(thing, grammar=None, indent="    "):
+def compose(thing, grammar=None, indent="    ", autoblank=True):
     """Compose text using thing with grammar.
 
     Arguments:
@@ -528,6 +528,9 @@ def compose(thing, grammar=None, indent="    "):
                         default: thing.grammar
         indent          string to use to indent while composing
                         default: four spaces
+        autoblank       add blanks if grammar would possibly be
+                        violated otherwise
+                        default: True
 
     Returns text
 
@@ -541,6 +544,7 @@ def compose(thing, grammar=None, indent="    "):
 
     parser = Parser()
     parser.indent = indent
+    parser.autoblank = autoblank
     return parser.compose(thing, grammar)
 
 
@@ -567,6 +571,9 @@ class Parser(object):
         text                original text to parse; set for decorated syntax
                             errors
         filename            filename where text is origin from
+        autoblank           add blanks if grammar would possibly be
+                            violated otherwise
+                            default: True
     """
 
     def __init__(self):
@@ -578,6 +585,7 @@ class Parser(object):
         self.indention_level = 0
         self.text = None
         self.filename = None
+        self.autoblank = True
         self._memory = {}
         self._got_endl = True
         self._contiguous = False
@@ -966,7 +974,7 @@ class Parser(object):
                 self._got_endl = False
                 return result
             elif do_blank and self.whitespace:
-                if self._contiguous:
+                if self._contiguous or not self.autoblank:
                     return ""
                 else:
                     return blank(thing, self)

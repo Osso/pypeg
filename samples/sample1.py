@@ -6,7 +6,7 @@ setting includes skipping of whitespace, so we don't need to take care of that.
 
 The comment parameter is set to C style /* comments */
 
->>> f = parse("int f(int a, long b) { do_this; do_that; } /* hello */", Function, comment=comment_c)
+>>> f = parse("int f(int a, long b) { do_this; do_that; }", Function, comment=comment_c)
 
 Because function has a name() in its grammar, we can access this now as an
 attribute. With Python 2.7 this gives Symbol(u'f'), with Python 3.2 it gives Symbol('f'):

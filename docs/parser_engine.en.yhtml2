@@ -44,6 +44,8 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
             > original text to parse; set for decorated syntax errors
         term "filename"
             > filename where text is origin from
+        term "autoblank"
+            > add blanks if grammar would possibly be violated otherwise; default: True
     }
 
     h3 id=parser_init > Method init()
@@ -206,7 +208,7 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     h3 id=compose > Function compose()
 
     h4 > Synopsis
-    p > «compose(thing, grammar=None, indent="    ")»
+    p > «compose(thing, grammar=None, indent="    ", autoblank=True)»
 
     p > Compose text using «thing» with «grammar».
 
@@ -216,6 +218,8 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
         term "thing" > «thing» containing other things with «grammar»
         term "grammar" > «grammar» to use to compose thing; default: «thing.grammar»
         term "indent" > string to use to indent while composing; default: four spaces
+        term "autoblank"
+            > add blanks if grammar would possibly be violated otherwise; default: True
     }
 
     h4 > Returns

@@ -308,19 +308,20 @@ Symbol('long')
 
     Code
         ||
-        >>> compose(f)
-        'int f(int a, long b){do_this;do_that;}'
+        >>> compose(f, autoblank=False)
+        'intf(inta, longb){do_this;do_that;}'
         ||
 
     p   >>
         As you can see, for composing first there is a lack of whitespace. This
-        is because we used the automated whitespace removing functionality of ƒpyPEG,
-        which is enabled by default. To improve on that we have to extend our
-        «grammar» templates a little bit. For that case, there are callback
-        function objects in ƒpyPEG. They're only executed by «compose()» and ignored
-        by «parse()». And as usual, there are predefined ones for the common
-        cases. Let's try that out. First let's add «blank» between things which
-        should be separated:
+        is because we used the automated whitespace removing functionality of
+        ƒpyPEG while parsing (which is enabled by default) but we disabled the
+        automated adding of blanks if violating syntax otherwise. To improve on
+        that we have to extend our «grammar» templates a little bit. For that
+        case, there are callback function objects in ƒpyPEG. They're only
+        executed by «compose()» and ignored by «parse()». And as usual, there
+        are predefined ones for the common cases. Let's try that out. First
+        let's add «blank» between things which should be separated:
         >>
 
     Code
@@ -338,7 +339,7 @@ Symbol('long')
         >>
 
     Code    ||
-            >>> compose(f)
+            >>> compose(f, autoblank=False)
             'int◊ ◊f(int◊ ◊a, long◊ ◊b){do_this;do_that;}'
             ||
 
