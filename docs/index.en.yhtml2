@@ -309,7 +309,7 @@ Symbol('long')
     Code
         ||
         >>> compose(f)
-        'intf(inta, longb){do_this;do_that;}'
+        'int f(int a, long b){do_this;do_that;}'
         ||
 
     p   >>
