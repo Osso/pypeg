@@ -581,6 +581,7 @@ class Parser(object):
         self._memory = {}
         self._got_endl = True
         self._contiguous = False
+        self._got_regex = False
 
     def parse(self, text, thing, filename=None):
         """(Partially) parse text following thing as grammar and return the
@@ -958,11 +959,17 @@ class Parser(object):
             # make sure that we're not having this type error
             compose = None
 
-        def terminal_indent():
+        def terminal_indent(do_blank=False):
+            self._got_regex = False
             if self._got_endl:
                 result = self.indent * self.indention_level
                 self._got_endl = False
                 return result
+            elif do_blank and self.whitespace:
+                if self._contiguous:
+                    return ""
+                else:
+                    return blank(thing, self)
             else:
                 return ""
 
@@ -995,10 +1002,11 @@ class Parser(object):
         elif isinstance(grammar, (RegEx, _RegEx)):
             m = grammar.match(str(thing))
             if m:
-                result = terminal_indent() + str(thing)
+                result = terminal_indent(do_blank=self._got_regex) + str(thing)
             else:
                 raise ValueError(repr(thing) + " does not match "
                         + grammar.pattern)
+            self._got_regex = True
 
         elif isinstance(grammar, (str, Literal)):
             result = terminal_indent() + str(grammar)

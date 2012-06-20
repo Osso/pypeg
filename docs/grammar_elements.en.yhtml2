@@ -164,9 +164,8 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     p   >>
         The special cardinality values can be generated with the
-        ¬#cardfuncs Cardinality Functions¬.  The value «-3» is reserved for the
-        indention system. Other negative values are reserved and may not be
-        used.
+        ¬#cardfuncs Cardinality Functions¬. Other negative values are reserved
+        and may not be used.
         >>
 
     h4 > Composing
@@ -932,7 +931,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     p > «indent(*thing)»
 
     p   >>
-        Indent thing by one level. Inserts «-3» as cardinality before thing.
+        Indent thing by one level.
         >>
 
     h4 > Parsing
@@ -1009,7 +1008,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         Temporary enable automated whitespace removing while parsing «thing».
         Whitespace removing is enabled by default. This function is for
         temporary enabling whitespace removing after it was disabled with the
-        ¬#contiguous contiguous function¬.
+        «contiguous» function.
         >>
 
     h4 > Parsing
