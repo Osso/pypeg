@@ -17,7 +17,7 @@ except NameError:
     pass
 
 
-__version__ = 2.6
+__version__ = 2.7
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
@@ -113,7 +113,8 @@ def attr(name, thing=word, subtype=None):
     """
     if __debug__:
         if isinstance(thing, tuple):
-            warnings.warn(type(thing).__name__ + " not recommended as grammar of attribute "
+            warnings.warn(type(thing).__name__
+                    + " not recommended as grammar of attribute "
                     + repr(name), SyntaxWarning)
     return attr.Class(name, thing, subtype)
 
@@ -181,7 +182,8 @@ class Literal(object):
 
     def __repr__(self):
         if isinstance(self, Literal._basic_types):
-            return type(self).__name__ + "(" + super(Literal, self).__repr__() + ")"
+            return type(self).__name__ + "(" + \
+                    super(Literal, self).__repr__() + ")"
         else:
             return type(self).__name__ + "(" + repr(self.value) + ")"
 
@@ -206,7 +208,8 @@ class List(list):
 
     def __repr__(self):
         """x.__repr__() <==> repr(x)"""
-        return ''.join((type(self).__name__, "(", super(List, self).__repr__(), ")"))
+        return ''.join((type(self).__name__, "(", super(List, self).__repr__(),
+            ")"))
 
 
 class _UserDict(object):
@@ -472,7 +475,12 @@ def how_many(grammar):
         return length
 
     elif isinstance(grammar, list):
-        return reduce(lambda a, b: max(how_many(a), how_many(b)), grammar)
+        m = 0
+        for e in grammar:
+            m = max(m, how_many(e))
+            if m == 2:
+                return m
+        return m
 
     elif _issubclass(grammar, object):
         return 1
@@ -893,34 +901,40 @@ class Parser(object):
                 if isinstance(r, thing):
                     result = t, r
                 else:
-                    if type(r) == list:
-                        L, a = [], []
-                        for e in r:
-                            if type(e) == attr.Class:
-                                a.append(e)
+                    try:
+                        if type(r) == list:
+                            L, a = [], []
+                            for e in r:
+                                if type(e) == attr.Class:
+                                    a.append(e)
+                                else:
+                                    L.append(e)
+                            if L:
+                                lg = how_many(thing.grammar)
+                                if lg == 0:
+                                    obj = None
+                                elif lg == 1:
+                                    obj = thing(L[0])
+                                else:
+                                    obj = thing(L)
                             else:
-                                L.append(e)
-                        if L:
-                            lg = how_many(thing.grammar)
-                            if lg == 0:
-                                obj = None
-                            elif lg == 1:
-                                obj = thing(L[0])
-                            else:
-                                obj = thing(L)
-                        else:
-                            obj = thing()
-                        for e in a:
-                            setattr(obj, e.name, e.thing)
-                    else:
-                        if type(r) == attr.Class:
-                            obj = thing()
-                            setattr(obj, r.name, r.thing)
-                        else:
-                            if r is None:
                                 obj = thing()
+                            for e in a:
+                                setattr(obj, e.name, e.thing)
+                        else:
+                            if type(r) == attr.Class:
+                                obj = thing()
+                                setattr(obj, r.name, r.thing)
                             else:
-                                obj = thing(r)
+                                if r is None:
+                                    obj = thing()
+                                else:
+                                    obj = thing(r)
+                    except TypeError as t:
+                        L = list(t.args)
+                        L[0] = thing.__name__ + ": " + L[0]
+                        t.args = tuple(L)
+                        raise t
                     try:
                         obj.polish()
                     except AttributeError:
@@ -964,7 +978,7 @@ class Parser(object):
                             if grammar contains an illegal cardinality value
         """
         if __debug__:
-            # make sure that we're not having this type error
+            # make sure that we're not having this typing error
             compose = None
 
         def terminal_indent(do_blank=False):
@@ -1056,9 +1070,8 @@ class Parser(object):
                     elif type(g) == int:
                         if g < -5:
                             raise GrammarValueError(
-                                "illegal cardinality value in grammar: " +
-                                str(g)
-                            )
+                                "illegal cardinality value in grammar: "
+                                + str(g))
                         card = g
                         if g in (-2, -1):
                             multiple = sys.maxsize
@@ -1152,7 +1165,10 @@ class Parser(object):
                 else:
                     result = self.compose(thing, grammar.grammar)
             else:
-                raise ValueError(repr(thing) + " is not a " + repr(grammar))
+                if grammar == Symbol and isinstance(thing, str):
+                    result = self.compose(str(thing), Symbol.regex)
+                else:
+                    raise ValueError(repr(thing) + " is not a " + repr(grammar))
 
         else:
             raise GrammarTypeError("in grammar: " + repr(grammar))
