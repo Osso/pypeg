@@ -188,10 +188,16 @@ class Literal(object):
             return type(self).__name__ + "(" + repr(self.value) + ")"
 
     def __eq__(self, other):
-        if type(self) == type(other) and str(self) == str(other):
-            return True
+        if isinstance(self, Literal._basic_types):
+            if type(self) == type(other) and super().__eq__(other):
+                return True
+            else:
+                return False
         else:
-            return False
+            if type(self) == type(other) and str(self) == str(other):
+                return True
+            else:
+                return False
 
 
 class List(list):
