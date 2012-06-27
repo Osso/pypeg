@@ -187,7 +187,13 @@ class Literal(object):
         else:
             return type(self).__name__ + "(" + repr(self.value) + ")"
 
-    
+    def __eq__(self, other):
+        if type(self) == type(other) and str(self) == str(other):
+            return True
+        else:
+            return False
+
+
 class List(list):
     """A List of things."""
 
@@ -210,6 +216,9 @@ class List(list):
         """x.__repr__() <==> repr(x)"""
         return ''.join((type(self).__name__, "(", super(List, self).__repr__(),
             ")"))
+
+    def __eq__(self, other):
+        return super(List, self).__eq__(list(other))
 
 
 class _UserDict(object):
@@ -802,7 +811,7 @@ class Parser(object):
                         break
                     else:
                         t = t2
-                        if r != None:
+                        if r is not None:
                             if type(r) is list:
                                 L.extend(r)
                             else:
