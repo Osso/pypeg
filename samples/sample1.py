@@ -69,7 +69,7 @@ pyPEG contains an XML backend, too:
 </Function>
 ...
 
-The XMl backend can read XML text and create things:
+The XML backend can read XML text and create things:
 
 >>> from pypeg2.xmlast import xml2thing
 >>> xml = b'<Function typing="long" name="g"><Parameters><Parameter name="x" typing="int"/></Parameters><Instruction>return</Instruction></Function>'
