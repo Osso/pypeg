@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-_version = '2.7.1'
+_version = '2.8'
 
 setup(
     name='pyPEG2',
@@ -15,6 +15,7 @@ setup(
     description='An intrinsic PEG Parser-Interpreter for Python',
     long_description=open('README.txt').read(),
     requires=['lxml',],
+    provides=['pyPEG2 (' + _version + ')',],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',

@@ -17,7 +17,7 @@ except NameError:
     pass
 
 
-__version__ = 2.7
+__version__ = 2.8
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
@@ -215,7 +215,7 @@ class List(list):
         else:
             super(List, self).__init__(args)
 
-        for k, v in kwargs:
+        for k, v in kwargs.items():
             setattr(self, k, v)
 
     def __repr__(self):
