@@ -260,6 +260,13 @@ page "pyPEG – a PEG Parser-Interpreter in Python" {
             ||
 
     p   >>
+        ƒCaveat: pyPEG 2.x is written for Python 3. You can use it with
+        Python 2.7 with the following import (you don't need that for Python 3):
+        >>
+
+    Code | from __future__ import unicode_literals, print_function
+
+    p   >>
         Well, that looks pretty good now. Let's try it out using the «parse()» function:
         >>
 
