@@ -89,17 +89,17 @@ def optional(*thing):
     return _card(0, thing)
 
 
-def csl(*thing):
+def csl(*thing, separator=","):
     """Generate a grammar for a simple comma separated list."""
     # reduce unnecessary recursions
     if len(thing) == 1:
         L = [thing[0]]
-        L.extend(maybe_some(",", blank, thing[0]))
+        L.extend(maybe_some(separator, blank, thing[0]))
         return tuple(L)
     else:
         L = list(thing)
         L.append(-1)
-        L2 = [",", blank]
+        L2 = [separator, blank]
         L2.extend(tuple(thing))
         L.append(tuple(L2))
         return tuple(L)
