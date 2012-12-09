@@ -350,5 +350,13 @@ class ComposeInvisibleTestCase(ParserTestCase):
         t = pypeg2.compose(r, C2)
         self.assertEqual(t, "!all")
 
+class CslPython32Compatibility(ParserTestCase):
+    def runTest(self):
+        try:
+            g = eval("pypeg2.csl('hello', 'world', separator=';')")
+        except TypeError:
+            return
+        self.assertEqual(g, ("hello", "world", -1, (";", pypeg2.blank, "hello", "world")))
+
 if __name__ == '__main__':
     unittest.main()
