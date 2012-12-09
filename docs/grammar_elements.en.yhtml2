@@ -1,6 +1,22 @@
 page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     h1 id=gelements > Grammar Elements
 
+    p   >>
+        ƒCaveat: pyPEG 2.x is written for Python 3. That means, it accepts
+        Unicode strings only.  You can use it with Python 2.7 by writing
+        «u'string'» instead of «'string'» or with the following import (you
+        don't need that for Python 3):
+        >>
+
+    Code | from __future__ import unicode_literals
+
+    p   >>
+        The samples in this documentation are written for Python 3, too. To
+        execute them with Python 2.7, you'll need this import:
+        >>
+
+    Code | from __future__ import print_function
+
     h2 id=basic > Basic Grammar Elements
 
     h3 id=literals > str instances and Literal

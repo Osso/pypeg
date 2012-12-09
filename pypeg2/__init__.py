@@ -17,7 +17,7 @@ except NameError:
     pass
 
 
-__version__ = 2.8
+__version__ = 2.9
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
@@ -26,8 +26,8 @@ __url__ = "http://fdik.org/pyPEG"
 import re
 import sys
 import weakref
-import warnings
-from functools import reduce
+if __debug__:
+    import warnings
 from types import FunctionType
 from collections import namedtuple
 try:
@@ -89,8 +89,7 @@ def optional(*thing):
     return _card(0, thing)
 
 
-def csl(*thing, separator=","):
-    """Generate a grammar for a simple comma separated list."""
+def _csl(separator, *thing):
     # reduce unnecessary recursions
     if len(thing) == 1:
         L = [thing[0]]
@@ -103,6 +102,18 @@ def csl(*thing, separator=","):
         L2.extend(tuple(thing))
         L.append(tuple(L2))
         return tuple(L)
+
+try:
+    # Python 3.x
+    _exec = eval("exec")
+    _exec('''
+def csl(*thing, separator=","):
+    """Generate a grammar for a simple comma separated list."""
+    return _csl(separator, *thing)
+''')
+except SyntaxError:
+    # Python 2.7
+    csl = lambda *thing: _csl(",", *thing)
 
 
 def attr(name, thing=word, subtype=None):

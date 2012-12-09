@@ -1,4 +1,4 @@
-PYTHON=python3.2
+PYTHON=python2.7
 
 .PHONY: docs test_docs clean push dist test register deploy
 
