@@ -788,8 +788,12 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     h3 id=csl > Function csl()
 
     h4 > Synopsis
-    p > «csl(*thing, separator=",") # Python 3.x»
-    p > «csl(*thing)                # Python 2.7»
+
+    h5 > Python 3.x:
+    p > «csl(*thing, separator=",")»
+
+    h5 > Python 2.7:
+    p > «csl(*thing)»
 
     p > Generate a grammar for a simple comma separated list.
 
