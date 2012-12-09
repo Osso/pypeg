@@ -113,7 +113,9 @@ def csl(*thing, separator=","):
 ''')
 except SyntaxError:
     # Python 2.7
-    csl = lambda *thing: _csl(",", *thing)
+    def csl(*thing):
+        """Generate a grammar for a simple comma separated list."""
+        return _csl(",", *thing)
 
 
 def attr(name, thing=word, subtype=None):
@@ -178,7 +180,7 @@ class RegEx(object):
 class Literal(object):
     """Literal value."""
     _basic_types = (bool, int, float, complex, str, bytes, bytearray, list,
-            tuple, range, set, frozenset, dict)
+            tuple, slice, set, frozenset, dict)
     def __init__(self, value):
         if isinstance(self, Literal._basic_types):
             pass
