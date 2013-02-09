@@ -15,7 +15,7 @@ except NameError:
     pass
 
 
-__version__ = 2.9
+__version__ = 2.10
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
@@ -49,10 +49,10 @@ def create_tree(thing, parent=None, object_names=False):
     try:
         grammar = type(thing).grammar
     except AttributeError:
-        if isinstance(thing, pypeg2.List):
-            grammar = pypeg2.csl(name())
+        if isinstance(thing, list):
+            grammar = pypeg2.csl(pypeg2.name())
         else:
-            grammar = word
+            grammar = pypeg2.word
 
     name = type(thing).__name__
 
@@ -72,15 +72,13 @@ def create_tree(thing, parent=None, object_names=False):
         if object_names and e.name == "name":
             if name != type(thing).__name__:
                 continue
-        key, value = e.name, getattr(thing, e.name)
-        found = False
-        for tp in (str, int, float, complex, bool, bytes):
-            if isinstance(value, tp):
+        key, value = e.name, getattr(thing, e.name, None)
+        if value is not None:
+            if pypeg2._issubclass(e.thing, (str, int, pypeg2.Literal)) \
+                    or type(e.thing) == pypeg2._RegEx:
                 me.set(key, str(value))
-                found = True
-                break
-        if not found:
-            create_tree(value, me, object_names)
+            else:
+                create_tree(value, me, object_names)
 
     if isinstance(thing, list):
         things = thing
@@ -149,6 +147,7 @@ def create_thing(element, symbol_table):
         thing = C()
     
     subs = iter(element)
+    iterated_already = False
 
     try:
         grammar = C.grammar
@@ -157,19 +156,33 @@ def create_thing(element, symbol_table):
     else:
         for e in pypeg2.attributes(grammar):
             key = e.name
-            try:
-                value = element.attrib[e.name]
-            except KeyError:
-                sub = next(subs)
-                t = create_thing(sub, symbol_table)
-                setattr(thing, key, t)
+            if pypeg2._issubclass(e.thing, (str, int, pypeg2.Literal)) \
+                    or type(e.thing) == pypeg2._RegEx:
+                try:
+                    value = element.attrib[e.name]
+                except KeyError:
+                    pass
+                else:
+                    setattr(thing, key, e.thing(value))
             else:
-                setattr(thing, key, e.thing(value))
+                try:
+                    if not iterated_already:
+                        iterated_already = True
+                        sub = next(subs)
+                except StopIteration:
+                    pass
+                if sub.tag == e.thing.__name__:
+                    iterated_already = False
+                    t = create_thing(sub, symbol_table)
+                    setattr(thing, key, t)
 
     if issubclass(C, list) or issubclass(C, pypeg2.Namespace):
         try:
             while True:
-                sub = next(subs)
+                if iterated_already:
+                    iterated_alread = False
+                else:
+                    sub = next(subs)
                 t = create_thing(sub, symbol_table)
                 if isinstance(thing, pypeg2.List):
                     thing.append(t)

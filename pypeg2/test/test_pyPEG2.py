@@ -339,6 +339,11 @@ class ComposeListTestCase(ComposeTestCase):
         t = pypeg2.compose(x)
         self.assertEqual(t, "hello")
 
+class ComposeIntTestCase(ComposeTestCase):
+    def runTest(self):
+        x = pypeg2.compose(23, int)
+        self.assertEqual(x, "23")
+
 class C2(str):
     grammar = pypeg2.attr("some", "!"), pypeg2.restline
 

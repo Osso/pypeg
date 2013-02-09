@@ -32,7 +32,7 @@ decl P(class="head") alias p;
 div id="headline" {
     p > pyPEG – a PEG Parser-Interpreter in Python
     div class="small" {
-        "pyPEG 2.9.0 of Su Dec 09 2012 – Copyleft 2009-2012, "
+        "pyPEG 2.10.0 of Sa Feb 09 2012 – Copyleft 2009-2013, "
         a "http://fdik.org", "Volker Birk";
     }
     div id=python1 p
