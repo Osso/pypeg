@@ -17,7 +17,7 @@ except NameError:
     pass
 
 
-__version__ = 2.10
+__version__ = 2.11
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
@@ -156,7 +156,7 @@ class RegEx(object):
         regex       pre-compiled object from re.compile()
     """
 
-    def __init__(self, value):
+    def __init__(self, value, **kwargs):
         self.regex = re.compile(value, re.U)
         self.search = self.regex.search
         self.match = self.regex.match
@@ -169,23 +169,32 @@ class RegEx(object):
         self.groups = self.regex.groups
         self.groupindex = self.regex.groupindex
         self.pattern = value
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
     def __str__(self):
         return self.pattern
 
     def __repr__(self):
-        return type(self).__name__ + "(" + repr(self.pattern) + ")"
+        result = type(self).__name__ + "(" + repr(self.pattern)
+        try:
+            result += ", name=" + repr(self.name)
+        except:
+            pass
+        return result + ")"
 
 
 class Literal(object):
     """Literal value."""
     _basic_types = (bool, int, float, complex, str, bytes, bytearray, list,
             tuple, slice, set, frozenset, dict)
-    def __init__(self, value):
+    def __init__(self, value, **kwargs):
         if isinstance(self, Literal._basic_types):
             pass
         else:
             self.value = value
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
     def __str__(self):
         if isinstance(self, Literal._basic_types):
@@ -233,8 +242,12 @@ class List(list):
 
     def __repr__(self):
         """x.__repr__() <==> repr(x)"""
-        return ''.join((type(self).__name__, "(", super(List, self).__repr__(),
-            ")"))
+        result = type(self).__name__ + "(" + super(List, self).__repr__()
+        try:
+            result += ", name=" + repr(self.name)
+        except:
+            pass
+        return result + ")"
 
     def __eq__(self, other):
         return super(List, self).__eq__(list(other))
@@ -271,13 +284,19 @@ class _UserDict(object):
 class Namespace(_UserDict):
     """A dictionary of things, indexed by their name."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         """Initialize an OrderedDict containing the data of the Namespace.
         Arguments are being put into the Namespace, keyword arguments give the
         attributes of the Namespace.
         """
-        self.data = OrderedDict()
-        for k, v in kwargs:
+        if args is not None:
+            if len(args) == 1 and isinstance(args[0], OrderedDict):
+                self.data = OrderedDict(args[0])
+            else:
+                self.data = OrderedDict(args)
+        else:
+            self.data = OrderedDict()
+        for k, v in kwargs.items():
             setattr(self, k, v)
 
     def __setitem__(self, key, value):
@@ -310,14 +329,19 @@ class Namespace(_UserDict):
 
     def __repr__(self):
         """x.__repr__() <==> repr(x)"""
-        return type(self).__name__ + repr(self.data)[11:]
-
+        result = type(self).__name__ + repr(tuple(self.data))
+        try:
+            result += ", name=" + repr(self.name)
+        except:
+            pass
+        return result + ")"
+        
 
 class Enum(Namespace):
     """A Namespace which is being treated as an Enum.
     Enums can only contain Keywords or Symbols."""
 
-    def __init__(self, *things):
+    def __init__(self, *things, **kwargs):
         """Construct an Enum using a tuple of things."""
         self.data = OrderedDict()
         for thing in things:
@@ -326,11 +350,18 @@ class Enum(Namespace):
             if not isinstance(thing, Symbol):
                 raise TypeError(repr(thing) + " is not a Symbol")
             super(Enum, self).__setitem__(thing.name, thing)
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
     def __repr__(self):
         """x.__repr__() <==> repr(x)"""
         v = [e for e in self.values()]
-        return type(self).__name__ + "(" + repr(v) + ")"
+        result = type(self).__name__ + "(" + repr(v)
+        try:
+            result += ", name=" + repr(self.name)
+        except:
+            pass
+        return result + ")"
 
     def __setitem__(self, key, value):
         """x.__setitem__(i, y) <==> x[i]=y"""

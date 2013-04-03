@@ -34,7 +34,7 @@ The Instructions of our small sample are just words. Because Function is a
 List, we can access them one by one.
 
 >>> f
-Function([...'do_this', ...'do_that'])
+Function([...'do_this', ...'do_that'], name=Symbol(...'f'))
 >>> print("f is " + repr(f[0]))
 f is ...'do_this'
 
