@@ -48,7 +48,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     h4 > Composing
 
-    p > «str» instances are being output literally.
+    p   >>
+        «str» instances and «pypeg2.Literal» instances are being output
+        literally.
+        >>
 
     p > Example:
 
@@ -92,9 +95,9 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         term 'comment_cpp = re.compile(r"//.*")'
             > C++ style comment.
         term 'comment_c   = re.compile(r"(?m)/\*.*?\*/")'
-            > C style comment without nesting comments.
+            > C style comment without nesting.
         term 'comment_pas = re.compile(r"(?m)\(\*.*?\*\)")'
-            > Pascal style comment without nesting comments.
+            > Pascal style comment without nesting.
     }
 
     p > Example:
@@ -180,16 +183,17 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     p   >>
         The special cardinality values can be generated with the
-        ¬#cardfuncs Cardinality Functions¬. Other negative values are reserved
+        ¬#some Cardinality Functions¬. Other negative values are reserved
         and may not be used.
         >>
 
     h4 > Composing
 
     p   >>
-        For «tuple» objects all attributes of the corresponding thing (and
-        elements of the corresponding collection if that applies) in the
-        AST will be composed and the result is concatenated.
+        For «tuple» instances and instances of «pypeg2.Concat» all attributes of
+        the corresponding thing (and elements of the corresponding collection
+        if that applies) in the AST will be composed and the result is
+        concatenated.
         >>
 
     p > Example:
