@@ -18,7 +18,7 @@ A Function has an Attribute "parms" in its grammar, which directs to class
 Parameters.
 
 >>> f.parms
-Parameters([(Symbol(...'a'), <__main__.Parameter object at 0x...>), (Symbol(...'b'), <__main__.Parameter object at 0x...>)])
+Parameters([(Symbol(...'a'), <__main__.Parameter object at 0x...>), (Symbol(...'b'), <__main__.Parameter object at 0x...>), ])
 
 Because Parameters is a Namespace, we can access its content by name.
 

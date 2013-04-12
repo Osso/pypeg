@@ -329,7 +329,11 @@ class Namespace(_UserDict):
 
     def __repr__(self):
         """x.__repr__() <==> repr(x)"""
-        result = type(self).__name__ + repr(tuple(self.data))
+        result = type(self).__name__ + "(["
+        for key, value in self.data.items():
+            result += "(" + repr(key) + ", " + repr(value) + ")"
+            result += ", "
+        result += "]"
         try:
             result += ", name=" + repr(self.name)
         except:
