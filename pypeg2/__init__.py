@@ -1120,12 +1120,20 @@ class Parser(object):
                         + grammar.pattern)
             self._got_regex = True
 
+        elif isinstance(grammar, Keyword):
+            result = terminal_indent(do_blank=self._got_regex) + str(grammar)
+            self._got_regex = True
+
         elif isinstance(grammar, (str, int, Literal)):
             result = terminal_indent() + str(grammar)
 
         elif isinstance(grammar, Enum):
             if thing in grammar:
-                result = terminal_indent() + str(thing)
+                if isinstance(thing, Keyword):
+                    result = terminal_indent(do_blank=self._got_regex) + str(thing)
+                    self._got_regex = True
+                else:
+                    result = terminal_indent() + str(thing)
             else:
                 raise ValueError(repr(thing) + " is not in " + repr(grammar))
 
