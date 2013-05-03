@@ -673,6 +673,23 @@ class Parser(object):
         self._contiguous = False
         self._got_regex = False
 
+    def clear_memory(self, thing=None):
+        """Clear cache memory for packrat parsing.
+
+        Arguments:
+            thing           thing for which cache memory is cleared,
+                            None if cache memory should be cleared for all
+                            things
+        """
+
+        if thing is None:
+            self._memory = {}
+        else:
+            try:
+                del self._memory[id(thing)]
+            except KeyError:
+                pass
+
     def parse(self, text, thing, filename=None):
         """(Partially) parse text following thing as grammar and return the
         resulting things.
@@ -720,7 +737,6 @@ class Parser(object):
 
     def _parse(self, text, thing, pos=[1, 0]):
         # Parser implementation
-        parse = None
 
         def update_pos(text, t, pos):
             # Calculate where we are in the text
@@ -733,8 +749,8 @@ class Parser(object):
             pos[1] += len(d_text)
 
         try:
-            return self._memory[(text, id(thing))]
-        except KeyError:
+            return self._memory[id(thing)][text]
+        except:
             pass
 
         if pos: 
@@ -1040,7 +1056,13 @@ class Parser(object):
                 except AttributeError:
                     pass
 
-        self._memory[(text, id(thing))] = result
+        try:
+            self._memory[id(thing)]
+        except KeyError:
+            self._memory[id(thing)] = { text: result }
+        else:
+            self._memory[id(thing)][text] = result
+
         return result
 
     def compose(self, thing, grammar=None):

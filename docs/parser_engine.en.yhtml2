@@ -9,11 +9,15 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
         >>
  
     p   >>
-        ƒpyPEG uses memoization as speed enhancement. Create a «Parser»
-        instance to have a reset memory. Usually this is recommended if you're
-        parsing another text – the memory will not provide wrong results but
-        a reset will save memory consumption. If you're altering the grammar
-        then a memory reset is required for having correct parsing results.
+        ƒpyPEG uses memoization as speed enhancement. Create a
+        `a href="#parser" code > Parser` instance to have a reset cache memory.
+        Usually this is recommended if you're parsing another text – the cache
+        memory will not provide wrong results but a reset will save memory
+        consumption. If you're altering the grammar then clearing the cache
+        memory for the respective things is required for having correct parsing
+        results. Please use the
+        `a href="#parser_clear_memory" code > clear_memory()` method in that
+        case.
         >>
 
     h3 id=parser_vars > Instance variables
@@ -48,12 +52,30 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
             > add blanks while composing if grammar would possibly be violated otherwise; default: True
     }
 
-    h3 id=parser_init > Method init()
+    h3 id=parser_init > Method __init__()
 
     h4 > Synopsis
     p > «__init__(self)»
 
     p > Initialize instance variables to their defaults.
+
+    h3 id=parser_clear_memory > Method clear_memory()
+
+    h4 > Synopsis
+    p > «clear_memory(self, thing=None)»
+
+    p > Clear cache memory for packrat parsing.
+
+    p   >>
+        This method clears the cache memory for «thing». If «None» is given
+        as «thing», it clears the cache completely.
+        >>
+
+    h4 > Arguments
+
+    glossary {
+        term "thing" > thing for which cache memory is cleared
+    }
 
     h3 id=parser_parse > Method parse()
 

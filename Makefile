@@ -31,8 +31,8 @@ dist: docs
 	$(PYTHON) setup.py sdist
 
 test:
-	PYTHONPATH=`pwd` $(PYTHON) pyPEG2/test/test_pyPEG2.py
-	PYTHONPATH=`pwd` $(PYTHON) pyPEG2/test/test_xmlast.py
+	PYTHONPATH=`pwd` $(PYTHON) pypeg2/test/test_pyPEG2.py
+	PYTHONPATH=`pwd` $(PYTHON) pypeg2/test/test_xmlast.py
 	PYTHONPATH=`pwd` $(PYTHON) samples/sample1.py
 	PYTHONPATH=`pwd` $(PYTHON) samples/sample2.py
 
