@@ -29,7 +29,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         `w "Terminal_and_nonterminal_symbols" > Terminal Symbol`.
         It is removed and no result is put into the ∫Abstract syntax tree∫.
         If it does not exist at the correct position in the source text,
-        a «SyntaxError» ist generated.
+        a «SyntaxError» is raised.
         >>
 
     p > Example:
@@ -76,7 +76,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         the «pypeg2.RegEx» encapsulation.  Regular Expressions are parsed as
         `w "Terminal_and_nonterminal_symbols" > Terminal Symbols`. The matching 
         result is put into the AST. If no match can be achieved, a 
-        «SyntaxError» is generated.
+        «SyntaxError» is raised.
         >>
 
     p   >>
@@ -141,7 +141,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     p   >>
         A «tuple» or an instance of «pypeg2.Concat» specifies, that different
         things have to be parsed one after another. If not all of them parse in
-        their sequence, a «SyntaxError» is generated.
+        their sequence, a «SyntaxError» is raised.
         >>
 
     p > Example:
@@ -217,7 +217,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         A «list» instance which is not derived from «pypeg2.Concat» represents
         different options. They're tested in their sequence. The first option
         which parses is chosen, the others are not tested any more. If none
-        matches, a «SyntaxError» is generated.
+        matches, a «SyntaxError» is raised.
         >>
 
     p > Example:
@@ -273,9 +273,9 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     p   >>
         A class which is derived from «Symbol» can have an «Enum» as its
         «grammar» only. Other values for its «grammar» are forbidden and will
-        generate a «TypeError». If such an «Enum» is specified, each parsed
-        value will be checked if being a member of this «Enum» additionally to
-        the «RegEx» matching.
+        raise a «TypeError». If such an «Enum» is specified, each parsed value
+        will be checked if being a member of this «Enum» additionally to the
+        «RegEx» matching.
         >>
 
     h4 > Class variables
@@ -433,7 +433,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     p   >>
         A «List» is parsed by following its «grammar». If a «List» is parsed,
-        then all things which are parsed and which are not attributes are being
+        then all things which are parsed and which are not attributes are
         appended to the «List».
         >>
 
@@ -493,7 +493,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     p   >>
         Initialize an OrderedDict containing the data of the Namespace.
-        Arguments are being put into the Namespace, keyword arguments give the
+        Arguments are put into the Namespace, keyword arguments give the
         attributes of the Namespace.
         >>
 
@@ -502,7 +502,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     p   >>
         A «Namespace» is parsed by following its «grammar». If a «Namespace» is
         parsed, then all things which are parsed and which are not attributes
-        are being appended to the «Namespace» and indexed by their «name»
+        are appended to the «Namespace» and indexed by their «name»
         attribute.
         >>
 
@@ -561,7 +561,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     p > «Enum(Namespace)»
 
     p   >>
-        A Namespace which is being treated as an Enum. Enums can only contain
+        A Namespace which is treated as an Enum. Enums can only contain
         «Keyword» or «Symbol» instances. An «Enum» cannot be modified after
         creation. An «Enum» is allowed as the grammar of a «Symbol» only.
         >>
@@ -575,7 +575,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     p   >>
         An «Enum» is parsed as a selection for possible values for a «Symbol».
         If a value is parsed which is not member of the «Enum», a «SyntaxError»
-        is generated.
+        is raised.
         >>
 
     p > Example:
@@ -678,7 +678,7 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     p   >>
         Composing «some()» composes as many things as there are, but at least
-        one. If there is no matching thing, a «ValueError» is generated.
+        one. If there is no matching thing, a «ValueError» is raised.
         >>
 
     p > Example:

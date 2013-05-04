@@ -74,7 +74,7 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     h4 > Arguments
 
     glossary {
-        term "thing" > thing for which cache memory is cleared
+        term "thing" > thing for which cache memory is cleared; default: «None»
     }
 
     h3 id=parser_parse > Method parse()
@@ -88,7 +88,7 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
         >>
 
     p   >>
-        This method parses as far as possible. It does not generate a
+        This method parses as far as possible. It does not raise a
         «SyntaxError» if the source «text» does not parse completely. It
         returns a «SyntaxError» object as «result» part of the return value if
         the beginning of the source «text» does not comply with grammar

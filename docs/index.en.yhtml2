@@ -420,11 +420,11 @@ Symbol('long')
     }
 
     p   >>
-        Such a Callback Function is being called with two arguments. The first 
-        argument is the object to output. The second argument is the parser object
-        to get state information of the composing process. Because this fits
-        the convention for Python methods, you can write it as a method of the
-        class where it belongs to.
+        Such a Callback Function is called with two arguments. The first
+        argument is the object to output. The second argument is the parser
+        object to get state information of the composing process. Because this
+        fits the convention for Python methods, you can write it as a method of
+        the class where it belongs to.
         >>
 
     p   >>
