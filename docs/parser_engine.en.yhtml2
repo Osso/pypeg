@@ -175,6 +175,21 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
         'hello, world'
         ||
 
+    h3 id=gen_syntax_error > Method generate_syntax_error()
+
+    h4 > Synopsis
+    p > «generate_syntax_error(self, msg, pos)»
+
+    p > Generate a syntax error construct.
+
+    glossary {
+        term "msg" > string with error message
+        term "pos" > «(lineNo, charInText)» with positioning information
+    }
+
+    h4 > Returns
+    p > Instance of «SyntaxError»
+
     h2 id=convenience > Convenience functions
 
     h3 id=parse > Function parse()

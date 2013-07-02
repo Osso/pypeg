@@ -17,6 +17,33 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     Code | from __future__ import print_function
 
+    h2 id=common > Common methods for grammar elements
+
+    p   >>
+        If a method of the following is present in a grammar element, it will
+        override the standard behaviour.
+        >>
+
+    h3 id=override_parse > parse() class method of a grammar element
+
+    h4 > Synopsis
+    p > «parse(cls, parser, text, pos)»
+
+    p   >>
+        Overwrites the parsing behaviour. If present, this class method is
+        called at each place the grammar references the grammar element instead
+        of automatic parsing.
+        >>
+
+    glossary {
+        term "cls" > class object of the grammar element
+        term "parser" > parser object which is calling
+        term "text" > text to be parsed
+        term "pos" > «(lineNo, charInText)» with positioning information
+    }
+
+    h3 id=override_compose > compose() method of a grammar element
+
     h2 id=basic > Basic Grammar Elements
 
     h3 id=literals > str instances and Literal

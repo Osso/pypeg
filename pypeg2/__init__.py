@@ -17,7 +17,7 @@ except NameError:
     pass
 
 
-__version__ = 2.11
+__version__ = 2.12
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
@@ -735,6 +735,33 @@ class Parser(object):
                 t, r = self._parse(t, self.comment, pos)
         return t
 
+    def generate_syntax_error(self, msg, pos):
+            """Generate a syntax error construct with
+
+            msg         string with error message
+            pos         (lineNo, charInText) with positioning information
+            """
+
+            result = SyntaxError(msg)
+            if pos:
+                result.lineno = pos[0]
+                start = max(pos[1] - 19, 0)
+                end   = min(pos[1] + 20, len(self.text))
+                result.text = self.text[start:end]
+                result.offset = pos[1] - start + 1
+                while "\n" in result.text:
+                    lf = result.text.find("\n")
+                    if lf >= result.offset:
+                        result.text = result.text[:result.offset-1]
+                        break;
+                    else:
+                        L = len(result.text)
+                        result.text = result.text[lf+1:]
+                        result.offset -= L - len(result.text)
+                if self.filename:
+                    result.filename = self.filename
+            return result
+
     def _parse(self, text, thing, pos=[1, 0]):
         # Parser implementation
 
@@ -759,26 +786,18 @@ class Parser(object):
             current_pos = None
 
         def syntax_error(msg):
-            # Create a syntax error construct with sensible attributes
-            result = SyntaxError(msg)
-            if pos:
-                result.lineno = pos[0]
-                start = max(pos[1] - 19, 0)
-                end   = min(pos[1] + 20, len(self.text))
-                result.text = self.text[start:end]
-                result.offset = pos[1] - start + 1
-                while "\n" in result.text:
-                    lf = result.text.find("\n")
-                    if lf >= result.offset:
-                        result.text = result.text[:result.offset-1]
-                        break;
-                    else:
-                        L = len(result.text)
-                        result.text = result.text[lf+1:]
-                        result.offset -= L - len(result.text)
-                if self.filename:
-                    result.filename = self.filename
-            return result
+            return self.generate_syntax_error(msg, pos)
+
+        try:
+            thing.parse
+        except AttributeError:
+            pass
+        else:
+            t, r = thing.parse(self, text, pos)
+            if not isinstance(r, SyntaxError):
+                t = self._skip(t)
+                update_pos(text, t, pos)
+            return t, r
 
         # terminal symbols
 
@@ -1105,7 +1124,7 @@ class Parser(object):
         except AttributeError:
             pass
         else:
-            return terminal_indent() + thing.compose()
+            return terminal_indent() + thing.compose(self)
 
         if not grammar:
             try:

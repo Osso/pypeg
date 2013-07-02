@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-_version = '2.11.1'
+_version = '2.12.0'
 
 setup(
     name='pyPEG2',
