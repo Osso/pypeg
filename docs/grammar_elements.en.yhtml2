@@ -1077,6 +1077,49 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
         While composing the «separated» function has no effect.
         >>
 
+    h3 id=omit > Function omit()
+
+    h4 > Synopsis
+    p > «omit(*thing)»
+
+    p   >>
+        Omit what matches the grammar. This function cuts out «thing» and
+        throws it away.
+        >>
+
+    h4 > Parsing
+
+    p   >>
+        While parsing «omit()» cuts out what matches the grammar «thing» and 
+        throws it away.
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> p = parse("hello", omit(word))
+        >>> print(p)
+        None
+        >>> _
+        ||
+
+    h4 > Composing
+
+    p   >>
+        While composing «omit()» does not compose text for what matches the
+        grammar «thing».
+        >>
+
+    p > Example:
+
+    Code
+        ||
+        >>> compose('hello', omit(word))
+        ''
+        >>> _
+        ||
+
     h2 id=callbacks > Callback functions
     
     p   >>

@@ -257,6 +257,11 @@ class ParseInvisibleTestCase(ParserTestCase):
         self.assertEqual(str(r), "all")
         self.assertEqual(r._ignore1, None)
 
+class ParseOmitTestCase(ParserTestCase):
+    def runTest(self):
+        r = pypeg2.parse("hello", pypeg2.omit(pypeg2.word))
+        self.assertEqual(r, None)
+
 class ComposeTestCase(unittest.TestCase): pass
 
 class ComposeString(object):
@@ -354,6 +359,11 @@ class ComposeInvisibleTestCase(ParserTestCase):
         self.assertEqual(r.some, None)
         t = pypeg2.compose(r, C2)
         self.assertEqual(t, "!all")
+
+class ComposeOmitTestCase(ParserTestCase):
+    def runTest(self):
+        t = pypeg2.compose('hello', pypeg2.omit(pypeg2.word))
+        self.assertEqual(t, "")
 
 class CslPython32Compatibility(ParserTestCase):
     def runTest(self):

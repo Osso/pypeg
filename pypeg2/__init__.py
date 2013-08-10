@@ -479,7 +479,7 @@ def separated(*thing):
     return _card(-5, thing)
 
 
-def omit(grammar):
+def omit(*thing):
     """Omit what matches to the grammar."""
     return _card(-6, thing)
 
@@ -551,7 +551,7 @@ def how_many(grammar):
                 elif e == 0:
                     card = 1
                 elif e == -6:
-                    card = 0
+                    return 0
                 else:
                     card = min(e, 2)
             else:
@@ -895,8 +895,8 @@ class Parser(object):
             flag = True
             _min, _max = 1, 1
             contiguous = self._contiguous
+            omit = False
             for e in thing:
-                omit = False
                 if type(e) == int:
                     if e < -6:
                         raise GrammarValueError(
@@ -942,6 +942,7 @@ class Parser(object):
                     flag = False
                     break
                 _min, _max = 1, 1
+                omit = False
             if flag:
                 if self._contiguous and not contiguous:
                     self._contiguous = False
