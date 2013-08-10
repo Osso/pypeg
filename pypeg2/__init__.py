@@ -357,7 +357,7 @@ class Enum(Namespace):
                 thing = Symbol(thing)
             if not isinstance(thing, Symbol):
                 raise TypeError(repr(thing) + " is not a Symbol")
-            super(Enum, self).__setitem__(thing.name, thing)
+            super(Enum, self).__setitem__(thing, thing)
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -429,7 +429,9 @@ class Keyword(Symbol):
 
     def __init__(self, keyword):
         """Adds keyword to the keyword table."""
-        Keyword.table[keyword] = self
+        if keyword not in Keyword.table:
+            Keyword.table[keyword] = self
+        self.name = keyword
 
 K = Keyword
 """Shortcut for Keyword."""
