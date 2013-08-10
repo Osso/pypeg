@@ -889,11 +889,11 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
     h3 id=flag > Function flag()
 
     h4 > Synopsis
-    p > «flag(name, thing)»
+    p > «flag(name, thing=None)»
 
     p   >>
         Generate an «Attribute» with that «name» which is valued «True» or
-        «False».
+        «False». If no «thing» is given, «Keyword(name)» is assumed.
         >>
 
     h4 > Parsing

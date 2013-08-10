@@ -134,8 +134,10 @@ def attr(name, thing=word, subtype=None):
 attr.Class = namedtuple("Attribute", ("name", "thing", "subtype"))
 
 
-def flag(name, thing):
+def flag(name, thing=None):
     """Generate an Attribute with that name which is valued True or False."""
+    if thing is None:
+        thing = Keyword(name)
     return attr(name, thing, "Flag")
 
 

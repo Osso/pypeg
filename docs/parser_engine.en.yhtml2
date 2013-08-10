@@ -188,7 +188,7 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     }
 
     h4 > Returns
-    p > Instance of «SyntaxError»
+    p > Instance of «SyntaxError» with error text
 
     h2 id=convenience > Convenience functions
 
