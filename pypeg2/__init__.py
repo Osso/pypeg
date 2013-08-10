@@ -303,9 +303,11 @@ class Namespace(_UserDict):
 
     def __setitem__(self, key, value):
         """x.__setitem__(i, y) <==> x[i]=y"""
-        value.name = Symbol(key)
+        if not isinstance(key, Symbol):
+            key = Symbol(key)
+        value.name = key
         if key:
-            name = Symbol(key)
+            name = key
         else:
             name = id(key)
         try:
