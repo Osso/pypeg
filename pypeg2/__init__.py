@@ -451,7 +451,6 @@ def name():
 
 def ignore(grammar):
     """Ignore what matches to the grammar."""
-
     try:
         ignore.serial += 1
     except AttributeError:
@@ -478,6 +477,11 @@ def separated(*thing):
     Inserts -5 as cardinality before thing.
     """
     return _card(-5, thing)
+
+
+def omit(grammar):
+    """Omit what matches to the grammar."""
+    return _card(-6, thing)
 
 
 endl = lambda thing, parser: "\n"
@@ -537,7 +541,7 @@ def how_many(grammar):
         length, card = 0, 1
         for e in grammar:
             if type(e) == int:
-                if e < -5:
+                if e < -6:
                     raise GrammarValueError(
                         "illegal cardinality value in grammar: " + str(e))
                 if e in (-5, -4, -3):
@@ -546,6 +550,8 @@ def how_many(grammar):
                     card = 2
                 elif e == 0:
                     card = 1
+                elif e == -6:
+                    card = 0
                 else:
                     card = min(e, 2)
             else:
@@ -890,11 +896,14 @@ class Parser(object):
             _min, _max = 1, 1
             contiguous = self._contiguous
             for e in thing:
+                omit = False
                 if type(e) == int:
-                    if e < -5:
+                    if e < -6:
                         raise GrammarValueError(
                             "illegal cardinality value in grammar: " + str(e))
-                    if e == -5:
+                    if e == -6:
+                        omit = True
+                    elif e == -5:
                         self._contiguous = False
                         t = self._skip(t)
                     elif e == -4:
@@ -915,6 +924,9 @@ class Parser(object):
                     if type(r) == SyntaxError:
                         i -= 1
                         break
+                    elif omit:
+                        t = t2
+                        r = None
                     else:
                         t = t2
                         if r is not None:
@@ -1206,7 +1218,7 @@ class Parser(object):
                             self.indention_level -= indenting
                             self.indenting = 0
                     elif type(g) == int:
-                        if g < -5:
+                        if g < -6:
                             raise GrammarValueError(
                                 "illegal cardinality value in grammar: "
                                 + str(g))
@@ -1218,6 +1230,8 @@ class Parser(object):
                             if g == -3:
                                 self.indention_level += 1
                                 indenting += 1
+                        elif g == -6:
+                            multiple = 0
                         else:
                             multiple = g
                     else:
