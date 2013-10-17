@@ -1,2 +1,4 @@
+- omit() includes optional()
+
 - thing based memoization
 - pyPEG 1 compatibility wrapper / grammar transformer
