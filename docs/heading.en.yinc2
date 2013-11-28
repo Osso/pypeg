@@ -57,7 +57,7 @@ div id="navigation" {
         ne "http://fdik.org/pyPEG2/pyPEG2.tar.gz" strong > Download pyPEG 2
         ne "LICENSE.txt" > License
         ne "https://bitbucket.org/fdik/pypeg/" > Bitbucket Repository
-        ne "http://www.pibit.ch" > Commercial support for pyPEG
+        // ne "http://www.pibit.ch" > Commercial support for pyPEG
         ne "http://fdik.org/yml" > YML is using pyPEG
         ne "http://fdik.org/iec2xml/"
             > The IEC 61131-3 Structured Text to XML Compiler is using pyPEG

@@ -17,6 +17,10 @@ page "pyPEG – Grammar Elements", "counter-reset: chapter 1;" {
 
     Code | from __future__ import print_function
 
+    p   >>
+        pyPEG 2.x supports new-style classes only.
+        >>
+
     h2 id=basic > Basic Grammar Elements
 
     h3 id=literals > str instances and Literal
