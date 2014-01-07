@@ -17,7 +17,7 @@ except NameError:
     pass
 
 
-__version__ = 2.15
+__version__ = 2.16
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
@@ -151,6 +151,10 @@ def attributes(grammar, invisible=False):
                 yield a
 
 
+class Whitespace(str):
+    grammar = whitespace
+
+
 class RegEx(object):
     """Regular Expression.
 
@@ -224,6 +228,26 @@ class Literal(object):
                 return False
 
 
+class Plain(object):
+    """A plain object"""
+
+    def __init__(self, name=None, **kwargs):
+        """Construct a plain object with an optional name and optional other
+        attributes
+        """
+        if name is not None:
+            self.name = Symbol(name)
+        for k, v in kwargs:
+            setattr(self, k, v)
+
+    def __repr__(self):
+        """x.__repr__() <==> repr(x)"""
+        try:
+            return self.__class__.__name__ + "(name=" + repr(self.name) + ")"
+        except AttributeError:
+            return self.__class__.__name__ + "()"
+
+
 class List(list):
     """A List of things."""
 
@@ -231,13 +255,26 @@ class List(list):
         """Construct a List, and construct its attributes from keyword
         arguments.
         """
+        _args = []
         if len(args) == 1:
             if isinstance(args[0], str):
                 self.append(args[0])
+            elif isinstance(args[0], (tuple, list)):
+                for e in args[0]:
+                    if isinstance(e, attr.Class):
+                        setattr(self, e.name, e.value)
+                    else:
+                        _args.append(e)
+                super(List, self).__init__(_args)
             else:
-                super(List, self).__init__(args[0])
+                raise ValueError("initializer of List should be collection or string")
         else:
-            super(List, self).__init__(args)
+            for e in args:
+                if isinstance(e, attr.Class):
+                    setattr(self, e.name, e.value)
+                else:
+                    _args.append(e)
+                super(List, self).__init__(_args)
 
         for k, v in kwargs.items():
             setattr(self, k, v)
@@ -285,17 +322,15 @@ class _UserDict(object):
 
 class Namespace(_UserDict):
     """A dictionary of things, indexed by their name."""
+    name_by = lambda value: "#" + str(id(value))
 
     def __init__(self, *args, **kwargs):
         """Initialize an OrderedDict containing the data of the Namespace.
         Arguments are being put into the Namespace, keyword arguments give the
         attributes of the Namespace.
         """
-        if args is not None:
-            if len(args) == 1 and isinstance(args[0], OrderedDict):
-                self.data = OrderedDict(args[0])
-            else:
-                self.data = OrderedDict(args)
+        if args:
+            self.data = OrderedDict(args)
         else:
             self.data = OrderedDict()
         for k, v in kwargs.items():
@@ -303,13 +338,10 @@ class Namespace(_UserDict):
 
     def __setitem__(self, key, value):
         """x.__setitem__(i, y) <==> x[i]=y"""
-        if not isinstance(key, Symbol):
-            key = Symbol(key)
-        value.name = key
-        if key:
-            name = key
+        if key is None:
+            name = Symbol(Namespace.name_by(value))
         else:
-            name = id(key)
+            name = Symbol(key)
         try:
             value.name = name
         except AttributeError:
@@ -322,7 +354,7 @@ class Namespace(_UserDict):
             except AttributeError:
                 pass
         else:
-            if not(value.namespace):
+            if not value.namespace:
                 value.namespace = weakref.ref(self)
         super(Namespace, self).__setitem__(name, value)
 
@@ -576,7 +608,8 @@ def how_many(grammar):
                 + type(grammar).__name__ + ": " + repr(grammar))
 
 
-def parse(text, thing, filename=None, whitespace=whitespace, comment=None):
+def parse(text, thing, filename=None, whitespace=whitespace, comment=None,
+        keep_feeble_things=False):
     """Parse text following thing as grammar and return the resulting things or
     raise an error.
 
@@ -584,10 +617,13 @@ def parse(text, thing, filename=None, whitespace=whitespace, comment=None):
         text        text to parse
         thing       grammar for things to parse
         filename    filename where text is origin from
-        whitespace  regular expression to _skip whitespace
+        whitespace  regular expression to skip whitespace
                     default: regex "(?m)\s+"
         comment     grammar to parse comments
                     default: None
+        keep_feeble_things
+                    put whitespace and comments into the .feeble_things
+                    attribute instead of dumping them
 
     Returns generated things.
 
@@ -606,6 +642,7 @@ def parse(text, thing, filename=None, whitespace=whitespace, comment=None):
     parser.comment = comment
     parser.text = text
     parser.filename = filename
+    parser.keep_feeble_things = keep_feeble_things
 
     t, r = parser.parse(text, thing)
     if t:
@@ -668,6 +705,8 @@ class Parser(object):
         autoblank           add blanks while composing if grammar would possibly
                             be violated otherwise
                             default: True
+        keep_feeble_things  put whitespace and comments into the .feeble_things
+                            attribute instead of dumping them
     """
 
     def __init__(self):
@@ -680,6 +719,7 @@ class Parser(object):
         self.text = None
         self.filename = None
         self.autoblank = True
+        self.keep_feeble_things = False
         self._memory = {}
         self._got_endl = True
         self._contiguous = False
@@ -728,24 +768,41 @@ class Parser(object):
         if filename:
             self.filename = filename
         pos = [1, 0]
-        t = self._skip(text, pos)
+        t, skip_result = self._skip(text, pos)
         t, r = self._parse(t, thing, pos)
         if type(r) == SyntaxError:
             raise r
         else:
+            if self.keep_feeble_things and skip_result:
+                try:
+                    r.feeble_things
+                except AttributeError:
+                    try:
+                        r.feeble_things = skip_result
+                    except AttributeError:
+                        pass
+                else:
+                    r.feeble_things = skip_result + r.feeble_things
             return t, r
 
     def _skip(self, text, pos=None):
         # Skip whitespace and comments from input text
         t2 = None
         t = text
+        result = []
         while t2 != t:
             if self.whitespace and not self._contiguous:
-                t, r = self._parse(t, self.whitespace, pos)
+                t, r = self._parse(t, Whitespace, pos)
+                if self.keep_feeble_things and r and not isinstance(r,
+                        SyntaxError):
+                    result.append(r)
             t2 = t
             if self.comment:
                 t, r = self._parse(t, self.comment, pos)
-        return t
+                if self.keep_feeble_things and r and not isinstance(r,
+                        SyntaxError):
+                    result.append(r)
+        return t, result
 
     def generate_syntax_error(self, msg, pos):
             """Generate a syntax error construct with
@@ -807,9 +864,21 @@ class Parser(object):
         else:
             t, r = thing.parse(self, text, pos)
             if not isinstance(r, SyntaxError):
-                t = self._skip(t)
+                t, skip_result = self._skip(t)
                 update_pos(text, t, pos)
+                if self.keep_feeble_things:
+                    try:
+                        r.feeble_things
+                    except AttributeError:
+                        try:
+                            r.feeble_things = skip_result
+                        except AttributeError:
+                            pass
+                    else:
+                        r.feeble_things += skip_result
             return t, r
+
+        skip_result = None
 
         # terminal symbols
 
@@ -820,7 +889,7 @@ class Parser(object):
             m = type(thing).regex.match(text)
             if m and m.group(0) == str(thing):
                 t, r = text[len(thing):], None
-                t = self._skip(t)
+                t, skip_result = self._skip(t)
                 result = t, r
                 update_pos(text, t, pos)
             else:
@@ -830,7 +899,7 @@ class Parser(object):
             m = thing.match(text)
             if m:
                 t, r = text[len(m.group(0)):], m.group(0)
-                t = self._skip(t)
+                t, skip_result = self._skip(t)
                 result = t, r
                 update_pos(text, t, pos)
             else:
@@ -838,9 +907,9 @@ class Parser(object):
                         + thing.pattern)
 
         elif isinstance(thing, (str, Literal)):
-            if text.startswith(thing):
-                t, r = text[len(thing):], None
-                t = self._skip(t)
+            if text.startswith(str(thing)):
+                t, r = text[len(str(thing)):], None
+                t, skip_result = self._skip(t)
                 result = t, r
                 update_pos(text, t, pos)
             else:
@@ -868,7 +937,7 @@ class Parser(object):
                                 + repr(thing.grammar))
                 if not result:
                     t, r = text[len(m.group(0)):], thing(m.group(0))
-                    t = self._skip(t)
+                    t, skip_result = self._skip(t)
                     result = t, r
                     update_pos(text, t, pos)
             else:
@@ -890,7 +959,10 @@ class Parser(object):
                     result = t, attr(thing.name, r)
 
         elif isinstance(thing, (tuple, Concat)):
-            L = []
+            if self.keep_feeble_things:
+                L = List()
+            else:
+                L = []
             t = text
             flag = True
             _min, _max = 1, 1
@@ -905,7 +977,17 @@ class Parser(object):
                         omit = True
                     elif e == -5:
                         self._contiguous = False
-                        t = self._skip(t)
+                        t, skip_result = self._skip(t)
+                        if self.keep_feeble_things and skip_result:
+                            try:
+                                L.feeble_things
+                            except AttributeError:
+                                try:
+                                    L.feeble_things = skip_result
+                                except AttributeError:
+                                    pass
+                            else:
+                                L.feeble_things += skip_result
                     elif e == -4:
                         self._contiguous = True
                     elif e == -3:
@@ -946,12 +1028,48 @@ class Parser(object):
             if flag:
                 if self._contiguous and not contiguous:
                     self._contiguous = False
-                    t = self._skip(t)
+                    t, skip_result = self._skip(t)
+                    if self.keep_feeble_things and skip_result:
+                        try:
+                            L.feeble_things
+                        except AttributeError:
+                            try:
+                                L.feeble_things = skip_result
+                            except AttributeError:
+                                pass
+                        else:
+                            L.feeble_things += skip_result
                 if len(L) > 1 or how_many(thing) > 1:
                     result = t, L
                 elif not L:
-                    return t, None
+                    if not self.keep_feeble_things:
+                        return t, None
+                    try:
+                        L.feeble_things
+                    except AttributeError:
+                        return t, None
+                    if len(L.feeble_things):
+                        return t, L
+                    else:
+                        return t, None
                 else:
+                    if self.keep_feeble_things:
+                        try:
+                            L.feeble_things
+                        except AttributeError:
+                            pass
+                        else:
+                            if L.feeble_things:
+                                try:
+                                    L[0].feeble_things
+                                except AttributeError:
+                                    try:
+                                        L[0].feeble_things = L.feeble_things
+                                    except AttributeError:
+                                        pass
+                                else:
+                                    L[0].feeble_things = L.feeble_things + \
+                                            L[0].feeble_things
                     result = t, L[0]
             else:
                 result = text, r
@@ -1094,6 +1212,17 @@ class Parser(object):
                 except AttributeError:
                     pass
 
+        if self.keep_feeble_things and skip_result:
+            try:
+                result[1].feeble_things
+            except AttributeError:
+                try:
+                    result[1].feeble_things = skip_result
+                except AttributeError:
+                    pass
+            else:
+                result[1].feeble_things += skip_result
+
         try:
             self._memory[id(thing)]
         except KeyError:
@@ -1103,13 +1232,17 @@ class Parser(object):
 
         return result
 
-    def compose(self, thing, grammar=None):
+    def compose(self, thing, grammar=None, attr_of=None):
         """Compose text using thing with grammar.
 
         Arguments:
             thing           thing containing other things with grammar
             grammar         grammar to use for composing thing
                             default: type(thing).grammar
+            attr_of         if composing the value of an attribute, this
+                            is a reference to the thing where this value
+                            is an attribute of; None if this is not an
+                            attribute value
 
         Returns text
 
@@ -1143,7 +1276,7 @@ class Parser(object):
         except AttributeError:
             pass
         else:
-            return terminal_indent() + thing.compose(self)
+            return terminal_indent() + thing.compose(self, attr_of=attr_of)
 
         if not grammar:
             try:
@@ -1200,12 +1333,12 @@ class Parser(object):
         elif isinstance(grammar, attr.Class):
             if grammar.subtype == "Flag":
                 if getattr(thing, grammar.name):
-                    result = self.compose(thing, grammar.thing)
+                    result = self.compose(thing, grammar.thing, attr_of=thing)
                 else:
                     result = terminal_indent()
             else:
                 result = self.compose(getattr(thing, grammar.name),
-                        grammar.thing)
+                        grammar.thing, attr_of=thing)
 
         elif isinstance(grammar, (tuple, list)):
             def compose_tuple(thing, things, grammar):
@@ -1251,7 +1384,7 @@ class Parser(object):
                                             break
                                     elif isinstance(g, attr.Class):
                                         text.append(self.compose(getattr(thing,
-                                            g.name), g.thing))
+                                            g.name), g.thing, attr_of=thing))
                                         if card < 1:
                                             break
                                     elif isinstance(g, (tuple, list)):

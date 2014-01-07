@@ -15,7 +15,7 @@ except NameError:
     pass
 
 
-__version__ = 2.15
+__version__ = 2.16
 __author__ = "Volker Birk"
 __license__ = "This program is under GNU General Public License 2.0."
 __url__ = "http://fdik.org/pyPEG"
