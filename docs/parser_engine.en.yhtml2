@@ -50,6 +50,11 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
             > filename where text is origin from
         term "autoblank"
             > add blanks while composing if grammar would possibly be violated otherwise; default: True
+        term "keep_feeble_things"
+            >>
+            keep otherwise cropped things like comments and whitespace; these
+            things are being put into the «feeble_things» attribute
+            >>
     }
 
     h3 id=parser_init > Method __init__()
@@ -198,7 +203,7 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
     pre
         ||
         parse(text, thing, filename=None, whitespace=whitespace,
-                comment=None)
+                comment=None, keep_feeble_things=False)
         ||
 
     p   >>
@@ -219,6 +224,12 @@ page "pyPEG – the Parser Engine", "counter-reset: chapter 2;" {
             > regular expression to skip «whitespace»; default: «re.compile(r"(?m)\s+")»
         term "comment"
             > «grammar» to parse comments; default: «None»
+        term "keep_feeble_things"
+            >>
+            keep otherwise cropped things like comments and whitespace; these
+            things are being put into the «feeble_things» attribute; default:
+            «False»
+            >>
     }
 
     h4 > Returns
