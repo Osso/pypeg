@@ -469,6 +469,23 @@ K = Keyword
 """Shortcut for Keyword."""
 
 
+class IKeyword(Keyword):
+    """Use for case-insensitive keyword."""
+
+    def parse(self, parser, text, pos):
+        m = type(self).regex.match(text)
+        if m:
+            if m.group(0).upper() == str(self).upper():
+                return text[len(str(self)):], None
+            else:
+                return text, SyntaxError("expecting " + repr(self))
+        else:
+            return text, SyntaxError("expecting " + repr(self))
+
+IK = IKeyword
+"""Shortcut for case-insensitive Keyword."""
+
+
 class Concat(List):
     """Concatenation of things.
 
@@ -518,7 +535,6 @@ def omit(*thing):
 
 endl = lambda thing, parser: "\n"
 """End of line marker for composing text."""
-
 
 blank = lambda thing, parser: " "
 """Space marker for composing text."""
@@ -792,7 +808,7 @@ class Parser(object):
         result = []
         while t2 != t:
             if self.whitespace and not self._contiguous:
-                t, r = self._parse(t, Whitespace, pos)
+                t, r = self._parse(t, self.whitespace, pos)
                 if self.keep_feeble_things and r and not isinstance(r,
                         SyntaxError):
                     result.append(r)
