@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 _version = '2.15.0'
 
@@ -7,15 +7,15 @@ setup(
     version=_version,
     author='Volker Birk',
     author_email='vb@dingens.org',
-    packages=['pypeg2', 'pypeg2.test'],
+    packages=find_packages(),
     scripts=['samples/sample1.py', 'samples/sample2.py'],
     url='http://fdik.org/pyPEG2',
     download_url='http://fdik.org/pyPEG2/pyPEG2-' + _version + '.tar.gz',
     license='LICENSE.txt',
     description='An intrinsic PEG Parser-Interpreter for Python',
     long_description=open('README.md').read(),
-    requires=['lxml',],
-    provides=['pyPEG2 (' + _version + ')',],
+    requires=['lxml', 'ordereddict'],
+    provides=['pyPEG2 (' + _version + ')'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
