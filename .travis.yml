@@ -28,6 +28,7 @@ before_install:
   - sudo apt-get -qqy update
 
 install:
+  - pip install -q requirements.txt
   - pip install -q nose
   - pip install .
 
