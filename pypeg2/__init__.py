@@ -47,13 +47,13 @@ restline = re.compile(r".*")
 whitespace = re.compile("(?m)\s+")
 """Regular expression for scanning whitespace."""
 
-comment_sh  = re.compile(r"\#.*")
+comment_sh = re.compile(r"\#.*")
 """Shell script style comment."""
 
 comment_cpp = re.compile(r"//.*")
 """C++ style comment."""
 
-comment_c   = re.compile(r"(?ms)/\*.*?\*/")
+comment_c = re.compile(r"(?ms)/\*.*?\*/")
 """C style comment without nesting comments."""
 
 comment_pas = re.compile(r"(?ms)\(\*.*?\*\)")
@@ -156,6 +156,7 @@ class Whitespace(str):
 
 
 class RegEx(object):
+
     """Regular Expression.
 
     Instance Variables:
@@ -191,9 +192,11 @@ class RegEx(object):
 
 
 class Literal(object):
+
     """Literal value."""
     _basic_types = (bool, int, float, complex, str, bytes, bytearray, list,
-            tuple, slice, set, frozenset, dict)
+                    tuple, slice, set, frozenset, dict)
+
     def __init__(self, value, **kwargs):
         if isinstance(self, Literal._basic_types):
             pass
@@ -211,7 +214,7 @@ class Literal(object):
     def __repr__(self):
         if isinstance(self, Literal._basic_types):
             return type(self).__name__ + "(" + \
-                    super(Literal, self).__repr__() + ")"
+                super(Literal, self).__repr__() + ")"
         else:
             return type(self).__name__ + "(" + repr(self.value) + ")"
 
@@ -229,6 +232,7 @@ class Literal(object):
 
 
 class Plain(object):
+
     """A plain object"""
 
     def __init__(self, name=None, **kwargs):
@@ -249,6 +253,7 @@ class Plain(object):
 
 
 class List(list):
+
     """A List of things."""
 
     def __init__(self, *args, **kwargs):
@@ -267,7 +272,8 @@ class List(list):
                         _args.append(e)
                 super(List, self).__init__(_args)
             else:
-                raise ValueError("initializer of List should be collection or string")
+                raise ValueError(
+                    "initializer of List should be collection or string")
         else:
             for e in args:
                 if isinstance(e, attr.Class):
@@ -294,33 +300,46 @@ class List(list):
 
 class _UserDict(object):
     # UserDict cannot be used because of metaclass conflicts
+
     def __init__(self, *args, **kwargs):
         self.data = dict(*args, **kwargs)
+
     def __len__(self):
         return len(self.data)
+
     def __getitem__(self, key):
         return self.data[key]
+
     def __setitem__(self, key, value):
         self.data[key] = value
+
     def __delitem__(self, key):
         del self.data[key]
+
     def __iter__(self):
         return self.data.keys()
+
     def __contains__(self, item):
         return item in self.data
+
     def items(self):
         return self.data.items()
+
     def keys(self):
         return self.data.keys()
+
     def values(self):
         return self.data.values()
+
     def clear(self):
         self.data.clear()
+
     def copy(self):
         return self.data.copy()
 
 
 class Namespace(_UserDict):
+
     """A dictionary of things, indexed by their name."""
     name_by = lambda value: "#" + str(id(value))
 
@@ -375,9 +394,10 @@ class Namespace(_UserDict):
         except:
             pass
         return result + ")"
-        
+
 
 class Enum(Namespace):
+
     """A Namespace which is being treated as an Enum.
     Enums can only contain Keywords or Symbols."""
 
@@ -411,6 +431,7 @@ class Enum(Namespace):
 
 
 class Symbol(str):
+
     """Use to scan Symbols.
 
     Class variables:
@@ -433,7 +454,7 @@ class Symbol(str):
 
         if Symbol.check_keywords and name in Keyword.table:
             raise ValueError(repr(name)
-                    + " is a Keyword, but is used as a Symbol")
+                             + " is a Keyword, but is used as a Symbol")
         if namespace:
             if isinstance(namespace, Namespace):
                 namespace[name] = self
@@ -449,6 +470,7 @@ class Symbol(str):
 
 
 class Keyword(Symbol):
+
     """Use to access the keyword table.
 
     Class variables:
@@ -470,6 +492,7 @@ K = Keyword
 
 
 class IKeyword(Keyword):
+
     """Use for case-insensitive keyword."""
 
     def parse(self, parser, text, pos):
@@ -487,6 +510,7 @@ IK = IKeyword
 
 
 class Concat(List):
+
     """Concatenation of things.
 
     This class exists as a mutable alternative to using a tuple.
@@ -541,14 +565,17 @@ blank = lambda thing, parser: " "
 
 
 class GrammarError(Exception):
+
     """Base class for errors in grammars."""
 
 
 class GrammarTypeError(TypeError, GrammarError):
+
     """Raised if grammar contains an object of unkown type."""
 
 
 class GrammarValueError(ValueError, GrammarError):
+
     """Raised if grammar contains an illegal value."""
 
 
@@ -559,7 +586,7 @@ def how_many(grammar):
         0 if there will be no objects
         1 if there will be a maximum of one object
         2 if there can be more than one object
-    
+
     Raises:
         GrammarTypeError
                     if grammar contains an object of unkown type
@@ -621,11 +648,11 @@ def how_many(grammar):
 
     else:
         raise GrammarTypeError("grammar contains an illegal type: "
-                + type(grammar).__name__ + ": " + repr(grammar))
+                               + type(grammar).__name__ + ": " + repr(grammar))
 
 
 def parse(text, thing, filename=None, whitespace=whitespace, comment=None,
-        keep_feeble_things=False):
+          keep_feeble_things=False):
     """Parse text following thing as grammar and return the resulting things or
     raise an error.
 
@@ -704,8 +731,9 @@ def _issubclass(obj, cls):
 
 
 class Parser(object):
+
     """Offers parsing and composing capabilities. Implements a Packrat parser.
-    
+
     Instance variables:
         whitespace          regular expression to scan whitespace
                             default: "(?m)\s+"
@@ -810,42 +838,42 @@ class Parser(object):
             if self.whitespace and not self._contiguous:
                 t, r = self._parse(t, self.whitespace, pos)
                 if self.keep_feeble_things and r and not isinstance(r,
-                        SyntaxError):
+                                                                    SyntaxError):
                     result.append(r)
             t2 = t
             if self.comment:
                 t, r = self._parse(t, self.comment, pos)
                 if self.keep_feeble_things and r and not isinstance(r,
-                        SyntaxError):
+                                                                    SyntaxError):
                     result.append(r)
         return t, result
 
     def generate_syntax_error(self, msg, pos):
-            """Generate a syntax error construct with
+        """Generate a syntax error construct with
 
-            msg         string with error message
-            pos         (lineNo, charInText) with positioning information
-            """
+        msg         string with error message
+        pos         (lineNo, charInText) with positioning information
+        """
 
-            result = SyntaxError(msg)
-            if pos:
-                result.lineno = pos[0]
-                start = max(pos[1] - 19, 0)
-                end   = min(pos[1] + 20, len(self.text))
-                result.text = self.text[start:end]
-                result.offset = pos[1] - start + 1
-                while "\n" in result.text:
-                    lf = result.text.find("\n")
-                    if lf >= result.offset:
-                        result.text = result.text[:result.offset-1]
-                        break;
-                    else:
-                        L = len(result.text)
-                        result.text = result.text[lf+1:]
-                        result.offset -= L - len(result.text)
-                if self.filename:
-                    result.filename = self.filename
-            return result
+        result = SyntaxError(msg)
+        if pos:
+            result.lineno = pos[0]
+            start = max(pos[1] - 19, 0)
+            end = min(pos[1] + 20, len(self.text))
+            result.text = self.text[start:end]
+            result.offset = pos[1] - start + 1
+            while "\n" in result.text:
+                lf = result.text.find("\n")
+                if lf >= result.offset:
+                    result.text = result.text[:result.offset - 1]
+                    break
+                else:
+                    L = len(result.text)
+                    result.text = result.text[lf + 1:]
+                    result.offset -= L - len(result.text)
+            if self.filename:
+                result.filename = self.filename
+        return result
 
     def _parse(self, text, thing, pos=[1, 0]):
         # Parser implementation
@@ -865,7 +893,7 @@ class Parser(object):
         except:
             pass
 
-        if pos: 
+        if pos:
             current_pos = tuple(pos)
         else:
             current_pos = None
@@ -920,7 +948,7 @@ class Parser(object):
                 update_pos(text, t, pos)
             else:
                 result = text, syntax_error("expecting match on "
-                        + thing.pattern)
+                                            + thing.pattern)
 
         elif isinstance(thing, (str, Literal)):
             if text.startswith(str(thing)):
@@ -945,12 +973,12 @@ class Parser(object):
                     elif isinstance(thing.grammar, Enum):
                         if not m.group(0) in thing.grammar:
                             result = text, syntax_error(repr(m.group(0))
-                                + " is not a member of " + repr(thing.grammar))
+                                                        + " is not a member of " + repr(thing.grammar))
                     else:
                         raise GrammarValueError(
-                                "Symbol " + type(thing).__name__
-                                + " has a grammar which is not an Enum: "
-                                + repr(thing.grammar))
+                            "Symbol " + type(thing).__name__
+                            + " has a grammar which is not an Enum: "
+                            + repr(thing.grammar))
                 if not result:
                     t, r = text[len(m.group(0)):], thing(m.group(0))
                     t, skip_result = self._skip(t)
@@ -1012,7 +1040,7 @@ class Parser(object):
                         _min, _max = 1, sys.maxsize
                     elif e == -1:
                         _min, _max = 0, sys.maxsize
-                    elif e ==  0:
+                    elif e == 0:
                         _min, _max = 0, 1
                     else:
                         _min, _max = e, e
@@ -1032,11 +1060,11 @@ class Parser(object):
                                 L.extend(r)
                             else:
                                 L.append(r)
-                if i+1 < _min:
+                if i + 1 < _min:
                     if type(r) != SyntaxError:
                         r = syntax_error("expecting " + str(_min)
-                                + " occurrence(s) of " + repr(e)
-                                + " (" + str(i+1) + " found)")
+                                         + " occurrence(s) of " + repr(e)
+                                         + " (" + str(i + 1) + " found)")
                     flag = False
                     break
                 _min, _max = 1, 1
@@ -1085,7 +1113,7 @@ class Parser(object):
                                         pass
                                 else:
                                     L[0].feeble_things = L.feeble_things + \
-                                            L[0].feeble_things
+                                        L[0].feeble_things
                     result = t, L[0]
             else:
                 result = text, r
@@ -1242,7 +1270,7 @@ class Parser(object):
         try:
             self._memory[id(thing)]
         except KeyError:
-            self._memory[id(thing)] = { text: result }
+            self._memory[id(thing)] = {text: result}
         else:
             self._memory[id(thing)][text] = result
 
@@ -1326,7 +1354,7 @@ class Parser(object):
                 result = terminal_indent(do_blank=self._got_regex) + str(thing)
             else:
                 raise ValueError(repr(thing) + " does not match "
-                        + grammar.pattern)
+                                 + grammar.pattern)
             self._got_regex = True
 
         elif isinstance(grammar, Keyword):
@@ -1339,7 +1367,8 @@ class Parser(object):
         elif isinstance(grammar, Enum):
             if thing in grammar:
                 if isinstance(thing, Keyword):
-                    result = terminal_indent(do_blank=self._got_regex) + str(thing)
+                    result = terminal_indent(
+                        do_blank=self._got_regex) + str(thing)
                     self._got_regex = True
                 else:
                     result = terminal_indent() + str(thing)
@@ -1354,7 +1383,7 @@ class Parser(object):
                     result = terminal_indent()
             else:
                 result = self.compose(getattr(thing, grammar.name),
-                        grammar.thing, attr_of=thing)
+                                      grammar.thing, attr_of=thing)
 
         elif isinstance(grammar, (tuple, list)):
             def compose_tuple(thing, things, grammar):
@@ -1400,26 +1429,29 @@ class Parser(object):
                                             break
                                     elif isinstance(g, attr.Class):
                                         text.append(self.compose(getattr(thing,
-                                            g.name), g.thing, attr_of=thing))
+                                                                         g.name), g.thing, attr_of=thing))
                                         if card < 1:
                                             break
                                     elif isinstance(g, (tuple, list)):
-                                        text.append(compose_tuple(thing, things, g))
+                                        text.append(
+                                            compose_tuple(thing, things, g))
                                         if not things:
                                             break
                                     else:
-                                        text.append(self.compose(things.pop(), g))
+                                        text.append(
+                                            self.compose(things.pop(), g))
                                     passes += 1
                             except (IndexError, ValueError):
                                 if card == -2:
                                     if passes < 1:
                                         raise ValueError(repr(g)
-                                                + " has to be there at least once")
+                                                         + " has to be there at least once")
                                 elif card > 0:
                                     if passes < multiple:
                                         raise ValueError(repr(g)
-                                                + " has to be there exactly "
-                                                + str(multiple) + " times")
+                                                         +
+                                                         " has to be there exactly "
+                                                         + str(multiple) + " times")
                             multiple = 1
                             if indenting:
                                 self.indention_level -= indenting
@@ -1455,7 +1487,7 @@ class Parser(object):
                         except ValueError:
                             pass
                     raise ValueError("none of the options in " + repr(grammar)
-                            + " found")
+                                     + " found")
 
             if isinstance(thing, Namespace):
                 L = [e for e in thing.values()]
@@ -1482,7 +1514,8 @@ class Parser(object):
                 if grammar == Symbol and isinstance(thing, str):
                     result = self.compose(str(thing), Symbol.regex)
                 else:
-                    raise ValueError(repr(thing) + " is not a " + repr(grammar))
+                    raise ValueError(
+                        repr(thing) + " is not a " + repr(grammar))
 
         else:
             raise GrammarTypeError("in grammar: " + repr(grammar))
