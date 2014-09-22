@@ -29,6 +29,7 @@ before_install:
 
 install:
   - pip install -qr requirements.txt
+  - pip install -q unittest2
   - pip install -q nose
   - pip install .
 

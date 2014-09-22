@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-import unittest
+import unittest2 as unittest
 import pypeg2
 import re
 
@@ -194,7 +194,7 @@ class ParseListTestCase2(ParserTestCase):
 class ParseClassTestCase1(ParserTestCase):
     class Word(str):
         grammar = pypeg2.word
- 
+
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", ParseClassTestCase1.Word)
@@ -208,7 +208,7 @@ class ParseClassTestCase2(ParserTestCase):
             self.polished = False
         def polish(self):
             self.polished = True
- 
+
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", ParseClassTestCase2.Word)
