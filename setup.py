@@ -8,7 +8,6 @@ setup(
     author='Volker Birk',
     author_email='vb@dingens.org',
     packages=find_packages(),
-    scripts=['samples/sample1.py', 'samples/sample2.py'],
     url='http://fdik.org/pyPEG2',
     download_url='http://fdik.org/pyPEG2/pyPEG2-' + _version + '.tar.gz',
     license='LICENSE.txt',
