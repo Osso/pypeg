@@ -894,5 +894,525 @@ class FlagFunctionTestCase(unittest.TestCase):
         self.assertEqual(f.thing, "MARK")
 
 
+# === Tests for RegEx pattern ===
+
+
+class RegExPatternTestCase(unittest.TestCase):
+    def test_regex_match(self):
+        r = re.compile(r"\d+")
+        self.assertIsNotNone(r.match("123"))
+
+    def test_regex_no_match(self):
+        r = re.compile(r"\d+")
+        self.assertIsNone(r.match("abc"))
+
+
+# === Tests for Enum with kwargs ===
+
+
+class EnumKwargsTestCase(unittest.TestCase):
+    def test_enum_with_name(self):
+        e = pypeg2.Enum("a", "b", name="myenum")
+        self.assertEqual(e.name, "myenum")
+
+
+# === Tests for List with tuple init ===
+
+
+class ListTupleInitTestCase(unittest.TestCase):
+    def test_list_with_tuple(self):
+        lst = pypeg2.List(["item1", "item2"])
+        self.assertIn("item1", lst)
+        self.assertIn("item2", lst)
+
+
+# === Tests for Parser with filename ===
+
+
+class ParserFilenameTestCase(unittest.TestCase):
+    def test_parse_with_filename(self):
+        parser = pypeg2.Parser()
+        t, r = parser.parse("hello", pypeg2.word, filename="test.txt")
+        self.assertEqual(parser.filename, "test.txt")
+
+    def test_syntax_error_includes_filename(self):
+        parser = pypeg2.Parser()
+        try:
+            parser.parse("123", pypeg2.word, filename="test.txt")
+        except SyntaxError as e:
+            self.assertEqual(e.filename, "test.txt")
+
+
+# === Tests for comments in parsing ===
+
+
+class ParseWithCommentsTestCase(unittest.TestCase):
+    def test_skip_comments_after_word(self):
+        # Comment after parsing first word - remainder has the comment
+        comment = re.compile(r"#[^\n]*")
+        result = pypeg2.parse("# comment\nhello", pypeg2.word, comment=comment)
+        self.assertEqual(result, "hello")
+
+
+# === Tests for Symbol with Enum grammar ===
+
+
+class SymbolEnumGrammarTestCase(unittest.TestCase):
+    def test_symbol_with_enum_restriction(self):
+        class Color(pypeg2.Symbol):
+            grammar = pypeg2.Enum("red", "green", "blue")
+
+        result = pypeg2.parse("red", Color)
+        self.assertEqual(result, "red")
+
+    def test_symbol_enum_restriction_fails(self):
+        class Color(pypeg2.Symbol):
+            grammar = pypeg2.Enum("red", "green", "blue")
+
+        with self.assertRaises(SyntaxError):
+            pypeg2.parse("yellow", Color)
+
+
+# === Tests for Symbol grammar error ===
+
+
+class SymbolBadGrammarTestCase(unittest.TestCase):
+    def test_symbol_non_enum_grammar(self):
+        class BadSymbol(pypeg2.Symbol):
+            grammar = "not an enum"
+
+        with self.assertRaises(pypeg2.GrammarValueError):
+            pypeg2.parse("hello", BadSymbol)
+
+
+# === Tests for thing.compose method ===
+
+
+class ThingComposeMethodTestCase(unittest.TestCase):
+    def test_thing_with_compose_method(self):
+        class Greeting(pypeg2.List):
+            grammar = pypeg2.word
+
+            def compose(self, parser, attr_of=None):
+                return "HELLO"
+
+        g = Greeting(["hi"])
+        result = pypeg2.compose(g)
+        self.assertEqual(result, "HELLO")
+
+
+# === Tests for compose with Symbol list grammar ===
+
+
+class ComposeSymbolListTestCase(unittest.TestCase):
+    def test_compose_list_without_grammar(self):
+        lst = pypeg2.List([pypeg2.Symbol("a"), pypeg2.Symbol("b")])
+        result = pypeg2.compose(lst)
+        self.assertIn("a", result)
+        self.assertIn("b", result)
+
+
+# === Tests for parse with List returning thing ===
+
+
+class ParseListClassTestCase(unittest.TestCase):
+    def test_parse_list_class(self):
+        class Items(pypeg2.List):
+            grammar = pypeg2.some(pypeg2.word)
+
+        result = pypeg2.parse("hello world", Items)
+        self.assertIsInstance(result, Items)
+        self.assertIn("hello", result)
+        self.assertIn("world", result)
+
+
+# === Tests for Namespace class parsing ===
+
+
+class ParseNamespaceTestCase(unittest.TestCase):
+    def test_parse_namespace_class(self):
+        class Entry(str):
+            grammar = pypeg2.name(), "=", pypeg2.word
+
+        class Config(pypeg2.Namespace):
+            grammar = pypeg2.some(Entry)
+
+        result = pypeg2.parse("foo = bar baz = qux", Config)
+        self.assertIsInstance(result, Config)
+        self.assertIn("foo", result)
+        self.assertIn("baz", result)
+
+
+# === Tests for parse with attr returning single result ===
+
+
+class ParseAttrSingleTestCase(unittest.TestCase):
+    def test_parse_attr_single(self):
+        class Item(str):
+            grammar = pypeg2.attr("label", pypeg2.word)
+
+        result = pypeg2.parse("hello", Item)
+        self.assertEqual(result.label, "hello")
+
+
+# === Tests for List kwargs ===
+
+
+class ListKwargsTestCase(unittest.TestCase):
+    def test_list_with_kwargs(self):
+        lst = pypeg2.List(name="mylist")
+        self.assertEqual(lst.name, "mylist")
+
+
+# === Tests for Plain with kwargs ===
+
+
+class PlainKwargsTestCase(unittest.TestCase):
+    def test_plain_with_extra_kwargs(self):
+        # Plain accepts **kwargs in tuple form
+        p = pypeg2.Plain(name="myplain")
+        self.assertEqual(p.name, "myplain")
+
+
+# === Tests for clear_memory with non-existent thing ===
+
+
+class ClearMemoryNonExistentTestCase(unittest.TestCase):
+    def test_clear_nonexistent_thing(self):
+        parser = pypeg2.Parser()
+        # Parsing something to populate memory
+        parser.parse("hello", pypeg2.word)
+        # Clear for a thing that was never parsed - should not raise
+        parser.clear_memory(str)
+
+
+# === Tests for grammar function in how_many ===
+
+
+class HowManyFunctionTestCase(unittest.TestCase):
+    def test_function_returns_zero(self):
+        def my_func():
+            pass
+
+        self.assertEqual(pypeg2.how_many(my_func), 0)
+
+
+# === Tests for cardinality values in how_many ===
+
+
+class HowManyCardinalityTestCase(unittest.TestCase):
+    def test_omit_cardinality(self):
+        # -6 is omit() cardinality
+        self.assertEqual(pypeg2.how_many((-6, pypeg2.word)), 0)
+
+    def test_negative_five(self):
+        # -5 is separated()
+        self.assertEqual(pypeg2.how_many((-5, pypeg2.word)), 1)
+
+    def test_negative_four(self):
+        # -4 is contiguous()
+        self.assertEqual(pypeg2.how_many((-4, pypeg2.word)), 1)
+
+    def test_zero_cardinality(self):
+        # 0 is optional()
+        self.assertEqual(pypeg2.how_many((0, pypeg2.word)), 1)
+
+
+# === Tests for compose with autoblank ===
+
+
+class ComposeAutoblankTestCase(unittest.TestCase):
+    def test_compose_no_autoblank(self):
+        class Words(pypeg2.List):
+            grammar = pypeg2.word, pypeg2.word
+
+        w = Words(["hello", "world"])
+        result = pypeg2.compose(w, autoblank=False)
+        self.assertEqual(result, "helloworld")
+
+
+# === Tests for contiguous marker ===
+
+
+class ContiguousMarkerTestCase(unittest.TestCase):
+    def test_contiguous_marker(self):
+        # Test the contiguous tuple structure
+        c = pypeg2.contiguous()
+        self.assertEqual(c[0], -4)
+
+
+# === Tests for syntax error with newlines ===
+
+
+class SyntaxErrorNewlineTestCase(unittest.TestCase):
+    def test_syntax_error_multiline(self):
+        try:
+            pypeg2.parse("line1\nline2\n123invalid", pypeg2.word)
+        except SyntaxError as e:
+            self.assertIsNotNone(e.lineno)
+
+
+# === Tests for _issubclass with non-class ===
+
+
+class IsSubclassTestCase(unittest.TestCase):
+    def test_non_class(self):
+        self.assertFalse(pypeg2._issubclass("not a class", str))
+
+    def test_with_class(self):
+        self.assertTrue(pypeg2._issubclass(pypeg2.Symbol, str))
+
+
+# === Tests for compose with list options ===
+
+
+class ComposeListOptionsTestCase(unittest.TestCase):
+    def test_compose_list_first_match(self):
+        grammar = [re.compile(r"\d+"), pypeg2.word]
+        result = pypeg2.compose("hello", grammar)
+        self.assertEqual(result, "hello")
+
+    def test_compose_list_second_match(self):
+        grammar = [re.compile(r"[A-Z]+"), pypeg2.word]
+        result = pypeg2.compose("hello", grammar)
+        self.assertEqual(result, "hello")
+
+
+# === Tests for parse with options fallback ===
+
+
+class ParseOptionsTestCase(unittest.TestCase):
+    def test_parse_options_fallback(self):
+        class First:
+            grammar = re.compile(r"\d+")
+
+        result = pypeg2.parse("hello", [First, pypeg2.word])
+        self.assertEqual(result, "hello")
+
+
+# === Tests for Namespace repr without name ===
+
+
+class NamespaceReprNoNameTestCase(unittest.TestCase):
+    def test_repr_no_name(self):
+        ns = pypeg2.Namespace()
+        ns["a"] = pypeg2.Symbol("a")
+        r = repr(ns)
+        self.assertIn("Namespace", r)
+        self.assertNotIn("name=", r)
+
+
+# === Tests for compose returning already matching type ===
+
+
+class ParseReturnsMatchingTypeTestCase(unittest.TestCase):
+    def test_parse_returns_same_type(self):
+        class MyList(pypeg2.List):
+            grammar = pypeg2.word
+
+        result = pypeg2.parse("hello", MyList)
+        self.assertIsInstance(result, MyList)
+
+
+# === Tests for Symbol with grammar None ===
+
+
+class SymbolNoneGrammarTestCase(unittest.TestCase):
+    def test_symbol_with_none_grammar(self):
+        class MySymbol(pypeg2.Symbol):
+            grammar = None
+
+        result = pypeg2.parse("hello", MySymbol)
+        self.assertEqual(result, "hello")
+
+
+# === Tests for compose with None grammar ===
+
+
+class ComposeNoneGrammarTestCase(unittest.TestCase):
+    def test_compose_none_grammar(self):
+        class Item:
+            grammar = None
+
+        i = Item()
+        result = pypeg2.compose(i)
+        self.assertEqual(result, "")
+
+
+# === Tests for compose with Keyword ===
+
+
+class ComposeKeywordTestCase(unittest.TestCase):
+    def test_compose_keyword_grammar(self):
+        kw = pypeg2.Keyword("hello")
+        result = pypeg2.compose("x", kw)
+        self.assertEqual(result, "hello")
+
+
+# === Tests for compose with Enum containing Keyword ===
+
+
+class ComposeEnumKeywordTestCase(unittest.TestCase):
+    def test_compose_enum_with_keyword(self):
+        kw = pypeg2.Keyword("hello")
+        e = pypeg2.Enum(kw)
+        result = pypeg2.compose(kw, e)
+        self.assertEqual(result, "hello")
+
+
+# === Tests for compose with Flag ===
+
+
+class ComposeFlagTestCase(unittest.TestCase):
+    def test_compose_flag_true(self):
+        class Item:
+            grammar = pypeg2.flag("active", "ACTIVE")
+
+        i = Item()
+        i.active = True
+        result = pypeg2.compose(i)
+        self.assertEqual(result, "ACTIVE")
+
+    def test_compose_flag_false(self):
+        class Item:
+            grammar = pypeg2.flag("active", "ACTIVE")
+
+        i = Item()
+        i.active = False
+        result = pypeg2.compose(i)
+        self.assertEqual(result, "")
+
+
+# === Tests for compose with attr ===
+
+
+class ComposeAttrTestCase(unittest.TestCase):
+    def test_compose_attr(self):
+        class Item:
+            grammar = pypeg2.attr("label", pypeg2.word)
+
+        i = Item()
+        i.label = "hello"
+        result = pypeg2.compose(i)
+        self.assertEqual(result, "hello")
+
+
+# === Tests for compose with indent ===
+
+
+class ComposeIndentFunctionTestCase(unittest.TestCase):
+    def test_indent_function(self):
+        # Test indent returns the correct cardinality tuple
+        i = pypeg2.indent()
+        self.assertEqual(i[0], -3)
+
+
+# === Tests for compose with endl ===
+
+
+class ComposeEndlTestCase(unittest.TestCase):
+    def test_compose_with_endl(self):
+        class Lines(pypeg2.List):
+            grammar = pypeg2.word, pypeg2.endl, pypeg2.word
+
+        lines = Lines(["hello", "world"])
+        result = pypeg2.compose(lines)
+        self.assertIn("\n", result)
+
+
+# === Tests for compose with blank ===
+
+
+class ComposeBlankTestCase(unittest.TestCase):
+    def test_compose_with_blank(self):
+        class Spaced:
+            grammar = pypeg2.word, pypeg2.blank, pypeg2.word
+
+        s = Spaced()
+        result = pypeg2.compose(["hello", "world"], (pypeg2.word, pypeg2.blank, pypeg2.word))
+        self.assertIn(" ", result)
+
+
+# === Tests for compose with function grammar ===
+
+
+class ComposeFunctionGrammarTestCase(unittest.TestCase):
+    def test_compose_function_grammar(self):
+        def my_grammar(thing, parser):
+            return pypeg2.word
+
+        result = pypeg2.compose("hello", my_grammar)
+        self.assertEqual(result, "hello")
+
+
+# === Tests for class with polish method ===
+
+
+class ClassPolishTestCase(unittest.TestCase):
+    def test_class_with_polish(self):
+        class Item(str):
+            grammar = pypeg2.word
+
+            def polish(self):
+                self.polished = True
+
+        result = pypeg2.parse("hello", Item)
+        self.assertTrue(result.polished)
+
+
+# === Tests for class with multiple attrs ===
+
+
+class ClassMultipleAttrsTestCase(unittest.TestCase):
+    def test_class_with_multiple_attrs(self):
+        class Item:
+            grammar = pypeg2.attr("first", pypeg2.word), pypeg2.attr("second", pypeg2.word)
+
+        result = pypeg2.parse("hello world", Item)
+        self.assertEqual(result.first, "hello")
+        self.assertEqual(result.second, "world")
+
+
+# === Tests for List class with grammar returning list ===
+
+
+class ListClassWithGrammarTestCase(unittest.TestCase):
+    def test_list_with_grammar_returning_list(self):
+        class Items(pypeg2.List):
+            grammar = pypeg2.some(pypeg2.word)
+
+        result = pypeg2.parse("one two three", Items)
+        self.assertEqual(len(result), 3)
+
+
+# === Tests for compose with int grammar ===
+
+
+class ComposeIntGrammarTestCase(unittest.TestCase):
+    def test_compose_int_grammar(self):
+        result = pypeg2.compose("x", 5)
+        self.assertEqual(result, "5")
+
+
+# === Tests for omit in grammar ===
+
+
+class OmitTestCase(unittest.TestCase):
+    def test_omit_in_parse(self):
+        grammar = (pypeg2.omit(pypeg2.Keyword("start")), pypeg2.word)
+        result = pypeg2.parse("start hello", grammar)
+        self.assertEqual(result, "hello")
+
+
+# === Tests for RegEx class (public wrapper) ===
+
+
+class RegExClassTestCase(unittest.TestCase):
+    def test_regex_class(self):
+        r = pypeg2.RegEx(r"\d+", name="number")
+        self.assertEqual(r.name, "number")
+        self.assertEqual(r.pattern, r"\d+")
+
+
 if __name__ == "__main__":
     unittest.main()
