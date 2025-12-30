@@ -1239,10 +1239,10 @@ class ComposeNoneGrammarTestCase(unittest.TestCase):
         self.assertEqual(result, "")
 
 
-# === Tests for compose with Keyword ===
+# === Tests for compose with Keyword grammar ===
 
 
-class ComposeKeywordTestCase(unittest.TestCase):
+class ComposeKeywordGrammarTestCase(unittest.TestCase):
     def test_compose_keyword_grammar(self):
         kw = pypeg2.Keyword("hello")
         result = pypeg2.compose("x", kw)
