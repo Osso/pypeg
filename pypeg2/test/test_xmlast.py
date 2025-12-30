@@ -1,18 +1,18 @@
-from __future__ import unicode_literals
-try:
-    str = unicode
-except NameError:
-    pass
-
+import re
+import sys
 import unittest
-import re, sys
-import pypeg2, pypeg2.xmlast
+
+import pypeg2
+import pypeg2.xmlast
+
 
 class Another(object):
     grammar = pypeg2.name(), "=", pypeg2.attr("value")
 
+
 class Something(pypeg2.List):
     grammar = pypeg2.name(), pypeg2.some(Another), str
+
 
 class Thing2etreeTestCase1(unittest.TestCase):
     def runTest(self):
@@ -32,16 +32,24 @@ class Thing2etreeTestCase1(unittest.TestCase):
 
         self.assertEqual(root.tag, "Something")
         self.assertEqual(root.attrib["name"], "hello")
- 
+
         try:
             import lxml
         except ImportError:
-            self.assertEqual(pypeg2.xmlast.etree.tostring(root), b'<Something name="hello"><Another name="bla" value="blub" /><Another name="foo" value="bar" />hello, world</Something>')
+            self.assertEqual(
+                pypeg2.xmlast.etree.tostring(root),
+                b'<Something name="hello"><Another name="bla" value="blub" /><Another name="foo" value="bar" />hello, world</Something>',
+            )
         else:
-            self.assertEqual(pypeg2.xmlast.etree.tostring(root), b'<Something name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/>hello, world</Something>')
+            self.assertEqual(
+                pypeg2.xmlast.etree.tostring(root),
+                b'<Something name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/>hello, world</Something>',
+            )
+
 
 class SomethingElse(pypeg2.Namespace):
     grammar = pypeg2.name(), pypeg2.some(Another)
+
 
 class Thing2etreeTestCase2(unittest.TestCase):
     def runTest(self):
@@ -60,24 +68,34 @@ class Thing2etreeTestCase2(unittest.TestCase):
 
         self.assertEqual(root.tag, "SomethingElse")
         self.assertEqual(root.attrib["name"], "hello")
- 
+
         try:
             import lxml
         except ImportError:
-            self.assertEqual(pypeg2.xmlast.etree.tostring(root), b'<SomethingElse name="hello"><Another name="bla" value="blub" /><Another name="foo" value="bar" /></SomethingElse>')
+            self.assertEqual(
+                pypeg2.xmlast.etree.tostring(root),
+                b'<SomethingElse name="hello"><Another name="bla" value="blub" /><Another name="foo" value="bar" /></SomethingElse>',
+            )
         else:
-            self.assertEqual(pypeg2.xmlast.etree.tostring(root), b'<SomethingElse name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/></SomethingElse>')
+            self.assertEqual(
+                pypeg2.xmlast.etree.tostring(root),
+                b'<SomethingElse name="hello"><Another name="bla" value="blub"/><Another name="foo" value="bar"/></SomethingElse>',
+            )
+
 
 class Thing2XMLTestCase3(unittest.TestCase):
     class C1(str):
         grammar = pypeg2.ignore("!"), pypeg2.restline
+
     def runTest(self):
         r = pypeg2.parse("!all", type(self).C1)
         xml = pypeg2.xmlast.thing2xml(r)
         self.assertEqual(xml, b"<C1>all</C1>")
 
+
 class Key(str):
     grammar = pypeg2.name(), "=", pypeg2.restline
+
 
 class XML2ThingTestCase1(unittest.TestCase):
     def runTest(self):
@@ -86,16 +104,28 @@ class XML2ThingTestCase1(unittest.TestCase):
         self.assertEqual(thing.name, pypeg2.Symbol("foo"))
         self.assertEqual(thing, "bar")
 
-class Instruction(str): pass
+
+class Instruction(str):
+    pass
+
 
 class Parameter(object):
     grammar = pypeg2.attr("typing", str), pypeg2.name()
 
+
 class Parameters(pypeg2.Namespace):
     grammar = pypeg2.optional(pypeg2.csl(Parameter))
 
+
 class Function(pypeg2.List):
-    grammar = pypeg2.name(), pypeg2.attr("parms", Parameters), "{", pypeg2.maybe_some(Instruction), "}"
+    grammar = (
+        pypeg2.name(),
+        pypeg2.attr("parms", Parameters),
+        "{",
+        pypeg2.maybe_some(Instruction),
+        "}",
+    )
+
 
 class XML2ThingTestCase2(unittest.TestCase):
     def runTest(self):
@@ -106,5 +136,6 @@ class XML2ThingTestCase2(unittest.TestCase):
         self.assertEqual(f.parms["a"].typing, pypeg2.Symbol("int"))
         self.assertEqual(f[0], "do_this")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

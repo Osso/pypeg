@@ -84,7 +84,6 @@ Type(...'int')
 g[0] is ...'return'
 """
 
-from __future__ import unicode_literals, print_function
 from pypeg2 import *
 
 # A Symbol can be an arbitrary word or one word of an Enum.

@@ -69,9 +69,9 @@ names as tag names. Spaces in names will be translated into underscores.
 ...
 """
 
-from __future__ import unicode_literals, print_function
-from pypeg2 import *
 import re
+
+from pypeg2 import *
 
 # ini file parser
 

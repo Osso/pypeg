@@ -1,0 +1,72 @@
+[project]
+name = "pypeg2"
+version = "2.16.0"
+description = "An intrinsic PEG Parser-Interpreter for Python"
+readme = "README.md"
+license = "GPL-2.0"
+authors = [
+    { name = "Volker Birk", email = "vb@dingens.org" }
+]
+maintainers = [
+    { name = "Alessio Deiana", email = "adeiana@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = []
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Compilers",
+    "Topic :: Software Development :: Interpreters",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[project.optional-dependencies]
+xml = ["lxml"]
+
+[project.urls]
+Repository = "https://github.com/osso/pypeg"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.8",
+    "lxml",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = ["samples"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = [
+    "E501",  # line length
+    "E701",  # multiple statements on one line
+    "E721",  # type comparison (used extensively for grammar type checking)
+    "E731",  # lambda assignments (used for markers like endl, blank)
+    "E741",  # ambiguous variable names (L, t, r used throughout)
+    "F401",  # unused imports (conditional debug imports)
+    "F841",  # unused variable (debug/assertion patterns)
+    "B006",  # mutable default arguments (intentional for parser state)
+    "B007",  # loop control variable not used
+    "B018",  # useless expressions (attribute access checks using try/except)
+    "B028",  # stacklevel in warnings
+    "B904",  # raise from (legacy code pattern)
+    "UP004", # keep explicit object inheritance for clarity
+    "UP008", # keep explicit super() for compatibility
+    "UP028", # keep yield in for loop for clarity
+    "UP031", # keep % formatting for readability
+]
+
+[tool.pytest.ini_options]
+testpaths = ["pypeg2/test"]

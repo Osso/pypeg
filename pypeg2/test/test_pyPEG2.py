@@ -1,8 +1,8 @@
-from __future__ import unicode_literals
-
-import unittest2 as unittest
-import pypeg2
 import re
+import unittest
+
+import pypeg2
+
 
 class GrammarTestCase1(unittest.TestCase):
     def runTest(self):
@@ -13,6 +13,7 @@ class GrammarTestCase1(unittest.TestCase):
         self.assertEqual(y, (-1, "thing"))
         self.assertEqual(z, (0, ("hello", "world")))
 
+
 class GrammarTestCase2(unittest.TestCase):
     def runTest(self):
         L1 = pypeg2.csl("thing")
@@ -20,7 +21,10 @@ class GrammarTestCase2(unittest.TestCase):
         self.assertEqual(L1, ("thing", -1, (",", pypeg2.blank, "thing")))
         self.assertEqual(L2, ("hello", "world", -1, (",", pypeg2.blank, "hello", "world")))
 
-class ParserTestCase(unittest.TestCase): pass
+
+class ParserTestCase(unittest.TestCase):
+    pass
+
 
 class TypeErrorTestCase(ParserTestCase):
     def runTest(self):
@@ -28,17 +32,20 @@ class TypeErrorTestCase(ParserTestCase):
         with self.assertRaises(pypeg2.GrammarTypeError):
             parser.parse("hello, world", 23)
 
+
 class ParseTerminalStringTestCase1(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", "hello")
         self.assertEqual(r, (", world", None))
 
+
 class ParseTerminalStringTestCase2(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         with self.assertRaises(SyntaxError):
             r = parser.parse("hello, world", "world")
+
 
 class ParseKeywordTestCase1(ParserTestCase):
     def runTest(self):
@@ -47,12 +54,14 @@ class ParseKeywordTestCase1(ParserTestCase):
         self.assertEqual(r, (", world", None))
         pypeg2.Keyword.table[pypeg2.K("hallo")]
 
+
 class ParseKeywordTestCase2(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         with self.assertRaises(SyntaxError):
             r = parser.parse("hello, world", pypeg2.K("werld"))
         pypeg2.Keyword.table[pypeg2.K("werld")]
+
 
 class ParseKeywordTestCase3(ParserTestCase):
     def runTest(self):
@@ -61,11 +70,13 @@ class ParseKeywordTestCase3(ParserTestCase):
             r = parser.parse(", world", pypeg2.K("hallo"))
         pypeg2.Keyword.table[pypeg2.K("hallo")]
 
+
 class ParseRegexTestCase1(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", re.compile(r"h.[lx]l\S", re.U))
         self.assertEqual(r, (", world", "hello"))
+
 
 class ParseRegexTestCase2(ParserTestCase):
     def runTest(self):
@@ -73,11 +84,13 @@ class ParseRegexTestCase2(ParserTestCase):
         with self.assertRaises(SyntaxError):
             r = parser.parse("hello, world", re.compile(r"\d", re.U))
 
+
 class ParseSymbolTestCase1(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", pypeg2.Symbol)
         self.assertEqual(r, (", world", pypeg2.Symbol("hello")))
+
 
 class ParseSymbolTestCase2(ParserTestCase):
     def runTest(self):
@@ -85,18 +98,16 @@ class ParseSymbolTestCase2(ParserTestCase):
         with self.assertRaises(SyntaxError):
             r = parser.parse(", world", pypeg2.Symbol)
 
+
 class ParseAttributeTestCase(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", pypeg2.attr("some", pypeg2.Symbol))
         self.assertEqual(
             r,
-            (
-                ', world',
-                pypeg2.attr.Class(name='some', thing=pypeg2.Symbol('hello'),
-                    subtype=None)
-            )
+            (", world", pypeg2.attr.Class(name="some", thing=pypeg2.Symbol("hello"), subtype=None)),
         )
+
 
 class ParseTupleTestCase1(ParserTestCase):
     def runTest(self):
@@ -105,15 +116,14 @@ class ParseTupleTestCase1(ParserTestCase):
         self.assertEqual(
             r,
             (
-                '',
+                "",
                 [
-                    pypeg2.attr.Class(name='name',
-                        thing=pypeg2.Symbol('hello'), subtype=None),
-                    pypeg2.attr.Class(name='name',
-                        thing=pypeg2.Symbol('world'), subtype=None)
-                ]
-            )
+                    pypeg2.attr.Class(name="name", thing=pypeg2.Symbol("hello"), subtype=None),
+                    pypeg2.attr.Class(name="name", thing=pypeg2.Symbol("world"), subtype=None),
+                ],
+            ),
         )
+
 
 class ParseTupleTestCase2(ParserTestCase):
     def runTest(self):
@@ -121,11 +131,13 @@ class ParseTupleTestCase2(ParserTestCase):
         with self.assertRaises(ValueError):
             parser.parse("hello, world", (-23, "x"))
 
+
 class ParseSomeTestCase1(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", pypeg2.some(re.compile(r"\w", re.U)))
-        self.assertEqual(r, (', world', ['h', 'e', 'l', 'l', 'o']))
+        self.assertEqual(r, (", world", ["h", "e", "l", "l", "o"]))
+
 
 class ParseSomeTestCase2(ParserTestCase):
     def runTest(self):
@@ -133,23 +145,27 @@ class ParseSomeTestCase2(ParserTestCase):
         with self.assertRaises(SyntaxError):
             r = parser.parse("hello, world", pypeg2.some(re.compile(r"\d", re.U)))
 
+
 class ParseMaybeSomeTestCase1(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", pypeg2.maybe_some(re.compile(r"\w", re.U)))
-        self.assertEqual(r, (', world', ['h', 'e', 'l', 'l', 'o']))
+        self.assertEqual(r, (", world", ["h", "e", "l", "l", "o"]))
+
 
 class ParseMaybeSomeTestCase2(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", pypeg2.maybe_some(re.compile(r"\d", re.U)))
-        self.assertEqual(r, ('hello, world', []))
+        self.assertEqual(r, ("hello, world", []))
+
 
 class ParseCardinalityTestCase1(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", (5, re.compile(r"\w", re.U)))
-        self.assertEqual(r, (', world', ['h', 'e', 'l', 'l', 'o']))
+        self.assertEqual(r, (", world", ["h", "e", "l", "l", "o"]))
+
 
 class ParseCardinalityTestCase2(ParserTestCase):
     def runTest(self):
@@ -157,17 +173,20 @@ class ParseCardinalityTestCase2(ParserTestCase):
         with self.assertRaises(SyntaxError):
             r = parser.parse("hello, world", (6, re.compile(r"\w", re.U)))
 
+
 class ParseOptionsTestCase1(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", [re.compile(r"\d+", re.U), pypeg2.word])
-        self.assertEqual(r, (', world', 'hello'))
+        self.assertEqual(r, (", world", "hello"))
+
 
 class ParseOptionsTestCase2(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         with self.assertRaises(SyntaxError):
             r = parser.parse("hello, world", ["x", "y"])
+
 
 class ParseListTestCase1(ParserTestCase):
     class Chars(pypeg2.List):
@@ -176,11 +195,9 @@ class ParseListTestCase1(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         r = parser.parse("hello, world", ParseListTestCase1.Chars)
-        self.assertEqual(r, (
-            'world',
-            ParseListTestCase1.Chars(['h', 'e', 'l', 'l', 'o']))
-        )
+        self.assertEqual(r, ("world", ParseListTestCase1.Chars(["h", "e", "l", "l", "o"])))
         self.assertEqual(r[1].comma, None)
+
 
 class ParseListTestCase2(ParserTestCase):
     class Digits(pypeg2.List):
@@ -190,6 +207,7 @@ class ParseListTestCase2(ParserTestCase):
         parser = pypeg2.Parser()
         with self.assertRaises(SyntaxError):
             r = parser.parse("hello, world", ParseListTestCase2.Digits)
+
 
 class ParseClassTestCase1(ParserTestCase):
     class Word(str):
@@ -201,11 +219,14 @@ class ParseClassTestCase1(ParserTestCase):
         self.assertEqual(type(r[1]), ParseClassTestCase1.Word)
         self.assertEqual(r[1], "hello")
 
+
 class ParseClassTestCase2(ParserTestCase):
     class Word(str):
         grammar = pypeg2.word, pypeg2.attr("comma", ",")
+
         def __init__(self, data):
             self.polished = False
+
         def polish(self):
             self.polished = True
 
@@ -217,12 +238,14 @@ class ParseClassTestCase2(ParserTestCase):
         self.assertTrue(r[1].polished)
         self.assertEqual(r[1].comma, None)
 
+
 class Parm(object):
     grammar = pypeg2.name(), "=", pypeg2.attr("value", int)
 
+
 class Parms(pypeg2.Namespace):
-    grammar = (pypeg2.csl(Parm), pypeg2.flag("fullstop", "."),
-            pypeg2.flag("semicolon", ";"))
+    grammar = (pypeg2.csl(Parm), pypeg2.flag("fullstop", "."), pypeg2.flag("semicolon", ";"))
+
 
 class ParseNLTestCase1(ParserTestCase):
     def runTest(self):
@@ -234,8 +257,10 @@ class ParseNLTestCase1(ParserTestCase):
         self.assertEqual(parms.fullstop, False)
         self.assertEqual(parms.semicolon, True)
 
+
 class EnumTest(pypeg2.Symbol):
-    grammar = pypeg2.Enum( pypeg2.K("int"), pypeg2.K("long") )
+    grammar = pypeg2.Enum(pypeg2.K("int"), pypeg2.K("long"))
+
 
 class ParseEnumTestCase1(ParserTestCase):
     def runTest(self):
@@ -243,29 +268,37 @@ class ParseEnumTestCase1(ParserTestCase):
         t, r = parser.parse("int", EnumTest)
         self.assertEqual(r, "int")
 
+
 class ParseEnumTestCase2(ParserTestCase):
     def runTest(self):
         parser = pypeg2.Parser()
         with self.assertRaises(SyntaxError):
             t, r = parser.parse("float", EnumTest)
 
+
 class ParseInvisibleTestCase(ParserTestCase):
     class C1(str):
         grammar = pypeg2.ignore("!"), pypeg2.restline
+
     def runTest(self):
         r = pypeg2.parse("!all", type(self).C1)
         self.assertEqual(str(r), "all")
         self.assertEqual(r._ignore1, None)
+
 
 class ParseOmitTestCase(ParserTestCase):
     def runTest(self):
         r = pypeg2.parse("hello", pypeg2.omit(pypeg2.word))
         self.assertEqual(r, None)
 
-class ComposeTestCase(unittest.TestCase): pass
+
+class ComposeTestCase(unittest.TestCase):
+    pass
+
 
 class ComposeString(object):
     grammar = "something"
+
 
 class ComposeStringTestCase(ComposeTestCase):
     def runTest(self):
@@ -273,8 +306,10 @@ class ComposeStringTestCase(ComposeTestCase):
         t = pypeg2.compose(x)
         self.assertEqual(t, "something")
 
+
 class ComposeRegex(str):
     grammar = pypeg2.word
+
 
 class ComposeRegexTestCase(ComposeTestCase):
     def runTest(self):
@@ -282,8 +317,10 @@ class ComposeRegexTestCase(ComposeTestCase):
         t = pypeg2.compose(x)
         self.assertEqual(t, "something")
 
+
 class ComposeKeyword(object):
     grammar = pypeg2.K("hallo")
+
 
 class ComposeKeywordTestCase(ComposeTestCase):
     def runTest(self):
@@ -291,7 +328,10 @@ class ComposeKeywordTestCase(ComposeTestCase):
         t = pypeg2.compose(x)
         self.assertEqual(t, "hallo")
 
-class ComposeSymbol(pypeg2.Symbol): pass
+
+class ComposeSymbol(pypeg2.Symbol):
+    pass
+
 
 class ComposeSymbolTestCase(ComposeTestCase):
     def runTest(self):
@@ -299,8 +339,10 @@ class ComposeSymbolTestCase(ComposeTestCase):
         t = pypeg2.compose(x)
         self.assertEqual(t, "hello")
 
+
 class ComposeAttribute(object):
     grammar = pypeg2.name()
+
 
 class ComposeAttributeTestCase(ComposeTestCase):
     def runTest(self):
@@ -309,8 +351,10 @@ class ComposeAttributeTestCase(ComposeTestCase):
         t = pypeg2.compose(x)
         self.assertEqual(t, "hello")
 
+
 class ComposeFlag(object):
     grammar = pypeg2.flag("mark", "MARK")
+
 
 class ComposeFlagTestCase1(ComposeTestCase):
     def runTest(self):
@@ -319,6 +363,7 @@ class ComposeFlagTestCase1(ComposeTestCase):
         t = pypeg2.compose(x)
         self.assertEqual(t, "MARK")
 
+
 class ComposeFlagTestCase2(ComposeTestCase):
     def runTest(self):
         x = ComposeFlag()
@@ -326,8 +371,10 @@ class ComposeFlagTestCase2(ComposeTestCase):
         t = pypeg2.compose(x)
         self.assertEqual(t, "")
 
+
 class ComposeTuple(pypeg2.List):
     grammar = pypeg2.csl(pypeg2.word)
+
 
 class ComposeTupleTestCase(ComposeTestCase):
     def runTest(self):
@@ -335,8 +382,10 @@ class ComposeTupleTestCase(ComposeTestCase):
         t = pypeg2.compose(x)
         self.assertEqual(t, "hello, world")
 
+
 class ComposeList(str):
-    grammar = [ re.compile(r"\d+", re.U), pypeg2.word ]
+    grammar = [re.compile(r"\d+", re.U), pypeg2.word]
+
 
 class ComposeListTestCase(ComposeTestCase):
     def runTest(self):
@@ -344,13 +393,16 @@ class ComposeListTestCase(ComposeTestCase):
         t = pypeg2.compose(x)
         self.assertEqual(t, "hello")
 
+
 class ComposeIntTestCase(ComposeTestCase):
     def runTest(self):
         x = pypeg2.compose(23, int)
         self.assertEqual(x, "23")
 
+
 class C2(str):
     grammar = pypeg2.attr("some", "!"), pypeg2.restline
+
 
 class ComposeInvisibleTestCase(ParserTestCase):
     def runTest(self):
@@ -360,10 +412,12 @@ class ComposeInvisibleTestCase(ParserTestCase):
         t = pypeg2.compose(r, C2)
         self.assertEqual(t, "!all")
 
+
 class ComposeOmitTestCase(ParserTestCase):
     def runTest(self):
-        t = pypeg2.compose('hello', pypeg2.omit(pypeg2.word))
+        t = pypeg2.compose("hello", pypeg2.omit(pypeg2.word))
         self.assertEqual(t, "")
+
 
 class CslPython32Compatibility(ParserTestCase):
     def runTest(self):
@@ -373,5 +427,6 @@ class CslPython32Compatibility(ParserTestCase):
             return
         self.assertEqual(g, ("hello", "world", -1, (";", pypeg2.blank, "hello", "world")))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

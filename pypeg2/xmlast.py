@@ -7,8 +7,6 @@ Copyleft 2012, Volker Birk.
 This program is under GNU General Public License 2.0.
 """
 
-
-from __future__ import unicode_literals
 try:
     str = unicode
 except NameError:
@@ -74,8 +72,10 @@ def create_tree(thing, parent=None, object_names=False):
                 continue
         key, value = e.name, getattr(thing, e.name, None)
         if value is not None:
-            if pypeg2._issubclass(e.thing, (str, int, pypeg2.Literal)) \
-                    or type(e.thing) == pypeg2._RegEx:
+            if (
+                pypeg2._issubclass(e.thing, (str, int, pypeg2.Literal))
+                or type(e.thing) == pypeg2._RegEx
+            ):
                 me.set(key, str(value))
             else:
                 create_tree(value, me, object_names)
@@ -114,7 +114,7 @@ def thing2xml(thing, pretty=False, object_names=False):
                         names instead of types
 
     Returns:
-        bytes with encoded XML 
+        bytes with encoded XML
     """
 
     tree = create_tree(thing, None, object_names)
@@ -124,8 +124,7 @@ def thing2xml(thing, pretty=False, object_names=False):
     except NameError:
         if __debug__:
             if pretty:
-                warnings.warn("lxml is needed for pretty printing",
-                        ImportWarning)
+                warnings.warn("lxml is needed for pretty printing", ImportWarning)
         return etree.tostring(tree)
 
 
@@ -145,7 +144,7 @@ def create_thing(element, symbol_table):
         thing = C(element.text)
     else:
         thing = C()
-    
+
     subs = iter(element)
     iterated_already = False
 
@@ -156,8 +155,10 @@ def create_thing(element, symbol_table):
     else:
         for e in pypeg2.attributes(grammar):
             key = e.name
-            if pypeg2._issubclass(e.thing, (str, int, pypeg2.Literal)) \
-                    or type(e.thing) == pypeg2._RegEx:
+            if (
+                pypeg2._issubclass(e.thing, (str, int, pypeg2.Literal))
+                or type(e.thing) == pypeg2._RegEx
+            ):
                 try:
                     value = element.attrib[e.name]
                 except KeyError:
@@ -190,7 +191,7 @@ def create_thing(element, symbol_table):
                     thing[t.name] = t
         except StopIteration:
             pass
-    
+
     return thing
 
 
@@ -207,4 +208,3 @@ def xml2thing(xml, symbol_table):
 
     element = etree.fromstring(xml)
     return create_thing(element, symbol_table)
-
