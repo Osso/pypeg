@@ -38,6 +38,7 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "pytest>=8.0",
+    "pyright>=1.1",
     "ruff>=0.8",
     "lxml",
 ]
@@ -67,6 +68,19 @@ ignore = [
     "UP028", # keep yield in for loop for clarity
     "UP031", # keep % formatting for readability
 ]
+
+[tool.pyright]
+typeCheckingMode = "basic"
+reportFunctionMemberAccess = false
+reportAttributeAccessIssue = false
+reportOptionalSubscript = false
+reportOptionalMemberAccess = false
+reportOptionalOperand = false
+reportOperatorIssue = false
+reportArgumentType = false
+reportCallIssue = false
+reportPossiblyUnboundVariable = false
+reportGeneralTypeIssues = false
 
 [tool.pytest.ini_options]
 testpaths = ["pypeg2/test"]
