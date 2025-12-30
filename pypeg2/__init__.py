@@ -17,11 +17,17 @@ __url__ = "http://fdik.org/pyPEG"
 import re
 import sys
 import weakref
+from collections import OrderedDict, namedtuple
+from collections.abc import Iterator
+from re import Pattern
+from types import FunctionType
+from typing import Any
 
 if __debug__:
     import warnings
-from collections import OrderedDict, namedtuple
-from types import FunctionType
+
+# Type alias for grammar elements
+Grammar = Any  # Grammar can be str, regex, tuple, list, class, etc.
 
 word = re.compile(r"\w+")
 """Regular expression for scanning a word."""
@@ -47,7 +53,7 @@ comment_pas = re.compile(r"(?ms)\(\*.*?\*\)")
 """Pascal style comment without nesting comments."""
 
 
-def _card(n, thing):
+def _card(n: int, thing: tuple[Grammar, ...]) -> tuple[int, Grammar]:
     # Reduce unnecessary recursions
     if len(thing) == 1:
         return n, thing[0]
@@ -55,48 +61,48 @@ def _card(n, thing):
         return n, thing
 
 
-def some(*thing):
+def some(*thing: Grammar) -> tuple[int, Grammar]:
     """At least one occurrence of thing, + operator.
     Inserts -2 as cardinality before thing.
     """
     return _card(-2, thing)
 
 
-def maybe_some(*thing):
+def maybe_some(*thing: Grammar) -> tuple[int, Grammar]:
     """No thing or some of them, * operator.
     Inserts -1 as cardinality before thing.
     """
     return _card(-1, thing)
 
 
-def optional(*thing):
+def optional(*thing: Grammar) -> tuple[int, Grammar]:
     """Thing or no thing, ? operator.
     Inserts 0 as cardinality before thing.
     """
     return _card(0, thing)
 
 
-def _csl(separator, *thing):
+def _csl(separator: str, *thing: Grammar) -> tuple[Grammar, ...]:
     # reduce unnecessary recursions
     if len(thing) == 1:
-        L = [thing[0]]
+        L: list[Any] = [thing[0]]
         L.extend(maybe_some(separator, blank, thing[0]))
         return tuple(L)
     else:
         L = list(thing)
         L.append(-1)
-        L2 = [separator, blank]
+        L2: list[Any] = [separator, blank]
         L2.extend(tuple(thing))
         L.append(tuple(L2))
         return tuple(L)
 
 
-def csl(*thing, separator=","):
+def csl(*thing: Grammar, separator: str = ",") -> tuple[Grammar, ...]:
     """Generate a grammar for a simple comma separated list."""
     return _csl(separator, *thing)
 
 
-def attr(name, thing=word, subtype=None):
+def attr(name: str, thing: Grammar = word, subtype: str | None = None) -> Any:
     """Generate an Attribute with that name, referencing the thing.
 
     Instance variables:
@@ -113,14 +119,14 @@ def attr(name, thing=word, subtype=None):
 attr.Class = namedtuple("Attribute", ("name", "thing", "subtype"))
 
 
-def flag(name, thing=None):
+def flag(name: str, thing: Grammar | None = None) -> Any:
     """Generate an Attribute with that name which is valued True or False."""
     if thing is None:
         thing = Keyword(name)
     return attr(name, thing, "Flag")
 
 
-def attributes(grammar, invisible=False):
+def attributes(grammar: Grammar, invisible: bool = False) -> Iterator[Any]:
     """Iterates all attributes of a grammar."""
     if type(grammar) == attr.Class and (invisible or grammar.name[0] != "_"):
         yield grammar
@@ -141,8 +147,11 @@ class RegEx(object):
         regex       pre-compiled object from re.compile()
     """
 
-    def __init__(self, value, **kwargs):
-        self.regex = re.compile(value, re.U)
+    pattern: str
+    name: str  # optional, set via kwargs
+
+    def __init__(self, value: str, **kwargs: Any) -> None:
+        self.regex: Pattern[str] = re.compile(value, re.U)
         self.search = self.regex.search
         self.match = self.regex.match
         self.split = self.regex.split
@@ -157,10 +166,10 @@ class RegEx(object):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.pattern
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         result = type(self).__name__ + "(" + repr(self.pattern)
         try:
             result += ", name=" + repr(self.name)
@@ -500,12 +509,12 @@ class Concat(List):
     """
 
 
-def name():
+def name() -> Any:
     """Generate a grammar for a symbol with name."""
     return attr("name", Symbol)
 
 
-def ignore(grammar):
+def ignore(grammar: Grammar) -> Any:
     """Ignore what matches to the grammar."""
     try:
         ignore.serial += 1
@@ -514,28 +523,28 @@ def ignore(grammar):
     return attr("_ignore" + str(ignore.serial), grammar)
 
 
-def indent(*thing):
+def indent(*thing: Grammar) -> tuple[int, Grammar]:
     """Indent thing by one level.
     Inserts -3 as cardinality before thing.
     """
     return _card(-3, thing)
 
 
-def contiguous(*thing):
+def contiguous(*thing: Grammar) -> tuple[int, Grammar]:
     """Disable automated whitespace matching.
     Inserts -4 as cardinality before thing.
     """
     return _card(-4, thing)
 
 
-def separated(*thing):
+def separated(*thing: Grammar) -> tuple[int, Grammar]:
     """Enable automated whitespace matching.
     Inserts -5 as cardinality before thing.
     """
     return _card(-5, thing)
 
 
-def omit(*thing):
+def omit(*thing: Grammar) -> tuple[int, Grammar]:
     """Omit what matches to the grammar."""
     return _card(-6, thing)
 
@@ -559,7 +568,7 @@ class GrammarValueError(ValueError, GrammarError):
     """Raised if grammar contains an illegal value."""
 
 
-def how_many(grammar):
+def how_many(grammar: Grammar) -> int:
     """Determines the possibly parsed objects of grammar.
 
     Returns:
@@ -632,8 +641,13 @@ def how_many(grammar):
 
 
 def parse(
-    text, thing, filename=None, whitespace=whitespace, comment=None, keep_feeble_things=False
-):
+    text: str,
+    thing: Grammar,
+    filename: str | None = None,
+    whitespace: Pattern[str] | str | None = whitespace,
+    comment: Grammar | None = None,
+    keep_feeble_things: bool = False,
+) -> Any:
     r"""Parse text following thing as grammar and return the resulting things or
     raise an error.
 
@@ -674,7 +688,9 @@ def parse(
     return r
 
 
-def compose(thing, grammar=None, indent="    ", autoblank=True):
+def compose(
+    thing: Any, grammar: Grammar | None = None, indent: str = "    ", autoblank: bool = True
+) -> str:
     """Compose text using thing with grammar.
 
     Arguments:
@@ -703,7 +719,7 @@ def compose(thing, grammar=None, indent="    ", autoblank=True):
     return parser.compose(thing, grammar)
 
 
-def _issubclass(obj, cls):
+def _issubclass(obj: Any, cls: type) -> bool:
     # If obj is not a class, just return False
     try:
         return issubclass(obj, cls)
@@ -733,23 +749,23 @@ class Parser(object):
                             attribute instead of dumping them
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize instance variables to their defaults."""
-        self.whitespace = whitespace
-        self.comment = None
-        self.last_error = None
-        self.indent = "    "
-        self.indention_level = 0
-        self.text = None
-        self.filename = None
-        self.autoblank = True
-        self.keep_feeble_things = False
-        self._memory = {}
-        self._got_endl = True
-        self._contiguous = False
-        self._got_regex = False
+        self.whitespace: Pattern[str] | str | None = whitespace
+        self.comment: Grammar | None = None
+        self.last_error: SyntaxError | None = None
+        self.indent: str = "    "
+        self.indention_level: int = 0
+        self.text: str | None = None
+        self.filename: str | None = None
+        self.autoblank: bool = True
+        self.keep_feeble_things: bool = False
+        self._memory: dict[int, dict[str, tuple[str, Any]]] = {}
+        self._got_endl: bool = True
+        self._contiguous: bool = False
+        self._got_regex: bool = False
 
-    def clear_memory(self, thing=None):
+    def clear_memory(self, thing: Grammar | None = None) -> None:
         """Clear cache memory for packrat parsing.
 
         Arguments:
@@ -766,7 +782,7 @@ class Parser(object):
             except KeyError:
                 pass
 
-    def parse(self, text, thing, filename=None):
+    def parse(self, text: str, thing: Grammar, filename: str | None = None) -> tuple[str, Any]:
         """(Partially) parse text following thing as grammar and return the
         resulting things.
 
@@ -809,7 +825,7 @@ class Parser(object):
                     r.feeble_things = skip_result + r.feeble_things
             return t, r
 
-    def _skip(self, text, pos=None):
+    def _skip(self, text: str, pos: list[int] | None = None) -> tuple[str, list[Any]]:
         # Skip whitespace and comments from input text
         t2 = None
         t = text
@@ -826,7 +842,7 @@ class Parser(object):
                     result.append(r)
         return t, result
 
-    def generate_syntax_error(self, msg, pos):
+    def generate_syntax_error(self, msg: str, pos: list[int] | None) -> SyntaxError:
         """Generate a syntax error construct with
 
         msg         string with error message
