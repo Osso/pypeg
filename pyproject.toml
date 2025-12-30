@@ -41,6 +41,7 @@ dev = [
     "pyright>=1.1",
     "ruff>=0.8",
     "lxml",
+    "pytest-cov>=7.0.0",
 ]
 
 [tool.ruff]
