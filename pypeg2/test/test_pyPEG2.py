@@ -840,7 +840,6 @@ class ConcatTestCase(unittest.TestCase):
 
 class ComposeOptionsTestCase(unittest.TestCase):
     def test_compose_first_option(self):
-
         class MyClass(str):
             grammar = [re.compile(r"\d+"), pypeg2.word]
 
@@ -849,7 +848,6 @@ class ComposeOptionsTestCase(unittest.TestCase):
         self.assertEqual(t, "42")
 
     def test_compose_second_option(self):
-
         class MyClass(str):
             grammar = [re.compile(r"^[A-Z]+$"), pypeg2.word]
 
